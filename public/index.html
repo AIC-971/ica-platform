@@ -1,0 +1,1306 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — Immo Conseil Antilles</title>
+<style>
+  /* ===== RESET & BASE ===== */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  :root {
+    --green: #1D9E75;
+    --green-light: #E1F5EE;
+    --green-dark: #0F6E56;
+    --red: #E24B4A;
+    --red-light: #FCEBEB;
+    --amber: #BA7517;
+    --amber-light: #FAEEDA;
+    --blue: #185FA5;
+    --blue-light: #E6F1FB;
+    --gray: #888780;
+    --bg: #F8F7F4;
+    --surface: #FFFFFF;
+    --border: rgba(0,0,0,0.08);
+    --border-strong: rgba(0,0,0,0.15);
+    --text: #1a1a18;
+    --text-muted: #6b6b68;
+    --text-faint: #9b9b98;
+    --radius: 10px;
+    --radius-lg: 14px;
+    /* IA dark theme vars */
+    --ia-bg: #0f1117;
+    --ia-surface: #181c26;
+    --ia-surface2: #1e2333;
+    --ia-border: #2a3048;
+    --ia-accent: #3d7fff;
+    --ia-accent2: #00d4aa;
+    --ia-accent3: #ff6b35;
+    --ia-gold: #f0c040;
+    --ia-text: #e8eaf0;
+    --ia-text2: #8b93ad;
+    --ia-text3: #5a6380;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* ===== TOPBAR ===== */
+  .topbar {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    display: flex; align-items: center;
+    justify-content: space-between;
+    height: 52px;
+  }
+  .topbar-left { display: flex; align-items: center; gap: 12px; }
+  .logo {
+    background: var(--green); color: #fff;
+    font-size: 11px; font-weight: 600;
+    padding: 4px 9px; border-radius: 6px;
+    letter-spacing: 0.5px;
+  }
+  .topbar-title { font-weight: 500; font-size: 15px; }
+  .topbar-right { display: flex; align-items: center; gap: 12px; }
+  .live-badge {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 11px; color: var(--green);
+    background: var(--green-light);
+    padding: 3px 9px; border-radius: 20px;
+  }
+  .live-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--green);
+    animation: blink 2s ease-in-out infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  .refresh-btn {
+    font-size: 12px; padding: 5px 12px;
+    border: 1px solid var(--border-strong);
+    border-radius: 7px; background: transparent;
+    cursor: pointer; color: var(--text);
+    transition: background 0.15s;
+  }
+  .refresh-btn:hover { background: var(--bg); }
+
+  /* ===== LAYOUT ===== */
+  .main { max-width: 1200px; margin: 0 auto; padding: 20px 24px; }
+  /* IA section override — pleine largeur sans padding horizontal */
+  #assistant-ia.section.visible { padding: 0; max-width: none; }
+
+  /* ===== TABS ===== */
+  .tabs {
+    display: flex; gap: 4px; margin-bottom: 20px;
+    overflow-x: auto; padding-bottom: 2px;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    padding: 7px 14px; border-radius: 8px;
+    font-size: 13px; cursor: pointer;
+    border: 1px solid var(--border);
+    color: var(--text-muted); background: var(--surface);
+    white-space: nowrap; transition: all 0.15s;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .tab:hover { color: var(--text); border-color: var(--border-strong); }
+  .tab.active { background: var(--green); color: #fff; border-color: var(--green); }
+  .tab-badge {
+    background: var(--red); color: #fff;
+    font-size: 10px; padding: 1px 5px;
+    border-radius: 10px; font-weight: 600;
+    min-width: 16px; text-align: center;
+  }
+  .tab.active .tab-badge { background: rgba(255,255,255,0.3); }
+  /* Tab IA spécial */
+  .tab.tab-ia {
+    background: linear-gradient(135deg, #1a2240, #1e2a45);
+    border-color: #2a3a60;
+    color: #7eb3ff;
+  }
+  .tab.tab-ia:hover { background: linear-gradient(135deg, #1e2a48, #22304e); color: #a0c4ff; }
+  .tab.tab-ia.active { background: linear-gradient(135deg, #3d7fff, #6b5fff); color: #fff; border-color: #3d7fff; }
+
+  /* ===== SECTIONS ===== */
+  .section { display: none; }
+  .section.visible { display: block; }
+
+  /* ===== KPI GRID ===== */
+  .kpis {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px; margin-bottom: 20px;
+  }
+  .kpi {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 16px 18px;
+  }
+  .kpi-label { font-size: 11px; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.4px; }
+  .kpi-val { font-size: 26px; font-weight: 500; line-height: 1; }
+  .kpi-sub { font-size: 11px; margin-top: 5px; color: var(--text-muted); }
+  .up { color: var(--green); }
+  .down { color: var(--red); }
+  .warn { color: var(--amber); }
+
+  /* ===== GRID 2 ===== */
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+  @media (max-width: 640px) { .grid2 { grid-template-columns: 1fr; } }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+  @media (max-width: 800px) { .grid3 { grid-template-columns: 1fr; } }
+
+  /* ===== CARDS ===== */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 16px 18px;
+    margin-bottom: 16px;
+  }
+  .card:last-child { margin-bottom: 0; }
+  .card-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .card-title {
+    font-size: 11px; font-weight: 600; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .card-action {
+    font-size: 11px; color: var(--green);
+    cursor: pointer; text-decoration: none;
+  }
+
+  /* ===== ROWS ===== */
+  .row {
+    display: flex; align-items: center;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--border);
+    gap: 10px; font-size: 13px;
+  }
+  .row:last-child { border-bottom: none; padding-bottom: 0; }
+  .row-main { flex: 1; min-width: 0; }
+  .row-name { color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .row-sub { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+  .row-time { font-size: 11px; color: var(--text-faint); white-space: nowrap; }
+
+  /* ===== DOT ===== */
+  .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .dot-red { background: var(--red); }
+  .dot-amber { background: var(--amber); }
+  .dot-green { background: var(--green); }
+  .dot-blue { background: var(--blue); }
+  .dot-gray { background: var(--gray); }
+
+  /* ===== BADGES ===== */
+  .badge { font-size: 11px; padding: 2px 8px; border-radius: 20px; white-space: nowrap; font-weight: 500; }
+  .badge-red { background: var(--red-light); color: var(--red); }
+  .badge-amber { background: var(--amber-light); color: var(--amber); }
+  .badge-green { background: var(--green-light); color: var(--green-dark); }
+  .badge-blue { background: var(--blue-light); color: var(--blue); }
+  .badge-gray { background: #f1efe8; color: var(--gray); }
+
+  /* ===== MAIL TABLE ===== */
+  .mail-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .mail-table th {
+    font-size: 11px; color: var(--text-muted); font-weight: 500; padding: 6px 8px;
+    border-bottom: 1px solid var(--border); text-align: left;
+    text-transform: uppercase; letter-spacing: 0.3px;
+  }
+  .mail-table td { padding: 10px 8px; border-bottom: 1px solid var(--border); }
+  .mail-table tr:last-child td { border-bottom: none; }
+  .mail-table tr:hover td { background: var(--bg); }
+
+  /* ===== EMPTY STATE ===== */
+  .empty { text-align: center; padding: 32px 16px; color: var(--text-muted); font-size: 13px; }
+  .empty-icon { font-size: 28px; margin-bottom: 8px; opacity: 0.4; }
+
+  /* ===== SPINNER ===== */
+  .spinner {
+    display: inline-block; width: 14px; height: 14px;
+    border: 2px solid var(--border); border-top-color: var(--green);
+    border-radius: 50%; animation: spin 0.8s linear infinite;
+    vertical-align: middle; margin-right: 6px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-msg { color: var(--text-muted); font-size: 13px; padding: 16px 0; }
+  .last-update { font-size: 11px; color: var(--text-faint); }
+
+  /* ===================================================================
+     ASSISTANT IA — STYLES (dark, intégré dans la page)
+  =================================================================== */
+  #assistant-ia.section.visible {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 52px - 20px - 42px); /* topbar + padding + tabs */
+    margin: 0 -24px;
+    overflow: hidden;
+    background: var(--ia-bg);
+    border-radius: 0;
+  }
+
+  .ia-wrap {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    font-family: 'DM Sans', -apple-system, system-ui, sans-serif;
+  }
+
+  /* Sidebar IA */
+  .ia-sidebar {
+    width: 260px; min-width: 260px;
+    background: #131726;
+    border-right: 1px solid var(--ia-border);
+    display: flex; flex-direction: column;
+    overflow-y: auto;
+  }
+  .ia-sidebar-section { padding: 14px 12px; border-bottom: 1px solid var(--ia-border); }
+  .ia-sidebar-title {
+    font-size: 0.62rem; font-weight: 600; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--ia-text3);
+    margin-bottom: 8px; padding: 0 4px;
+  }
+  .ia-search-box { position: relative; margin-bottom: 8px; }
+  .ia-search-box input {
+    width: 100%; background: var(--ia-surface2);
+    border: 1px solid var(--ia-border); border-radius: 8px;
+    padding: 8px 12px 8px 32px; color: var(--ia-text);
+    font-size: 0.8rem; outline: none;
+    transition: border-color .15s;
+  }
+  .ia-search-box input:focus { border-color: var(--ia-accent); }
+  .ia-search-icon {
+    position: absolute; left: 10px; top: 50%;
+    transform: translateY(-50%); color: var(--ia-text3); font-size: 0.85rem;
+  }
+  .ia-search-results {
+    background: var(--ia-surface2); border: 1px solid var(--ia-border);
+    border-radius: 8px; overflow: hidden; max-height: 180px; overflow-y: auto;
+  }
+  .ia-sr-item {
+    padding: 8px 12px; font-size: 0.77rem; color: var(--ia-text2);
+    border-bottom: 1px solid var(--ia-border); cursor: pointer;
+    transition: background .1s; display: flex; flex-direction: column; gap: 1px;
+  }
+  .ia-sr-item:hover { background: var(--ia-border); color: var(--ia-text); }
+  .ia-sr-item:last-child { border-bottom: none; }
+  .ia-sr-item strong { color: var(--ia-text); font-size: 0.8rem; }
+  .ia-sr-item span { color: var(--ia-text3); font-size: 0.7rem; }
+  .ia-quick-btn {
+    width: 100%; background: var(--ia-surface2);
+    border: 1px solid var(--ia-border); border-radius: 8px;
+    padding: 9px 11px; color: var(--ia-text2);
+    font-size: 0.8rem; text-align: left; cursor: pointer;
+    margin-bottom: 5px; transition: all .15s;
+    display: flex; align-items: center; gap: 7px;
+  }
+  .ia-quick-btn:hover { background: var(--ia-border); color: var(--ia-text); border-color: var(--ia-accent); }
+
+  /* Main chat */
+  .ia-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: var(--ia-bg); }
+
+  /* Inner tabs */
+  .ia-tabs {
+    display: flex; background: #131726;
+    border-bottom: 1px solid var(--ia-border); padding: 0 14px; flex-shrink: 0;
+  }
+  .ia-tab {
+    padding: 12px 16px; font-size: 0.8rem; font-weight: 500;
+    color: var(--ia-text3); cursor: pointer;
+    border-bottom: 2px solid transparent; transition: all .15s;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .ia-tab.active { color: var(--ia-accent); border-bottom-color: var(--ia-accent); }
+  .ia-tab:hover:not(.active) { color: var(--ia-text2); }
+
+  /* Tab panels */
+  .ia-panel { display: none; flex: 1; flex-direction: column; overflow: hidden; }
+  .ia-panel.active { display: flex; }
+
+  /* Messages */
+  .ia-messages {
+    flex: 1; overflow-y: auto; padding: 20px 24px;
+    display: flex; flex-direction: column; gap: 18px;
+  }
+  .ia-msg { display: flex; gap: 11px; animation: iaFadeUp .3s ease; }
+  @keyframes iaFadeUp { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+  .ia-msg.user { flex-direction: row-reverse; }
+  .ia-msg-avatar {
+    width: 32px; height: 32px; border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.95rem; flex-shrink: 0;
+  }
+  .ia-msg.user .ia-msg-avatar { background: linear-gradient(135deg,#3d7fff,#6b5fff); }
+  .ia-msg.ai .ia-msg-avatar { background: linear-gradient(135deg,#00d4aa,#00a882); }
+  .ia-msg-bubble {
+    max-width: 72%; padding: 11px 15px; border-radius: 12px;
+    font-size: 0.86rem; line-height: 1.6;
+  }
+  .ia-msg.user .ia-msg-bubble {
+    background: linear-gradient(135deg,rgba(61,127,255,.2),rgba(107,95,255,.15));
+    border: 1px solid rgba(61,127,255,.3); border-top-right-radius: 4px;
+    color: var(--ia-text); text-align: right;
+  }
+  .ia-msg.ai .ia-msg-bubble {
+    background: var(--ia-surface2); border: 1px solid var(--ia-border);
+    border-top-left-radius: 4px; color: var(--ia-text);
+  }
+  .ia-msg-time { font-size: 0.67rem; color: var(--ia-text3); margin-top: 3px; text-align: right; }
+  .ia-msg.ai .ia-msg-time { text-align: left; }
+
+  .ia-result-card {
+    background: var(--ia-bg); border: 1px solid var(--ia-border);
+    border-radius: 8px; padding: 11px; margin-top: 9px; font-size: 0.8rem;
+  }
+  .ia-result-card .ia-rc-title {
+    font-weight: 600; color: var(--ia-accent2); margin-bottom: 7px;
+    font-size: 0.73rem; text-transform: uppercase; letter-spacing: .05em;
+  }
+  .ia-result-row {
+    display: flex; justify-content: space-between;
+    padding: 4px 0; border-bottom: 1px solid var(--ia-border); color: var(--ia-text2);
+  }
+  .ia-result-row:last-child { border-bottom: none; }
+  .ia-result-row strong { color: var(--ia-text); }
+  .ia-result-actions { margin-top: 9px; display: flex; gap: 7px; flex-wrap: wrap; }
+
+  .ia-chat-btn {
+    background: transparent; border: 1px solid var(--ia-accent);
+    color: var(--ia-accent); border-radius: 6px; padding: 5px 11px;
+    font-size: 0.76rem; cursor: pointer; transition: all .15s;
+  }
+  .ia-chat-btn:hover { background: var(--ia-accent); color: white; }
+  .ia-chat-btn.success { border-color: var(--ia-accent2); color: var(--ia-accent2); }
+  .ia-chat-btn.success:hover { background: var(--ia-accent2); color: white; }
+
+  /* Typing */
+  .ia-typing { display: flex; gap: 4px; align-items: center; padding: 12px 15px; }
+  .ia-typing span {
+    width: 6px; height: 6px; background: var(--ia-text3);
+    border-radius: 50%; animation: iaBounce 1.2s ease infinite;
+  }
+  .ia-typing span:nth-child(2) { animation-delay: .2s; }
+  .ia-typing span:nth-child(3) { animation-delay: .4s; }
+  @keyframes iaBounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-5px)} }
+
+  /* Input zone */
+  .ia-input-zone {
+    padding: 14px 20px; background: #131726;
+    border-top: 1px solid var(--ia-border); flex-shrink: 0;
+  }
+  .ia-hints { display: flex; gap: 5px; margin-bottom: 8px; flex-wrap: wrap; }
+  .ia-hint {
+    background: var(--ia-surface2); border: 1px solid var(--ia-border);
+    color: var(--ia-text3); border-radius: 20px; padding: 3px 9px;
+    font-size: 0.7rem; cursor: pointer; transition: all .15s; white-space: nowrap;
+  }
+  .ia-hint:hover { border-color: var(--ia-accent); color: var(--ia-accent); }
+  .ia-input-row { display: flex; gap: 9px; align-items: flex-end; }
+  .ia-input-wrapper {
+    flex: 1; background: var(--ia-surface2); border: 1px solid var(--ia-border);
+    border-radius: 11px; padding: 9px 13px;
+    display: flex; align-items: flex-end; gap: 7px; transition: border-color .15s;
+  }
+  .ia-input-wrapper:focus-within { border-color: var(--ia-accent); }
+  .ia-textarea {
+    flex: 1; background: transparent; border: none; outline: none;
+    color: var(--ia-text); font-size: 0.86rem; resize: none;
+    max-height: 110px; line-height: 1.5;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  }
+  .ia-textarea::placeholder { color: var(--ia-text3); }
+  .ia-send-btn {
+    width: 38px; height: 38px; background: linear-gradient(135deg,#3d7fff,#6b5fff);
+    border: none; border-radius: 9px; color: white; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.9rem; transition: all .15s; flex-shrink: 0;
+  }
+  .ia-send-btn:hover { transform: scale(1.05); }
+  .ia-send-btn:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+
+  /* Interventions panel */
+  .ia-scroll { flex: 1; overflow-y: auto; padding: 20px; }
+  .ia-panel-header {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;
+  }
+  .ia-panel-title { font-size: 1.1rem; font-weight: 600; color: var(--ia-text); }
+  .ia-btn-primary {
+    background: linear-gradient(135deg,#3d7fff,#6b5fff); color: white; border: none;
+    border-radius: 8px; padding: 8px 16px;
+    font-size: 0.82rem; font-weight: 500; cursor: pointer;
+    display: flex; align-items: center; gap: 5px; transition: all .15s;
+  }
+  .ia-btn-primary:hover { opacity: .9; transform: translateY(-1px); }
+
+  /* Form */
+  .ia-form-card {
+    background: var(--ia-surface2); border: 1px solid var(--ia-border);
+    border-radius: 12px; padding: 18px; margin-bottom: 18px; animation: iaFadeUp .25s ease;
+  }
+  .ia-form-title { font-weight: 600; color: var(--ia-text); margin-bottom: 14px; font-size: 0.92rem; }
+  .ia-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
+  .ia-form-group { display: flex; flex-direction: column; gap: 4px; }
+  .ia-form-group.full { grid-column: 1 / -1; }
+  .ia-form-label {
+    font-size: 0.7rem; font-weight: 600; color: var(--ia-text3);
+    text-transform: uppercase; letter-spacing: .05em;
+  }
+  .ia-form-ctrl {
+    background: var(--ia-bg); border: 1px solid var(--ia-border);
+    border-radius: 8px; padding: 8px 11px; color: var(--ia-text);
+    font-size: 0.82rem; outline: none; transition: border-color .15s; width: 100%;
+    font-family: inherit;
+  }
+  .ia-form-ctrl:focus { border-color: var(--ia-accent); }
+  .ia-form-ctrl option { background: var(--ia-surface); }
+  .ia-form-actions { display: flex; gap: 9px; margin-top: 14px; justify-content: flex-end; }
+  .ia-btn-sec {
+    background: transparent; border: 1px solid var(--ia-border); color: var(--ia-text2);
+    border-radius: 8px; padding: 7px 14px; font-size: 0.82rem; cursor: pointer; transition: all .15s;
+  }
+  .ia-btn-sec:hover { border-color: var(--ia-text2); color: var(--ia-text); }
+
+  /* Intervention cards */
+  .ia-int-list { display: flex; flex-direction: column; gap: 9px; }
+  .ia-int-card {
+    background: var(--ia-surface2); border: 1px solid var(--ia-border);
+    border-radius: 11px; padding: 13px 15px;
+    display: flex; gap: 13px; align-items: flex-start; transition: border-color .15s;
+  }
+  .ia-int-card:hover { border-color: var(--ia-accent); }
+  .ia-int-badge { padding: 2px 9px; border-radius: 20px; font-size: 0.68rem; font-weight: 600; white-space: nowrap; flex-shrink: 0; }
+  .ia-badge-ouvert { background: rgba(61,127,255,.15); color: #3d7fff; border: 1px solid rgba(61,127,255,.3); }
+  .ia-badge-cours { background: rgba(240,192,64,.15); color: #f0c040; border: 1px solid rgba(240,192,64,.3); }
+  .ia-badge-clos { background: rgba(0,212,170,.15); color: #00d4aa; border: 1px solid rgba(0,212,170,.3); }
+  .ia-int-info { flex: 1; }
+  .ia-int-titre { font-weight: 600; font-size: 0.86rem; color: var(--ia-text); margin-bottom: 4px; }
+  .ia-int-meta { font-size: 0.73rem; color: var(--ia-text3); display: flex; gap: 11px; flex-wrap: wrap; }
+
+  /* Journal */
+  .ia-j-entry {
+    display: flex; gap: 13px; padding: 11px 0;
+    border-bottom: 1px solid var(--ia-border);
+  }
+  .ia-j-dot { width: 9px; height: 9px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+  .ia-jd-blue { background: #3d7fff; }
+  .ia-jd-green { background: #00d4aa; }
+  .ia-jd-orange { background: #ff6b35; }
+  .ia-jd-gold { background: #f0c040; }
+  .ia-j-content { flex: 1; }
+  .ia-j-action { font-size: 0.82rem; color: var(--ia-text); margin-bottom: 1px; }
+  .ia-j-meta { font-size: 0.7rem; color: var(--ia-text3); }
+
+  /* Modal */
+  .ia-modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,.75);
+    display: none; align-items: center; justify-content: center; z-index: 9999;
+  }
+  .ia-modal-overlay.open { display: flex; }
+  .ia-modal {
+    background: #131726; border: 1px solid var(--ia-border);
+    border-radius: 15px; padding: 22px; max-width: 480px; width: 90%;
+    animation: iaFadeUp .2s ease; color: var(--ia-text);
+  }
+  .ia-modal-title { font-size: 1.05rem; font-weight: 600; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .ia-modal-body { font-size: 0.84rem; line-height: 1.7; color: var(--ia-text2); }
+  .ia-modal-actions { display: flex; gap: 9px; margin-top: 18px; justify-content: flex-end; }
+
+  /* Scrollbar IA zone */
+  .ia-messages::-webkit-scrollbar,
+  .ia-scroll::-webkit-scrollbar,
+  .ia-sidebar::-webkit-scrollbar { width: 4px; }
+  .ia-messages::-webkit-scrollbar-track,
+  .ia-scroll::-webkit-scrollbar-track,
+  .ia-sidebar::-webkit-scrollbar-track { background: transparent; }
+  .ia-messages::-webkit-scrollbar-thumb,
+  .ia-scroll::-webkit-scrollbar-thumb,
+  .ia-sidebar::-webkit-scrollbar-thumb { background: var(--ia-border); border-radius: 10px; }
+
+  @media (max-width: 700px) {
+    .ia-sidebar { display: none; }
+    .ia-form-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <span class="logo">ICA</span>
+    <span class="topbar-title">Dashboard de contrôle</span>
+  </div>
+  <div class="topbar-right">
+    <span class="last-update" id="lastUpdate">—</span>
+    <span class="live-badge"><span class="live-dot"></span>Supabase live</span>
+    <button class="refresh-btn" onclick="loadAll()">↻ Actualiser</button>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- TABS -->
+  <div class="tabs" id="tabBar">
+    <div class="tab active" data-tab="global">Vue globale</div>
+    <div class="tab" data-tab="syndic">Syndic <span class="tab-badge" id="badge-syndic" style="display:none">0</span></div>
+    <div class="tab" data-tab="mails">Mails IA <span class="tab-badge" id="badge-mails" style="display:none">0</span></div>
+    <div class="tab" data-tab="alertes">Alertes <span class="tab-badge" id="badge-alertes" style="display:none">0</span></div>
+    <div class="tab" data-tab="ia-workflows">IA & Workflows</div>
+    <div class="tab tab-ia" data-tab="assistant-ia">🤖 Assistant IA</div>
+    <div class="tab" onclick="window.open('module8_commissions.html?mode=direction','_blank')" style="cursor:pointer">💰 Commissions ↗</div>
+    <div class="tab" onclick="window.open('module9_conformite.html','_blank')" style="cursor:pointer">🛡️ Conformité ↗</div>
+  </div>
+
+  <!-- ===== VUE GLOBALE ===== -->
+  <div id="global" class="section visible">
+    <div id="acces-rapides" style="display:none;margin-bottom:20px">
+      <div style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">Accès rapides — Direction</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <a href="module8_commissions.html?mode=direction" target="_blank" style="text-decoration:none">
+          <div style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:12px 18px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:box-shadow 0.15s" onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)'" onmouseout="this.style.boxShadow=''">
+            <span style="font-size:20px">💰</span>
+            <div><div style="font-size:13px;font-weight:500">Commissions</div><div style="font-size:11px;color:var(--text-muted)">Module 8</div></div>
+            <span style="font-size:11px;color:var(--text-muted);margin-left:4px">↗</span>
+          </div>
+        </a>
+        <a href="module9_conformite.html" target="_blank" style="text-decoration:none">
+          <div style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:12px 18px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:box-shadow 0.15s" onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)'" onmouseout="this.style.boxShadow=''">
+            <span style="font-size:20px">🛡️</span>
+            <div><div style="font-size:13px;font-weight:500">Conformité RSAC/CCI</div><div style="font-size:11px;color:var(--text-muted)">Module 9</div></div>
+            <span style="font-size:11px;color:var(--text-muted);margin-left:4px">↗</span>
+          </div>
+        </a>
+        <a href="module8_commissions.html" target="_blank" style="text-decoration:none">
+          <div style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:12px 18px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:box-shadow 0.15s" onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)'" onmouseout="this.style.boxShadow=''">
+            <span style="font-size:20px">👤</span>
+            <div><div style="font-size:13px;font-weight:500">Espace commerciale</div><div style="font-size:11px;color:var(--text-muted)">Commissions — accès sécurisé</div></div>
+            <span style="font-size:11px;color:var(--text-muted);margin-left:4px">↗</span>
+          </div>
+        </a>
+        <a href="cloture_intervention.html?ref=INT-2026-DEMO" target="_blank" style="text-decoration:none">
+          <div style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:12px 18px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:box-shadow 0.15s" onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)'" onmouseout="this.style.boxShadow=''">
+            <span style="font-size:20px">🔧</span>
+            <div><div style="font-size:13px;font-weight:500">Clôture intervention</div><div style="font-size:11px;color:var(--text-muted)">Module 2B — prestataire</div></div>
+            <span style="font-size:11px;color:var(--text-muted);margin-left:4px">↗</span>
+          </div>
+        </a>
+        <!-- NOUVEAU — accès rapide Assistant IA -->
+        <div onclick="switchTab('assistant-ia')" style="background:linear-gradient(135deg,#1a2240,#1e2a45);border:1px solid #2a3a60;border-radius:10px;padding:12px 18px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:box-shadow 0.15s" onmouseover="this.style.boxShadow='0 2px 12px rgba(61,127,255,0.3)'" onmouseout="this.style.boxShadow=''">
+          <span style="font-size:20px">🤖</span>
+          <div><div style="font-size:13px;font-weight:500;color:#7eb3ff">Assistant IA</div><div style="font-size:11px;color:#4e5878">Recherche · Interventions · Journal</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="kpis" id="kpis-global">
+      <div class="kpi"><div class="kpi-label">Mails traités</div><div class="kpi-val" id="kpi-mails-total">—</div><div class="kpi-sub">Total base</div></div>
+      <div class="kpi"><div class="kpi-label">Mails aujourd'hui</div><div class="kpi-val" id="kpi-mails-today">—</div><div class="kpi-sub">24 dernières heures</div></div>
+      <div class="kpi"><div class="kpi-label">Brouillons en attente</div><div class="kpi-val warn" id="kpi-brouillons">—</div><div class="kpi-sub">À valider</div></div>
+      <div class="kpi"><div class="kpi-label">Alertes actives</div><div class="kpi-val down" id="kpi-alertes">—</div><div class="kpi-sub">Non lues</div></div>
+      <div class="kpi"><div class="kpi-label">Urgences</div><div class="kpi-val down" id="kpi-urgences">—</div><div class="kpi-sub">Niveau critique</div></div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Derniers mails reçus</div>
+          <span class="card-action" onclick="switchTab('mails')">Voir tout →</span>
+        </div>
+        <div id="list-mails-recent"><div class="loading-msg"><span class="spinner"></span>Chargement...</div></div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Alertes récentes</div>
+          <span class="card-action" onclick="switchTab('alertes')">Voir tout →</span>
+        </div>
+        <div id="list-alertes-recent"><div class="loading-msg"><span class="spinner"></span>Chargement...</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><div class="card-title">Répartition par catégorie (mails traités)</div></div>
+      <div id="chart-cats" style="display:flex;gap:8px;flex-wrap:wrap;"></div>
+    </div>
+  </div>
+
+  <!-- ===== MAILS ===== -->
+  <div id="mails" class="section">
+    <div class="kpis">
+      <div class="kpi"><div class="kpi-label">Total traités</div><div class="kpi-val" id="m-total">—</div></div>
+      <div class="kpi"><div class="kpi-label">Aujourd'hui</div><div class="kpi-val" id="m-today">—</div></div>
+      <div class="kpi"><div class="kpi-label">Brouillons</div><div class="kpi-val warn" id="m-brouillons">—</div></div>
+      <div class="kpi"><div class="kpi-label">Critiques</div><div class="kpi-val down" id="m-critiques">—</div></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">Journal des mails traités par l'IA</div></div>
+      <div style="overflow-x:auto;">
+        <table class="mail-table">
+          <thead><tr><th>Date</th><th>Expéditeur</th><th>Sujet</th><th>Catégorie</th><th>Urgence</th><th>Statut</th></tr></thead>
+          <tbody id="mails-tbody"><tr><td colspan="6" class="loading-msg"><span class="spinner"></span>Chargement...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SYNDIC ===== -->
+  <div id="syndic" class="section">
+    <div class="kpis">
+      <div class="kpi"><div class="kpi-label">Copropriétés</div><div class="kpi-val" id="s-copros">—</div></div>
+      <div class="kpi"><div class="kpi-label">Mails syndic</div><div class="kpi-val" id="s-mails">—</div></div>
+      <div class="kpi"><div class="kpi-label">Urgences syndic</div><div class="kpi-val down" id="s-urgences">—</div></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">Mails syndic récents</div></div>
+      <div id="syndic-mails-list"><div class="loading-msg"><span class="spinner"></span>Chargement...</div></div>
+    </div>
+  </div>
+
+  <!-- ===== ALERTES ===== -->
+  <div id="alertes" class="section">
+    <div class="kpis">
+      <div class="kpi"><div class="kpi-label">Total alertes</div><div class="kpi-val" id="a-total">—</div></div>
+      <div class="kpi"><div class="kpi-label">Non lues</div><div class="kpi-val down" id="a-nonlues">—</div></div>
+      <div class="kpi"><div class="kpi-label">Critiques</div><div class="kpi-val down" id="a-critiques">—</div></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">Toutes les alertes</div></div>
+      <div id="alertes-list"><div class="loading-msg"><span class="spinner"></span>Chargement...</div></div>
+    </div>
+  </div>
+
+  <!-- ===== IA & WORKFLOWS ===== -->
+  <div id="ia-workflows" class="section">
+    <div class="kpis">
+      <div class="kpi"><div class="kpi-label">Mails traités IA</div><div class="kpi-val" id="ia-total">—</div><div class="kpi-sub">Depuis le début</div></div>
+      <div class="kpi"><div class="kpi-label">Mode actuel</div><div class="kpi-val" style="font-size:16px;color:var(--amber)">Vase clos</div><div class="kpi-sub">100% brouillon</div></div>
+      <div class="kpi"><div class="kpi-label">Taux traitement</div><div class="kpi-val up" id="ia-taux">—</div><div class="kpi-sub">Mails avec réponse IA</div></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">Workflows n8n — Statut</div></div>
+      <div class="row"><span class="dot dot-green"></span><div class="row-main"><div class="row-name">IA Mail — Traitement mails entrants</div><div class="row-sub">syndic@immoconseil-gpe.com · Trigger actif</div></div><span class="badge badge-green">Actif</span></div>
+      <div class="row"><span class="dot dot-amber"></span><div class="row-main"><div class="row-name">Module 2B — Cycle prestataires</div><div class="row-sub">À déployer</div></div><span class="badge badge-amber">En attente</span></div>
+      <div class="row"><span class="dot dot-green"></span><div class="row-main"><div class="row-name">Lookup Estale — Copropriétaires</div><div class="row-sub">API GraphQL · Temps réel</div></div><span class="badge badge-green">Actif</span></div>
+      <div class="row"><span class="dot dot-amber"></span><div class="row-main"><div class="row-name">Mark as read</div><div class="row-sub">Désactivé en mode vase clos</div></div><span class="badge badge-amber">Désactivé</span></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">Dernières exécutions</div></div>
+      <div id="ia-executions"><div class="loading-msg"><span class="spinner"></span>Chargement depuis Supabase...</div></div>
+    </div>
+  </div>
+
+  <!-- ===== ASSISTANT IA ===== -->
+  <div id="assistant-ia" class="section">
+    <div class="ia-wrap">
+
+      <!-- Sidebar -->
+      <div class="ia-sidebar">
+        <div class="ia-sidebar-section">
+          <div class="ia-sidebar-title">🔍 Recherche rapide</div>
+          <div class="ia-search-box">
+            <span class="ia-search-icon">⌕</span>
+            <input type="text" id="iaSearchInput" placeholder="Copropriété, contact…" oninput="iaHandleSearch(this.value)">
+          </div>
+          <div class="ia-search-results" id="iaSearchResults" style="display:none"></div>
+        </div>
+        <div class="ia-sidebar-section">
+          <div class="ia-sidebar-title">⚡ Questions fréquentes</div>
+          <button class="ia-quick-btn" onclick="iaSendQuick('Liste les interventions en cours sur toutes les copropriétés')">🏢 Interventions ouvertes</button>
+          <button class="ia-quick-btn" onclick="iaSendQuick('Quels commerciaux ont des documents de conformité à renouveler ?')">📋 Conformité à renouveler</button>
+          <button class="ia-quick-btn" onclick="iaSendQuick('Montre-moi les lots vacants depuis plus de 60 jours')">🔑 Lots vacants</button>
+          <button class="ia-quick-btn" onclick="iaSendQuick('Quelles sont les commissions en attente de paiement ?')">💰 Commissions dues</button>
+          <button class="ia-quick-btn" onclick="iaSendQuick('Donne-moi la liste des prestataires enregistrés')">🔧 Prestataires</button>
+        </div>
+        <div class="ia-sidebar-section">
+          <div class="ia-sidebar-title">🚀 Actions rapides</div>
+          <button class="ia-quick-btn" onclick="iaShowTab('interventions');iaShowNewForm()">➕ Nouvelle intervention</button>
+          <button class="ia-quick-btn" onclick="iaSendQuick('Génère un rapport d\'activité pour ce mois')">📊 Rapport mensuel</button>
+        </div>
+      </div>
+
+      <!-- Main -->
+      <div class="ia-main">
+        <!-- Inner tabs -->
+        <div class="ia-tabs">
+          <div class="ia-tab active" onclick="iaShowTab('chat')" id="ia-tab-chat">💬 Chat IA</div>
+          <div class="ia-tab" onclick="iaShowTab('interventions')" id="ia-tab-interventions">🔧 Interventions</div>
+          <div class="ia-tab" onclick="iaShowTab('journal')" id="ia-tab-journal">📋 Journal</div>
+        </div>
+
+        <!-- CHAT PANEL -->
+        <div class="ia-panel active" id="ia-panel-chat">
+          <div class="ia-messages" id="iaMessages">
+            <div class="ia-msg ai">
+              <div class="ia-msg-avatar">🤖</div>
+              <div>
+                <div class="ia-msg-bubble">
+                  Bonjour ! Je suis connecté à votre base Supabase.<br><br>
+                  Je peux rechercher vos données, répondre à vos questions terrain et créer des interventions prestataires.
+                  <div class="ia-result-card" style="margin-top:10px">
+                    <div class="ia-result-row"><strong>🔍 Rechercher</strong> <span>Contacts, lots, copropriétés</span></div>
+                    <div class="ia-result-row"><strong>📊 Analyser</strong> <span>Charges, budgets, commissions</span></div>
+                    <div class="ia-result-row"><strong>🔧 Créer</strong> <span>Intervention, mission prestataire</span></div>
+                    <div class="ia-result-row"><strong>📋 Journaliser</strong> <span>Activité par résidence</span></div>
+                  </div>
+                </div>
+                <div class="ia-msg-time">Maintenant</div>
+              </div>
+            </div>
+          </div>
+          <div class="ia-input-zone">
+            <div class="ia-hints">
+              <span class="ia-hint" onclick="iaSendQuick('Charges de [copropriétaire] à [résidence] ?')">💶 Charges</span>
+              <span class="ia-hint" onclick="iaSendQuick('Budget contrat espaces verts résidence [nom] ?')">🌿 Budget espaces verts</span>
+              <span class="ia-hint" onclick="iaSendQuick('Résolutions votées en AG pour [résidence] ?')">🗳️ Résolutions AG</span>
+              <span class="ia-hint" onclick="iaSendQuick('Créer une intervention à [résidence] pour [prestataire]')">📨 Mission prestataire</span>
+            </div>
+            <div class="ia-input-row">
+              <div class="ia-input-wrapper">
+                <textarea class="ia-textarea" id="iaChatInput" rows="1"
+                  placeholder="Posez votre question… ex: Charges de M. Dupont aux Flamboyants ?"
+                  onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();iaSendMessage()}"
+                  oninput="iaAutoResize(this)"></textarea>
+              </div>
+              <button class="ia-send-btn" id="iaSendBtn" onclick="iaSendMessage()">➤</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- INTERVENTIONS PANEL -->
+        <div class="ia-panel" id="ia-panel-interventions">
+          <div class="ia-scroll">
+            <div class="ia-panel-header">
+              <div class="ia-panel-title">Interventions prestataires</div>
+              <button class="ia-btn-primary" onclick="iaShowNewForm()">➕ Nouvelle intervention</button>
+            </div>
+            <div id="iaNewForm" style="display:none">
+              <div class="ia-form-card">
+                <div class="ia-form-title">📋 Créer une intervention</div>
+                <div class="ia-form-grid">
+                  <div class="ia-form-group">
+                    <label class="ia-form-label">Résidence</label>
+                    <select class="ia-form-ctrl" id="iFiRes"><option value="">-- Sélectionner --</option></select>
+                  </div>
+                  <div class="ia-form-group">
+                    <label class="ia-form-label">Type d'intervention</label>
+                    <select class="ia-form-ctrl" id="iFiType">
+                      <option value="">-- Sélectionner --</option>
+                      <option>Plomberie</option><option>Électricité</option>
+                      <option>Espaces verts</option><option>Nettoyage parties communes</option>
+                      <option>Ascenseur</option><option>Toiture / Étanchéité</option>
+                      <option>Peinture</option><option>Vitrerie</option><option>Divers</option>
+                    </select>
+                  </div>
+                  <div class="ia-form-group full">
+                    <label class="ia-form-label">Description</label>
+                    <textarea class="ia-form-ctrl" id="iFiDesc" rows="3" placeholder="Ex: Fuite au local vélo, tuyau à remplacer…"></textarea>
+                  </div>
+                  <div class="ia-form-group">
+                    <label class="ia-form-label">Prestataire</label>
+                    <input type="text" class="ia-form-ctrl" id="iFiPrest" placeholder="Nom ou entreprise">
+                  </div>
+                  <div class="ia-form-group">
+                    <label class="ia-form-label">Email prestataire</label>
+                    <input type="email" class="ia-form-ctrl" id="iFiEmail" placeholder="contact@prestataire.fr">
+                  </div>
+                  <div class="ia-form-group">
+                    <label class="ia-form-label">Urgence</label>
+                    <select class="ia-form-ctrl" id="iFiUrg">
+                      <option value="faible">Faible — planifiable</option>
+                      <option value="normal" selected>Normal</option>
+                      <option value="critique">Critique — urgent</option>
+                    </select>
+                  </div>
+                  <div class="ia-form-group">
+                    <label class="ia-form-label">Type de mission</label>
+                    <select class="ia-form-ctrl" id="iFiMission">
+                      <option value="devis">Demande de devis</option>
+                      <option value="intervention">Intervention directe</option>
+                      <option value="constat">Constat / Diagnostic</option>
+                    </select>
+                  </div>
+                  <div class="ia-form-group full">
+                    <label class="ia-form-label">Notes internes</label>
+                    <input type="text" class="ia-form-ctrl" id="iFiNotes" placeholder="Informations supplémentaires">
+                  </div>
+                </div>
+                <div class="ia-form-actions">
+                  <button class="ia-btn-sec" onclick="iaHideForm()">Annuler</button>
+                  <button class="ia-btn-primary" onclick="iaCreateIntervention()">📨 Créer & notifier</button>
+                </div>
+              </div>
+            </div>
+            <div class="ia-int-list" id="iaIntList">
+              <div style="text-align:center;color:var(--ia-text3);padding:30px;font-size:0.83rem">Chargement…</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- JOURNAL PANEL -->
+        <div class="ia-panel" id="ia-panel-journal">
+          <div class="ia-scroll">
+            <div class="ia-panel-header">
+              <div class="ia-panel-title">Journal d'activité</div>
+              <select class="ia-form-ctrl" id="iaJournalFilter" style="width:190px" onchange="iaFilterJournal()">
+                <option value="">Toutes les résidences</option>
+              </select>
+            </div>
+            <div id="iaJournalEntries">
+              <div style="text-align:center;color:var(--ia-text3);padding:30px;font-size:0.83rem">Aucune activité enregistrée.</div>
+            </div>
+          </div>
+        </div>
+      </div><!-- /ia-main -->
+    </div><!-- /ia-wrap -->
+  </div><!-- /assistant-ia section -->
+
+</div><!-- /main -->
+
+<!-- MODAL CONFIRMATION -->
+<div class="ia-modal-overlay" id="iaConfirmModal">
+  <div class="ia-modal">
+    <div class="ia-modal-title">✅ Intervention créée</div>
+    <div class="ia-modal-body" id="iaConfirmText"></div>
+    <div class="ia-modal-actions">
+      <button class="ia-btn-primary" onclick="document.getElementById('iaConfirmModal').classList.remove('open')">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== CONFIG SUPABASE =====
+const SUPABASE_URL = 'https://xdrlgyqxdbdvzrneujgz.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhkcmxneXF4ZGJkdnpybmV1amd6Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NjM1MDE1NywiZXhwIjoyMDkxOTI2MTU3fQ.1gvVPGSBotPXP_U4_-lLGQ0SfG2HdzLNWY9mRUiSd-A';
+const N8N_HOOK = 'https://immo-conseil-antilles.app.n8n.cloud/webhook/intervention-prestataire';
+
+async function supaFetch(table, params = '') {
+  const r = await fetch(`${SUPABASE_URL}/rest/v1/${table}${params}`, {
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': `Bearer ${SUPABASE_KEY}`,
+      'Content-Type': 'application/json',
+      'Prefer': 'count=exact'
+    }
+  });
+  const data = await r.json();
+  const count = r.headers.get('Content-Range')?.split('/')[1] || null;
+  return { data: Array.isArray(data) ? data : [], count: count ? parseInt(count) : 0 };
+}
+
+async function supaPost(table, body) {
+  const r = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
+    method: 'POST',
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': `Bearer ${SUPABASE_KEY}`,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=representation'
+    },
+    body: JSON.stringify(body)
+  });
+  if (!r.ok) throw new Error(await r.text());
+  return r.json();
+}
+
+// ===== HELPERS =====
+function formatDate(iso) {
+  if (!iso) return '—';
+  const d = new Date(iso), now = new Date(), diff = now - d;
+  if (diff < 3600000) return `il y a ${Math.round(diff/60000)} min`;
+  if (diff < 86400000) return d.toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'});
+  return d.toLocaleDateString('fr-FR', {day:'2-digit',month:'2-digit'});
+}
+function urgenceBadge(u) {
+  if (u==='critique') return '<span class="badge badge-red">Critique</span>';
+  if (u==='normal') return '<span class="badge badge-blue">Normal</span>';
+  return '<span class="badge badge-gray">Faible</span>';
+}
+function decisionBadge(d) {
+  if ((d||'').toLowerCase()==='brouillon') return '<span class="badge badge-amber">Brouillon</span>';
+  if ((d||'').toLowerCase()==='auto') return '<span class="badge badge-green">Auto</span>';
+  if ((d||'').toLowerCase()==='escalade') return '<span class="badge badge-red">Escalade</span>';
+  return '<span class="badge badge-gray">—</span>';
+}
+function dotColor(u) { return u==='critique'?'dot-red':u==='normal'?'dot-blue':'dot-gray'; }
+function truncate(s,n) { if(!s) return '—'; return s.length>n?s.substring(0,n)+'…':s; }
+function isToday(iso) {
+  if(!iso) return false;
+  const d=new Date(iso),t=new Date();
+  return d.getDate()===t.getDate()&&d.getMonth()===t.getMonth()&&d.getFullYear()===t.getFullYear();
+}
+
+// ===== TABS (dashboard) =====
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('visible'));
+  const tabEl = document.querySelector(`[data-tab="${name}"]`);
+  if (tabEl) tabEl.classList.add('active');
+  const secEl = document.getElementById(name);
+  if (secEl) secEl.classList.add('visible');
+  if (name === 'assistant-ia') { iaLoadBase(); iaLoadInterventions(); }
+}
+
+document.querySelectorAll('.tab[data-tab]').forEach(tab => {
+  if (!tab.getAttribute('onclick')) {
+    tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+  }
+});
+
+// ===== LOAD ALL (dashboard) =====
+async function loadAll() {
+  document.getElementById('lastUpdate').textContent = '⟳ Actualisation...';
+  try {
+    await Promise.all([loadMails(), loadAlertes()]);
+    document.getElementById('lastUpdate').textContent =
+      'Mis à jour ' + new Date().toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'});
+    document.getElementById('acces-rapides').style.display = 'block';
+  } catch(e) {
+    document.getElementById('lastUpdate').textContent = 'Erreur connexion';
+  }
+}
+
+async function loadMails() {
+  const { data: mails } = await supaFetch('mails_traites', '?select=*&order=created_at.desc&limit=100');
+  const today = mails.filter(m => isToday(m.created_at));
+  const brouillons = mails.filter(m => (m.decision||'').toLowerCase()==='brouillon');
+  const critiques = mails.filter(m => m.urgence==='critique');
+  const avecReponse = mails.filter(m => m.reponse_ia||m.brouillon_genere);
+
+  document.getElementById('kpi-mails-total').textContent = mails.length;
+  document.getElementById('kpi-mails-today').textContent = today.length;
+  document.getElementById('kpi-brouillons').textContent = brouillons.length;
+  document.getElementById('kpi-urgences').textContent = critiques.length;
+  document.getElementById('m-total').textContent = mails.length;
+  document.getElementById('m-today').textContent = today.length;
+  document.getElementById('m-brouillons').textContent = brouillons.length;
+  document.getElementById('m-critiques').textContent = critiques.length;
+  document.getElementById('ia-total').textContent = mails.length;
+  document.getElementById('ia-taux').textContent = mails.length ? Math.round(avecReponse.length/mails.length*100)+'%' : '—';
+
+  if (brouillons.length>0) { const b=document.getElementById('badge-mails'); b.textContent=brouillons.length; b.style.display='inline'; }
+
+  document.getElementById('list-mails-recent').innerHTML = mails.slice(0,5).length ? mails.slice(0,5).map(m=>`
+    <div class="row"><span class="dot ${dotColor(m.urgence)}"></span>
+    <div class="row-main"><div class="row-name">${truncate(m.sujet||m.expediteur_email,40)}</div>
+    <div class="row-sub">${m.expediteur_email||'—'} · ${m.categorie||'NC'}</div></div>
+    ${decisionBadge(m.decision)}<span class="row-time">${formatDate(m.created_at)}</span></div>`).join('')
+    : '<div class="empty"><div class="empty-icon">📭</div>Aucun mail traité</div>';
+
+  document.getElementById('mails-tbody').innerHTML = mails.length ? mails.map(m=>`
+    <tr><td style="white-space:nowrap;color:var(--text-muted)">${formatDate(m.created_at)}</td>
+    <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${m.expediteur_email||'—'}</td>
+    <td style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${truncate(m.sujet,45)||'—'}</td>
+    <td><span class="badge badge-blue">${m.categorie||'—'}</span></td>
+    <td>${urgenceBadge(m.urgence)}</td><td>${decisionBadge(m.decision)}</td></tr>`).join('')
+    : '<tr><td colspan="6" class="empty">Aucun mail</td></tr>';
+
+  const syndicMails = mails.filter(m=>!m.boite||m.boite==='syndic');
+  document.getElementById('s-mails').textContent = syndicMails.length;
+  document.getElementById('s-urgences').textContent = syndicMails.filter(m=>m.urgence==='critique').length;
+  document.getElementById('syndic-mails-list').innerHTML = syndicMails.slice(0,8).length ? syndicMails.slice(0,8).map(m=>`
+    <div class="row"><span class="dot ${dotColor(m.urgence)}"></span>
+    <div class="row-main"><div class="row-name">${truncate(m.sujet,50)||'—'}</div>
+    <div class="row-sub">${m.expediteur_email||'—'}</div></div>
+    ${decisionBadge(m.decision)}<span class="row-time">${formatDate(m.created_at)}</span></div>`).join('')
+    : '<div class="empty"><div class="empty-icon">📭</div>Aucun mail syndic</div>';
+
+  document.getElementById('ia-executions').innerHTML = mails.slice(0,6).length ? mails.slice(0,6).map(m=>`
+    <div class="row"><span class="dot dot-green"></span>
+    <div class="row-main"><div class="row-name">${truncate(m.sujet||'Mail traité',50)}</div>
+    <div class="row-sub">${m.expediteur_email||'—'} · ${m.categorie||'NC'} · ${m.urgence||'normal'}</div></div>
+    ${decisionBadge(m.decision)}<span class="row-time">${formatDate(m.created_at)}</span></div>`).join('')
+    : '<div class="empty">Aucune exécution</div>';
+
+  const cats={};
+  mails.forEach(m=>{const c=m.categorie||'Non catégorisé';cats[c]=(cats[c]||0)+1;});
+  const total=mails.length||1;
+  const colors={'AG':'#185FA5','SINISTRE':'#E24B4A','TRAVAUX':'#BA7517','COMPTABILITE':'#1D9E75','AUTRE':'#888780','Non catégorisé':'#888780'};
+  document.getElementById('chart-cats').innerHTML = Object.entries(cats).length ?
+    Object.entries(cats).sort((a,b)=>b[1]-a[1]).map(([cat,n])=>`
+      <div style="display:flex;align-items:center;gap:8px;background:var(--bg);padding:8px 12px;border-radius:8px">
+        <div style="width:10px;height:10px;border-radius:2px;background:${colors[cat]||'#888'}"></div>
+        <span style="font-size:13px">${cat}</span>
+        <span style="font-size:13px;font-weight:500">${n}</span>
+        <span style="font-size:11px;color:var(--text-muted)">${Math.round(n/total*100)}%</span>
+      </div>`).join('') : '<div class="empty">Données insuffisantes</div>';
+}
+
+async function loadAlertes() {
+  const { data: alertes } = await supaFetch('alertes', '?select=*&order=created_at.desc&limit=50');
+  const nonLues = alertes.filter(a=>!a.lue);
+  const critiques = alertes.filter(a=>a.niveau==='critique');
+  document.getElementById('kpi-alertes').textContent = nonLues.length;
+  document.getElementById('a-total').textContent = alertes.length;
+  document.getElementById('a-nonlues').textContent = nonLues.length;
+  document.getElementById('a-critiques').textContent = critiques.length;
+  if (nonLues.length>0) { const b=document.getElementById('badge-alertes'); b.textContent=nonLues.length; b.style.display='inline'; }
+
+  const renderA = a=>`<div class="row">
+    <span class="dot ${a.niveau==='critique'?'dot-red':a.niveau==='normal'?'dot-amber':'dot-gray'}"></span>
+    <div class="row-main"><div class="row-name">${a.titre||'—'}</div>
+    <div class="row-sub">${truncate(a.message,60)||a.type_alerte||'—'}</div></div>
+    ${urgenceBadge(a.niveau)}<span class="row-time">${formatDate(a.created_at)}</span></div>`;
+
+  document.getElementById('list-alertes-recent').innerHTML = alertes.slice(0,4).length ?
+    alertes.slice(0,4).map(renderA).join('') : '<div class="empty"><div class="empty-icon">🔔</div>Aucune alerte</div>';
+  document.getElementById('alertes-list').innerHTML = alertes.length ? alertes.map(renderA).join('') : '<div class="empty"><div class="empty-icon">🔔</div>Aucune alerte</div>';
+}
+
+document.getElementById('s-copros').textContent = '62';
+
+loadAll();
+setInterval(loadAll, 60000);
+
+// ===================================================================
+// ASSISTANT IA — LOGIQUE
+// ===================================================================
+let iaCopros = [];
+let iaConvHistory = [];
+let iaIsLoading = false;
+let iaJournalEntries = [];
+
+async function iaLoadBase() {
+  if (iaCopros.length > 0) return;
+  try {
+    const { data } = await supaFetch('coproprietes', '?select=id,nom,commune&order=nom');
+    iaCopros = data || [];
+  } catch(e) {
+    iaCopros = [
+      {id:'demo1',nom:'Résidence Les Flamboyants',commune:'Pointe-à-Pitre'},
+      {id:'demo2',nom:'Résidence Le Manguier',commune:'Les Abymes'},
+      {id:'demo3',nom:'Résidence Karukéra',commune:'Baie-Mahault'},
+    ];
+  }
+  // Remplir sélect résidences
+  const sel = document.getElementById('iFiRes');
+  sel.innerHTML = '<option value="">-- Sélectionner --</option>';
+  iaCopros.forEach(c => {
+    const o = document.createElement('option');
+    o.value = c.id; o.textContent = `${c.nom} — ${c.commune||''}`;
+    sel.appendChild(o);
+  });
+  // Journal filter
+  const jf = document.getElementById('iaJournalFilter');
+  jf.innerHTML = '<option value="">Toutes les résidences</option>';
+  iaCopros.forEach(c => {
+    const o = document.createElement('option');
+    o.value = c.id; o.textContent = c.nom; jf.appendChild(o);
+  });
+}
+
+// IA inner tabs
+function iaShowTab(name) {
+  document.querySelectorAll('.ia-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.ia-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('ia-tab-'+name).classList.add('active');
+  document.getElementById('ia-panel-'+name).classList.add('active');
+  if (name==='interventions') iaLoadInterventions();
+  if (name==='journal') iaRenderJournal();
+}
+
+// Recherche rapide
+let iaSearchTimeout;
+function iaHandleSearch(val) {
+  clearTimeout(iaSearchTimeout);
+  const box = document.getElementById('iaSearchResults');
+  if (!val.trim() || val.length < 2) { box.style.display='none'; return; }
+  iaSearchTimeout = setTimeout(() => iaDoSearch(val), 300);
+}
+async function iaDoSearch(q) {
+  const box = document.getElementById('iaSearchResults');
+  const results = [];
+  const lq = q.toLowerCase();
+  iaCopros.filter(c => c.nom?.toLowerCase().includes(lq)||c.commune?.toLowerCase().includes(lq)).slice(0,4)
+    .forEach(c => results.push({icon:'🏢',title:c.nom,sub:c.commune||'',action:()=>{iaSendQuick(`Informations sur la résidence ${c.nom}`);box.style.display='none';}}));
+  try {
+    const { data } = await supaFetch('utilisateurs', `?or=(nom.ilike.*${q}*,prenom.ilike.*${q}*)&select=nom,prenom,profil&limit=3`);
+    (data||[]).forEach(u => results.push({icon:'👤',title:`${u.prenom} ${u.nom}`,sub:u.profil||'',action:()=>{iaSendQuick(`Informations sur ${u.prenom} ${u.nom}`);box.style.display='none';}}));
+  } catch(e){}
+  window._iaSearchActions = results.map(r=>r.action);
+  box.innerHTML = results.length ? results.map((r,i)=>`
+    <div class="ia-sr-item" onclick="_iaSearchActions[${i}]()">
+      <strong>${r.icon} ${r.title}</strong><span>${r.sub}</span>
+    </div>`).join('') : '<div class="ia-sr-item"><span>Aucun résultat</span></div>';
+  box.style.display = 'block';
+}
+
+// Chat
+function iaAutoResize(el) { el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,110)+'px'; }
+
+function iaSendQuick(text) {
+  switchTab('assistant-ia');
+  iaShowTab('chat');
+  document.getElementById('iaChatInput').value = text;
+  iaSendMessage();
+}
+
+function iaAddMsg(role, content) {
+  const c = document.getElementById('iaMessages');
+  const d = document.createElement('div');
+  d.className = 'ia-msg '+(role==='user'?'user':'ai');
+  const time = new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+  d.innerHTML = `<div class="ia-msg-avatar">${role==='user'?'👤':'🤖'}</div>
+    <div><div class="ia-msg-bubble">${content}</div><div class="ia-msg-time">${time}</div></div>`;
+  c.appendChild(d);
+  c.scrollTop = c.scrollHeight;
+}
+
+function iaAddTyping() {
+  const c = document.getElementById('iaMessages');
+  const d = document.createElement('div');
+  d.className='ia-msg ai'; d.id='ia-typing';
+  d.innerHTML=`<div class="ia-msg-avatar">🤖</div><div><div class="ia-msg-bubble"><div class="ia-typing"><span></span><span></span><span></span></div></div></div>`;
+  c.appendChild(d); c.scrollTop=c.scrollHeight;
+}
+function iaRemoveTyping() { const el=document.getElementById('ia-typing'); if(el) el.remove(); }
+
+function iaFormatResponse(text) {
+  return text
+    .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\n- (.*)/g,'<br>• $1')
+    .replace(/\n\n/g,'<br><br>')
+    .replace(/\n/g,'<br>');
+}
+
+async function iaSendMessage() {
+  const input = document.getElementById('iaChatInput');
+  const text = input.value.trim();
+  if (!text || iaIsLoading) return;
+  input.value=''; input.style.height='auto';
+  iaIsLoading=true; document.getElementById('iaSendBtn').disabled=true;
+  iaAddMsg('user', text);
+  iaConvHistory.push({role:'user',content:text});
+  iaAddTyping();
+
+  let dataCtx = `Agence syndic Guadeloupe. Copropriétés gérées (${iaCopros.length}):\n` +
+    iaCopros.slice(0,20).map(c=>`- ${c.nom} (${c.commune})`).join('\n');
+
+  // Enrichir avec Supabase si nom détecté
+  const keywords = text.match(/\b[A-ZÀ-Ü][a-zà-ü]{2,}\b/g)||[];
+  for (const kw of keywords.slice(0,2)) {
+    try {
+      const {data} = await supaFetch('coproprietes',`?nom=ilike.*${kw}*&limit=2`);
+      if (data?.length) dataCtx += `\n\nDétails résidence trouvée: ${JSON.stringify(data[0])}`;
+    } catch(e){}
+  }
+
+  const system = `Tu es l'assistant IA d'Immo Conseil Antilles (ICA), agence immobilière et syndic en Guadeloupe.
+Tu es intégré dans leur dashboard de direction. Réponds en français, de façon concise et professionnelle.
+Contexte base de données: ${dataCtx}
+Si une donnée Estale (budgets, résolutions AG, contrats) n'est pas encore synchronisée dans Supabase, dis-le clairement.
+Si la demande concerne une intervention prestataire, termine ta réponse par [ACTION:INTERVENTION].
+Sois adapté au contexte terrain mobile (réponse courte et directe).`;
+
+  try {
+    const resp = await fetch('/api/chat',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({ system, messages: iaConvHistory })
+    });
+    const data = await resp.json();
+    const reply = data.content?.[0]?.text || 'Désolé, erreur de traitement.';
+    iaRemoveTyping();
+    iaConvHistory.push({role:'assistant',content:reply});
+
+    let display = iaFormatResponse(reply.replace(/\[ACTION:INTERVENTION\]/g,''));
+    let actionHtml = '';
+    if (reply.includes('[ACTION:INTERVENTION]')||text.toLowerCase().includes('intervention')||text.toLowerCase().includes('prestataire')||text.toLowerCase().includes('mission')) {
+      actionHtml = `<div class="ia-result-actions"><button class="ia-chat-btn success" onclick="iaShowTab('interventions');iaShowNewForm()">➕ Créer l'intervention</button></div>`;
+    }
+    iaAddMsg('ai', display + actionHtml);
+    iaAddJournalEntry({icon:'💬',color:'ia-jd-blue',action:`Question IA : ${truncate(text,50)}`,meta:'Claude API · Supabase'});
+  } catch(e) {
+    iaRemoveTyping();
+    iaAddMsg('ai', `⚠️ Erreur API : ${e.message}`);
+  }
+  iaIsLoading=false; document.getElementById('iaSendBtn').disabled=false;
+}
+
+// Interventions
+function iaShowNewForm() { document.getElementById('iaNewForm').style.display='block'; document.getElementById('iaNewForm').scrollIntoView({behavior:'smooth'}); }
+function iaHideForm() { document.getElementById('iaNewForm').style.display='none'; }
+
+async function iaLoadInterventions() {
+  const list = document.getElementById('iaIntList');
+  try {
+    const {data} = await supaFetch('dossiers_interventions','?select=id,titre,statut,urgence,created_at,copropriete_id,prestataire_nom&order=created_at.desc&limit=20');
+    if (!data.length) { list.innerHTML=`<div style="text-align:center;color:var(--ia-text3);padding:30px;font-size:0.82rem">Aucune intervention. Créez-en une ci-dessus.</div>`; return; }
+    list.innerHTML = data.map(d=>{
+      const copro = iaCopros.find(c=>c.id===d.copropriete_id);
+      const bc = d.statut==='ouvert'?'ia-badge-ouvert':d.statut==='en_cours'?'ia-badge-cours':'ia-badge-clos';
+      const urgIcon = d.urgence==='critique'?'🔴':d.urgence==='normal'?'🟡':'🟢';
+      return `<div class="ia-int-card">
+        <span class="ia-int-badge ${bc}">${d.statut}</span>
+        <div class="ia-int-info">
+          <div class="ia-int-titre">${urgIcon} ${d.titre||'Sans titre'}</div>
+          <div class="ia-int-meta">
+            <span>🏢 ${copro?.nom||'Résidence inconnue'}</span>
+            <span>🔧 ${d.prestataire_nom||'Prestataire à définir'}</span>
+            <span>📅 ${new Date(d.created_at).toLocaleDateString('fr-FR')}</span>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  } catch(e) {
+    list.innerHTML=`<div style="text-align:center;color:var(--ia-text3);padding:30px;font-size:0.82rem">Connexion Supabase requise.<br><small>${e.message}</small></div>`;
+  }
+}
+
+async function iaCreateIntervention() {
+  const res_id = document.getElementById('iFiRes').value;
+  const type = document.getElementById('iFiType').value;
+  const desc = document.getElementById('iFiDesc').value;
+  const prest = document.getElementById('iFiPrest').value;
+  const email = document.getElementById('iFiEmail').value;
+  const urg = document.getElementById('iFiUrg').value;
+  const mission = document.getElementById('iFiMission').value;
+  const notes = document.getElementById('iFiNotes').value;
+  if (!res_id||!type||!desc) { alert('Remplissez au moins : Résidence, Type et Description.'); return; }
+  const copro = iaCopros.find(c=>c.id===res_id);
+  const titre = `${type} — ${copro?.nom||'Résidence'}`;
+  try {
+    await supaPost('dossiers_interventions',{
+      titre,description:desc,statut:'ouvert',urgence:urg,
+      copropriete_id:res_id,prestataire_nom:prest,prestataire_email:email,
+      type_mission:mission,notes_internes:notes,created_at:new Date().toISOString()
+    });
+    if (email) { try { await fetch(N8N_HOOK,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({titre,copropriete:copro?.nom,type,description:desc,prestataire:prest,email_prestataire:email,urgence:urg,mission,notes})}); } catch(e){} }
+    iaHideForm(); iaLoadInterventions();
+    iaAddJournalEntry({icon:'🔧',color:'ia-jd-orange',action:`Intervention créée : ${titre}`,meta:`${copro?.nom} · ${prest||'Prestataire à confirmer'}`});
+    document.getElementById('iaConfirmText').innerHTML=`<strong>${titre}</strong><br><br>📍 ${copro?.nom}<br>🔧 ${prest||'À définir'}<br>📨 ${email||'Non renseigné'}<br>⚡ ${urg}<br><br>${email?'✅ Notification envoyée via n8n.':'ℹ️ Aucun email prestataire.'}`;
+    document.getElementById('iaConfirmModal').classList.add('open');
+  } catch(e) { alert(`Erreur Supabase : ${e.message}`); }
+}
+
+// Journal
+function iaAddJournalEntry(entry) {
+  iaJournalEntries.unshift({...entry,time:new Date()});
+  if (document.getElementById('ia-tab-journal').classList.contains('active')) iaRenderJournal();
+}
+function iaRenderJournal(filterId='') {
+  const c = document.getElementById('iaJournalEntries');
+  const entries = filterId ? iaJournalEntries.filter(e=>e.copro_id===filterId) : iaJournalEntries;
+  if (!entries.length) { c.innerHTML=`<div style="text-align:center;color:var(--ia-text3);padding:30px;font-size:0.82rem">Aucune activité enregistrée.</div>`; return; }
+  c.innerHTML = entries.map(e=>`<div class="ia-j-entry">
+    <div class="ia-j-dot ${e.color||'ia-jd-blue'}"></div>
+    <div class="ia-j-content">
+      <div class="ia-j-action">${e.icon} ${e.action}</div>
+      <div class="ia-j-meta">${e.meta||''} · ${e.time.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}</div>
+    </div></div>`).join('');
+}
+function iaFilterJournal() { iaRenderJournal(document.getElementById('iaJournalFilter').value); }
+
+// Init journal
+iaAddJournalEntry({icon:'🚀',color:'ia-jd-blue',action:'Plateforme ICA démarrée',meta:'Supabase · n8n · Claude API'});
+</script>
+</body>
+</html>
