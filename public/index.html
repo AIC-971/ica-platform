@@ -1182,14 +1182,19 @@ async function iaSendMessage() {
   iaAddTyping();
 
   let dataCtx = `Agence syndic Guadeloupe. Copropriétés gérées (${iaCopros.length}):\n` +
-    iaCopros.slice(0,20).map(c=>`- ${c.nom} (${c.commune})`).join('\n');
+    iaCopros.map(c=>`- ${c.nom} (${c.commune})`).join('\n');
 
-  // Enrichir avec Supabase si nom détecté
-  const keywords = text.match(/\b[A-ZÀ-Ü][a-zà-ü]{2,}\b/g)||[];
-  for (const kw of keywords.slice(0,2)) {
+  // Enrichir avec Supabase — recherche floue sur tous les mots de 3+ lettres
+  const keywords = text.match(/\b[a-zA-ZÀ-ÿ]{3,}\b/g)||[];
+  const stopWords = ['les','des','une','pour','dans','avec','sur','par','que','qui','est','pas','plus','mais','les','aux','est','sont','ont','que','dans','par','sur','avec','une','des','les'];
+  const searchWords = keywords.filter(k => !stopWords.includes(k.toLowerCase())).slice(0,4);
+  for (const kw of searchWords) {
     try {
-      const {data} = await supaFetch('coproprietes',`?nom=ilike.*${kw}*&limit=2`);
-      if (data?.length) dataCtx += `\n\nDétails résidence trouvée: ${JSON.stringify(data[0])}`;
+      const {data} = await supaFetch('coproprietes',`?nom=ilike.*${kw}*&select=id,nom,commune,estale_id&limit=3`);
+      if (data?.length) {
+        dataCtx += `\n\nCopropriété(s) trouvée(s) dans Supabase pour "${kw}":\n`;
+        data.forEach(c => dataCtx += `- ${c.nom} (${c.commune}) [estale_id: ${c.estale_id}]\n`);
+      }
     } catch(e){}
   }
 
