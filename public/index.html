@@ -1190,10 +1190,20 @@ async function iaSendMessage() {
   const searchWords = keywords.filter(k => !stopWords.includes(k.toLowerCase())).slice(0,4);
   for (const kw of searchWords) {
     try {
-      const {data} = await supaFetch('coproprietes',`?nom=ilike.*${kw}*&select=id,nom,commune,estale_id&limit=3`);
-      if (data?.length) {
-        dataCtx += `\n\nCopropriété(s) trouvée(s) dans Supabase pour "${kw}":\n`;
-        data.forEach(c => dataCtx += `- ${c.nom} (${c.commune}) [estale_id: ${c.estale_id}]\n`);
+      // Chercher dans les copropriétés
+      const {data: coprosFound} = await supaFetch('coproprietes',`?nom=ilike.*${kw}*&select=id,nom,commune,estale_id&limit=3`);
+      if (coprosFound?.length) {
+        dataCtx += `\n\nCopropriété(s) trouvée(s) pour "${kw}":\n`;
+        coprosFound.forEach(c => dataCtx += `- ${c.nom} (${c.commune})\n`);
+      }
+      // Chercher dans les propriétaires
+      const {data: propsFound} = await supaFetch('proprietaires',`?or=(lastname.ilike.*${kw}*,firstname.ilike.*${kw}*)&select=firstname,lastname,balance,copropriete_estale_id&limit=5`);
+      if (propsFound?.length) {
+        dataCtx += `\n\nPropriétaire(s) trouvé(s) pour "${kw}":\n`;
+        propsFound.forEach(p => {
+          const copro = iaCopros.find(c => c.estale_id === p.copropriete_estale_id);
+          dataCtx += `- ${p.firstname} ${p.lastname} | Solde compte: ${p.balance ? p.balance.toFixed(2) + ' €' : 'N/A'} | Résidence: ${copro ? copro.nom : p.copropriete_estale_id}\n`;
+        });
       }
     } catch(e){}
   }
