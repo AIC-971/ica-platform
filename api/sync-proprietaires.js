@@ -3,7 +3,6 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   if (req.method === 'OPTIONS') return res.status(200).end();
-
   const SUPA_URL = 'https://xdrlgyqxdbdvzrneujgz.supabase.co';
   const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhkcmxneXF4ZGJkdnpybmV1amd6Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NjM1MDE1NywiZXhwIjoyMDkxOTI2MTU3fQ.1gvVPGSBotPXP_U4_-lLGQ0SfG2HdzLNWY9mRUiSd-A';
   const logs = [];
@@ -48,13 +47,8 @@ export default async function handler(req, res) {
       })
     });
     const gqlData = await gqlResp.json();
-    const condos = gqlData?.data?.condos || [];
-    log(`✅ ${condos.length} copropriétés récupérées depuis Estale`);
-
-    if (condos.length === 0) {
-      log('⚠️ Aucune copropriété - vérifier les erreurs GraphQL: ' + JSON.stringify(gqlData?.errors));
-      return res.status(200).json({ success: false, logs, errors: gqlData?.errors });
-    }
+    const copros = await (await fetch(`${SUPA_URL}/rest/v1/coproprietes?select=id,estale_id,nom&order=nom`, { headers: { 'apikey': SUPA_KEY, 'Authorization': `Bearer ${SUPA_KEY}` } })).json();
+        log(`OK ${copros.length} coproprietes Supabase`);
 
     // 3. Synchroniser les copropriétés dans Supabase (upsert par estale_id)
     let totalOwners = 0;
