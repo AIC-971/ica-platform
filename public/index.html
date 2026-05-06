@@ -1389,7 +1389,7 @@ function authApplyRole(user) {
   if (badge) badge.style.background = colors[user.role]||'';
   if (user.role==='admin') {
     document.querySelectorAll('[data-hide-commercial],[data-hide-gestionnaire]').forEach(el=>el.style.display='');
-    switchTab('glob');
+    switchTab('global');
   } else if (user.role==='gestionnaire') {
     document.querySelectorAll('[data-hide-gestionnaire]').forEach(el=>el.style.display='none');
     document.querySelectorAll('[data-hide-commercial]').forEach(el=>el.style.display='');
