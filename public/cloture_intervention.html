@@ -1,4 +1,391 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Module 2B — À migrer</title>
-<meta http-equiv="refresh" content="2;url=/">
-<style>body{font-family:system-ui;display:flex;align-items:center;justify-content:center;min-height:100vh;background:#F8F7F4;color:#1a1a18}</style>
-</head><body><p>Module 2B Clôture intervention — fichier à déposer ici. Redirection vers le dashboard…</p></body></html>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Cloture Intervention — ICA</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--green:#1D9E75;--green-dark:#0F6E56;--green-light:#E1F5EE;--red:#E24B4A;--red-light:#FCEBEB;--amber:#BA7517;--bg:#F8F7F4;--surface:#fff;--border:rgba(0,0,0,.1);--border-strong:rgba(0,0,0,.18);--text:#1a1a18;--text-muted:#6b6b68;--text-faint:#9b9b98;--radius:12px}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.5;min-height:100vh}
+.header{background:linear-gradient(135deg,var(--green-dark),var(--green));color:#fff;padding:20px 20px 16px;text-align:center}
+.header-logo{font-weight:800;font-size:13px;letter-spacing:1px;opacity:.85;margin-bottom:6px}
+.header-title{font-size:20px;font-weight:700;margin-bottom:4px}
+.header-sub{font-size:13px;opacity:.8}
+.header-ref{display:inline-block;background:rgba(255,255,255,.2);border-radius:8px;padding:4px 12px;font-size:12px;font-weight:600;margin-top:8px}
+.steps{display:flex;justify-content:center;gap:0;padding:16px 20px;background:#fff;border-bottom:1px solid var(--border)}
+.step{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-faint);font-weight:500}
+.step.active{color:var(--green);font-weight:700}
+.step.done{color:var(--green-dark)}
+.step-dot{width:24px;height:24px;border-radius:50%;border:2px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.step-line{width:24px;height:2px;background:var(--border);flex-shrink:0;margin:0 4px}
+.step-line.done{background:var(--green)}
+.main{max-width:500px;margin:0 auto;padding:20px 16px 40px}
+.card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px}
+.card-title{font-size:14px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.field{margin-bottom:16px}
+.field label{display:block;font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px}
+.field input,.field select,.field textarea{width:100%;padding:13px 14px;border:1.5px solid var(--border-strong);border-radius:10px;font-size:15px;color:var(--text);background:#fff;outline:none;font-family:inherit;transition:all .15s}
+.field textarea{resize:vertical;min-height:90px}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--green);box-shadow:0 0 0 3px var(--green-light)}
+.field-hint{font-size:11px;color:var(--text-faint);margin-top:4px}
+.radio-group{display:flex;gap:10px;flex-wrap:wrap}
+.radio-card{flex:1;min-width:100px;border:2px solid var(--border-strong);border-radius:10px;padding:12px;cursor:pointer;text-align:center;transition:all .15s;user-select:none}
+.radio-card:hover{border-color:var(--green)}
+.radio-card.selected{border-color:var(--green);background:var(--green-light)}
+.radio-card input{display:none}
+.radio-card-icon{font-size:22px;margin-bottom:4px}
+.radio-card-label{font-size:13px;font-weight:600}
+.photos-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+.photo-slot{aspect-ratio:1;border:2px dashed var(--border-strong);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;overflow:hidden;position:relative}
+.photo-slot:hover{border-color:var(--green);background:var(--green-light)}
+.photo-slot img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.photo-slot-icon{font-size:24px;color:var(--text-faint)}
+.photo-slot-text{font-size:11px;color:var(--text-faint);margin-top:4px}
+#photo-input{display:none}
+.sig-canvas{border:1.5px solid var(--border-strong);border-radius:10px;background:#fff;cursor:crosshair;touch-action:none;display:block;width:100%}
+.sig-btns{display:flex;gap:8px;margin-top:8px}
+.sig-btn{padding:8px 14px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid var(--border-strong);background:#fff;color:var(--text-muted);font-family:inherit}
+.btn{width:100%;padding:15px;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;border:none;font-family:inherit;transition:all .15s;margin-top:8px}
+.btn-green{background:linear-gradient(135deg,var(--green),#185FA5);color:#fff}
+.btn-green:hover{opacity:.92}
+.btn-outline{background:transparent;border:1.5px solid var(--border-strong);color:var(--text-muted)}
+.info-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:14px}
+.info-row:last-child{border-bottom:none}
+.info-label{color:var(--text-muted);font-size:13px}
+.info-val{font-weight:600}
+.step-page{display:none}
+.step-page.active{display:block}
+.success-screen{text-align:center;padding:40px 20px}
+.success-icon{font-size:64px;margin-bottom:16px}
+.success-title{font-size:22px;font-weight:700;margin-bottom:8px;color:var(--green-dark)}
+.success-sub{font-size:14px;color:var(--text-muted);line-height:1.6}
+.success-card{background:var(--green-light);border:1px solid #b8e8d4;border-radius:var(--radius);padding:16px;margin:20px 0;text-align:left}
+.success-card-line{display:flex;justify-content:space-between;font-size:13px;padding:4px 0}
+.success-card-line.total{font-weight:700;border-top:1px solid #b8e8d4;margin-top:6px;padding-top:8px;color:var(--green-dark)}
+.spinner{display:inline-block;width:20px;height:20px;border:3px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;vertical-align:middle;margin-right:8px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.alert{padding:12px 16px;border-radius:10px;font-size:13px;margin-bottom:16px}
+.alert-red{background:var(--red-light);border:1px solid var(--red);color:var(--red)}
+.alert-green{background:var(--green-light);border:1px solid var(--green);color:var(--green-dark)}
+.ttc-box{background:var(--green-light);border-radius:10px;padding:12px 14px;font-size:14px;margin-top:8px;display:none}
+.ttc-row{display:flex;justify-content:space-between;padding:3px 0}
+.ttc-row.total{font-weight:700;border-top:1px solid #b8e8d4;margin-top:6px;padding-top:6px;color:var(--green-dark)}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-logo">ICA · IMMO CONSEIL ANTILLES</div>
+  <div class="header-title">Cloture d'intervention</div>
+  <div class="header-sub">Module prestataire — formulaire de fin de mission</div>
+  <div class="header-ref" id="header-ref">REF: —</div>
+</div>
+
+<div class="steps" id="steps-bar">
+  <div class="step active" id="step-ind-1"><div class="step-dot">1</div><span>Infos</span></div>
+  <div class="step-line" id="line-1-2"></div>
+  <div class="step" id="step-ind-2"><div class="step-dot">2</div><span>Travaux</span></div>
+  <div class="step-line" id="line-2-3"></div>
+  <div class="step" id="step-ind-3"><div class="step-dot">3</div><span>Signature</span></div>
+</div>
+
+<div class="main">
+
+  <div class="step-page active" id="page-1">
+    <div id="alert-zone"></div>
+    <div class="card">
+      <div class="card-title">📋 Recapitulatif de la mission</div>
+      <div class="info-row"><span class="info-label">Reference</span><span class="info-val" id="info-ref">—</span></div>
+      <div class="info-row"><span class="info-label">Residence</span><span class="info-val" id="info-copro">—</span></div>
+      <div class="info-row"><span class="info-label">Type d'intervention</span><span class="info-val" id="info-type">—</span></div>
+      <div class="info-row"><span class="info-label">Urgence</span><span class="info-val" id="info-urgence">—</span></div>
+      <div class="info-row"><span class="info-label">Description</span><span class="info-val" id="info-desc" style="text-align:right;max-width:60%;font-size:13px">—</span></div>
+    </div>
+    <div class="card">
+      <div class="card-title">🧑‍🔧 Vos informations</div>
+      <div class="field"><label>Votre nom *</label><input type="text" id="prest-nom" placeholder="Nom et prenom"></div>
+      <div class="field"><label>Entreprise</label><input type="text" id="prest-entreprise" placeholder="Nom de votre entreprise"></div>
+      <div class="field"><label>Telephone</label><input type="tel" id="prest-tel" placeholder="+590..."></div>
+      <div class="field"><label>Date d'intervention *</label><input type="date" id="date-intervention"></div>
+      <div class="field"><label>Heure de debut</label><input type="time" id="heure-debut"></div>
+      <div class="field"><label>Heure de fin</label><input type="time" id="heure-fin"></div>
+    </div>
+    <button class="btn btn-green" onclick="goToStep(2)">Continuer →</button>
+  </div>
+
+  <div class="step-page" id="page-2">
+    <div class="card">
+      <div class="card-title">🔧 Description des travaux realises</div>
+      <div class="field"><label>Description complete *</label><textarea id="travaux-desc" placeholder="Decrivez precisement les travaux realises..."></textarea></div>
+      <div class="field">
+        <label>Nature de l'intervention</label>
+        <div class="radio-group">
+          <label class="radio-card selected" onclick="selectNature(this,'parties_communes')"><input type="radio" name="nature" value="parties_communes" checked><div class="radio-card-icon">🏢</div><div class="radio-card-label">Parties communes</div></label>
+          <label class="radio-card" onclick="selectNature(this,'privatif')"><input type="radio" name="nature" value="privatif"><div class="radio-card-icon">🚪</div><div class="radio-card-label">Privatif</div></label>
+          <label class="radio-card" onclick="selectNature(this,'urgence')"><input type="radio" name="nature" value="urgence"><div class="radio-card-icon">🚨</div><div class="radio-card-label">Urgence</div></label>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">📸 Photos (optionnel)</div>
+      <div class="photos-grid" id="photos-grid">
+        <div class="photo-slot" onclick="addPhoto()"><div class="photo-slot-icon">📷</div><div class="photo-slot-text">Ajouter</div></div>
+      </div>
+      <input type="file" id="photo-input" accept="image/*" multiple onchange="handlePhotos(this)">
+    </div>
+    <div class="card">
+      <div class="card-title">💶 Facturation</div>
+      <div class="field">
+        <label>Montant HT (euros)</label>
+        <input type="number" id="montant-ht" placeholder="0.00" step="0.01" min="0" oninput="calcTTC()">
+        <div class="field-hint">Laissez vide si devis separe</div>
+      </div>
+      <div class="field"><label>TVA</label><select id="tva-taux" onchange="calcTTC()"><option value="0">0%</option><option value="8.5" selected>8.5% (DOM)</option><option value="20">20%</option></select></div>
+      <div class="ttc-box" id="ttc-box">
+        <div class="ttc-row"><span>HT</span><span id="calc-ht-val">—</span></div>
+        <div class="ttc-row"><span>TVA</span><span id="calc-tva-val">—</span></div>
+        <div class="ttc-row total"><span>TTC</span><span id="calc-ttc-val">—</span></div>
+      </div>
+      <div class="field" style="margin-top:12px"><label>N° Facture</label><input type="text" id="num-facture" placeholder="FAC-2026-001"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">📝 Observations</div>
+      <div class="field"><label>Observations / Recommandations</label><textarea id="observations" placeholder="Points d'attention, travaux complementaires..."></textarea></div>
+      <div class="field"><label>Suite a donner</label><select id="suite"><option value="aucune">Aucune — intervention terminee</option><option value="devis_complementaire">Devis complementaire</option><option value="retour_necessaire">Retour necessaire</option><option value="pieces_commandees">Pieces commandees — retour a planifier</option></select></div>
+    </div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-outline" onclick="goToStep(1)" style="width:auto;padding:15px 24px">← Retour</button>
+      <button class="btn btn-green" onclick="goToStep(3)">Continuer →</button>
+    </div>
+  </div>
+
+  <div class="step-page" id="page-3">
+    <div class="card">
+      <div class="card-title">✍️ Signature du prestataire</div>
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px">Signez ci-dessous pour valider le compte-rendu</p>
+      <canvas class="sig-canvas" id="sig-canvas" width="460" height="160"></canvas>
+      <div class="sig-btns">
+        <button class="sig-btn" onclick="clearSignature()">🗑 Effacer</button>
+        <span style="flex:1"></span>
+        <span id="sig-status" style="font-size:12px;color:var(--text-faint);line-height:36px">Pas encore signe</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">✅ Recapitulatif final</div>
+      <div class="info-row"><span class="info-label">Prestataire</span><span class="info-val" id="recap-prest">—</span></div>
+      <div class="info-row"><span class="info-label">Date</span><span class="info-val" id="recap-date">—</span></div>
+      <div class="info-row"><span class="info-label">Nature</span><span class="info-val" id="recap-nature">—</span></div>
+      <div class="info-row"><span class="info-label">Montant TTC</span><span class="info-val" id="recap-montant">—</span></div>
+      <div class="info-row"><span class="info-label">Photos</span><span class="info-val" id="recap-photos">0</span></div>
+    </div>
+    <div id="submit-alert"></div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-outline" onclick="goToStep(2)" style="width:auto;padding:15px 24px">← Retour</button>
+      <button class="btn btn-green" id="submit-btn" onclick="submitCloture()">Valider et envoyer ✓</button>
+    </div>
+  </div>
+
+  <div class="step-page" id="page-success">
+    <div class="success-screen">
+      <div class="success-icon">✅</div>
+      <div class="success-title">Intervention cloturee !</div>
+      <div class="success-sub">Votre compte-rendu a bien ete transmis a Immo Conseil Antilles.</div>
+      <div class="success-card">
+        <div class="success-card-line"><span>Reference</span><strong id="s-ref">—</strong></div>
+        <div class="success-card-line"><span>Prestataire</span><strong id="s-prest">—</strong></div>
+        <div class="success-card-line"><span>Date d'envoi</span><strong id="s-date">—</strong></div>
+        <div class="success-card-line total"><span>Statut</span><strong>✅ Transmis a ICA</strong></div>
+      </div>
+      <p style="font-size:13px;color:var(--text-faint)">Vous pouvez fermer cette page.</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const SUPABASE_URL = 'https://xdrlgyqxdbdvzrneujgz.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhkcmxneXF4ZGJkdnpybmV1amd6Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NjM1MDE1NywiZXhwIjoyMDkxOTI2MTU3fQ.1gvVPGSBotPXP_U4_-lLGQ0SfG2HdzLNWY9mRUiSd-A';
+const N8N_HOOK = 'https://immo-conseil-antilles.app.n8n.cloud/webhook/intervention-prestataire';
+
+let currentStep = 1;
+let photos = [];
+let sigHasContent = false;
+let natureSelectionnee = 'parties_communes';
+
+const urlParams = new URLSearchParams(window.location.search);
+const refParam = urlParams.get('ref') || '';
+const idParam = urlParams.get('id') || '';
+
+(async function init() {
+  if (refParam) { document.getElementById('header-ref').textContent = 'REF: ' + refParam; document.getElementById('info-ref').textContent = refParam; }
+  document.getElementById('date-intervention').value = new Date().toISOString().split('T')[0];
+  if (idParam) {
+    try {
+      const r = await fetch(SUPABASE_URL + '/rest/v1/dossiers_interventions?id=eq.' + idParam + '&select=*', {headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY}});
+      const data = await r.json();
+      if (data && data[0]) {
+        const d = data[0];
+        document.getElementById('info-ref').textContent = d.reference || refParam || d.id?.substring(0,8);
+        document.getElementById('info-copro').textContent = d.copropriete_nom || '—';
+        document.getElementById('info-type').textContent = d.type_intervention || d.titre || '—';
+        document.getElementById('info-urgence').textContent = d.urgence || '—';
+        document.getElementById('info-desc').textContent = d.description || '—';
+        if (d.prestataire_nom) document.getElementById('prest-nom').value = d.prestataire_nom;
+      }
+    } catch(e) {
+      document.getElementById('info-copro').textContent = 'Chargement impossible';
+    }
+  } else {
+    document.getElementById('info-copro').textContent = 'Residence (via URL ?id=...)';
+    document.getElementById('info-type').textContent = 'Type d'intervention';
+  }
+})();
+
+function goToStep(step) {
+  if (step === 2 && !document.getElementById('prest-nom').value.trim()) {
+    document.getElementById('alert-zone').innerHTML = '<div class="alert alert-red">Veuillez renseigner votre nom.</div>';
+    setTimeout(() => document.getElementById('alert-zone').innerHTML = '', 3000); return;
+  }
+  if (step === 3) {
+    if (!document.getElementById('travaux-desc').value.trim()) {
+      alert('Veuillez decrire les travaux realises.'); return;
+    }
+    updateRecap();
+  }
+  currentStep = step;
+  document.querySelectorAll('.step-page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + step).classList.add('active');
+  for (let i = 1; i <= 3; i++) {
+    const ind = document.getElementById('step-ind-' + i);
+    const dot = ind.querySelector('.step-dot');
+    ind.className = 'step' + (i === step ? ' active' : '') + (i < step ? ' done' : '');
+    dot.textContent = i < step ? '✓' : i;
+  }
+  for (let i = 1; i <= 2; i++) {
+    document.getElementById('line-' + i + '-' + (i+1)).className = 'step-line' + (i < step ? ' done' : '');
+  }
+  window.scrollTo(0, 0);
+  if (step === 3) initSignature();
+}
+
+function selectNature(el, val) {
+  document.querySelectorAll('.radio-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected'); natureSelectionnee = val;
+}
+
+function addPhoto() { document.getElementById('photo-input').click(); }
+function handlePhotos(input) {
+  Array.from(input.files).forEach(file => {
+    if (photos.length >= 6) return;
+    const reader = new FileReader();
+    reader.onload = e => { photos.push(e.target.result); renderPhotos(); };
+    reader.readAsDataURL(file);
+  });
+}
+function renderPhotos() {
+  const grid = document.getElementById('photos-grid');
+  grid.innerHTML = '';
+  photos.forEach((src, i) => {
+    const slot = document.createElement('div');
+    slot.className = 'photo-slot';
+    slot.innerHTML = '<img src="' + src + '"><button onclick="removePhoto(' + i + ')" style="position:absolute;top:4px;right:4px;background:rgba(0,0,0,.5);color:#fff;border:none;border-radius:50%;width:22px;height:22px;cursor:pointer;font-size:12px">x</button>';
+    grid.appendChild(slot);
+  });
+  if (photos.length < 6) {
+    const add = document.createElement('div');
+    add.className = 'photo-slot';
+    add.innerHTML = '<div class="photo-slot-icon">📷</div><div class="photo-slot-text">Ajouter</div>';
+    add.onclick = addPhoto;
+    grid.appendChild(add);
+  }
+  document.getElementById('recap-photos').textContent = photos.length + ' photo(s)';
+}
+function removePhoto(i) { photos.splice(i, 1); renderPhotos(); }
+
+function calcTTC() {
+  const ht = parseFloat(document.getElementById('montant-ht').value) || 0;
+  const tva = parseFloat(document.getElementById('tva-taux').value) || 0;
+  if (!ht) { document.getElementById('ttc-box').style.display = 'none'; return; }
+  const tvaAmt = ht * (tva / 100);
+  const ttc = ht + tvaAmt;
+  const fmt = n => n.toFixed(2) + ' EUR';
+  document.getElementById('calc-ht-val').textContent = fmt(ht);
+  document.getElementById('calc-tva-val').textContent = fmt(tvaAmt) + ' (' + tva + '%)';
+  document.getElementById('calc-ttc-val').textContent = fmt(ttc);
+  document.getElementById('ttc-box').style.display = 'block';
+}
+
+function updateRecap() {
+  const natures = {parties_communes:'Parties communes',privatif:'Privatif',urgence:'Urgence'};
+  const ht = parseFloat(document.getElementById('montant-ht').value) || 0;
+  const tva = parseFloat(document.getElementById('tva-taux').value) || 0;
+  const ttc = ht * (1 + tva/100);
+  document.getElementById('recap-prest').textContent = document.getElementById('prest-nom').value || '—';
+  document.getElementById('recap-date').textContent = document.getElementById('date-intervention').value ? new Date(document.getElementById('date-intervention').value).toLocaleDateString('fr-FR') : '—';
+  document.getElementById('recap-nature').textContent = natures[natureSelectionnee] || '—';
+  document.getElementById('recap-montant').textContent = ht ? ttc.toFixed(2) + ' EUR TTC' : 'Non renseigne';
+  document.getElementById('recap-photos').textContent = photos.length + ' photo(s)';
+}
+
+let sigCtx, sigDrawing = false;
+function initSignature() {
+  const canvas = document.getElementById('sig-canvas');
+  canvas.width = canvas.offsetWidth; canvas.height = 160;
+  sigCtx = canvas.getContext('2d');
+  sigCtx.strokeStyle = '#1a1a18'; sigCtx.lineWidth = 2.5; sigCtx.lineCap = 'round'; sigCtx.lineJoin = 'round';
+  const getPos = (e) => { const rect = canvas.getBoundingClientRect(); const src = e.touches ? e.touches[0] : e; return {x:src.clientX-rect.left,y:src.clientY-rect.top}; };
+  canvas.onmousedown = canvas.ontouchstart = (e) => { e.preventDefault(); sigDrawing = true; const p = getPos(e); sigCtx.beginPath(); sigCtx.moveTo(p.x, p.y); };
+  canvas.onmousemove = canvas.ontouchmove = (e) => { e.preventDefault(); if (!sigDrawing) return; const p = getPos(e); sigCtx.lineTo(p.x, p.y); sigCtx.stroke(); sigHasContent = true; document.getElementById('sig-status').textContent = '✅ Signature enregistree'; document.getElementById('sig-status').style.color = 'var(--green)'; };
+  canvas.onmouseup = canvas.ontouchend = () => { sigDrawing = false; };
+}
+function clearSignature() {
+  const canvas = document.getElementById('sig-canvas');
+  sigCtx.clearRect(0, 0, canvas.width, canvas.height); sigHasContent = false;
+  document.getElementById('sig-status').textContent = 'Pas encore signe'; document.getElementById('sig-status').style.color = 'var(--text-faint)';
+}
+
+async function submitCloture() {
+  if (!sigHasContent) { document.getElementById('submit-alert').innerHTML = '<div class="alert alert-red">Veuillez signer avant de valider.</div>'; return; }
+  const btn = document.getElementById('submit-btn');
+  btn.innerHTML = '<span class="spinner"></span>Envoi en cours...'; btn.disabled = true;
+  document.getElementById('submit-alert').innerHTML = '';
+  const nom = document.getElementById('prest-nom').value.trim();
+  const ht = parseFloat(document.getElementById('montant-ht').value) || null;
+  const tva = parseFloat(document.getElementById('tva-taux').value) || 0;
+  const ttc = ht ? ht * (1 + tva/100) : null;
+  const payload = {
+    intervention_id: idParam || null, reference: refParam || null, statut: 'cloture',
+    prestataire_nom: nom, prestataire_entreprise: document.getElementById('prest-entreprise').value.trim() || null,
+    date_intervention: document.getElementById('date-intervention').value,
+    travaux_description: document.getElementById('travaux-desc').value.trim(),
+    nature_intervention: natureSelectionnee, est_privatif: natureSelectionnee === 'privatif',
+    observations: document.getElementById('observations').value.trim() || null,
+    suite_a_donner: document.getElementById('suite').value,
+    montant_ht: ht, taux_tva: tva, montant_ttc: ttc,
+    num_facture: document.getElementById('num-facture').value.trim() || null,
+    nb_photos: photos.length, date_cloture: new Date().toISOString()
+  };
+  try {
+    if (idParam) {
+      await fetch(SUPABASE_URL + '/rest/v1/dossiers_interventions?id=eq.' + idParam, {
+        method:'PATCH', headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json'},
+        body:JSON.stringify({statut:'cloture',date_cloture:payload.date_cloture,commentaire_cloture:payload.travaux_description,prestataire_nom:nom,montant_ht:ht,montant_ttc:ttc})
+      });
+    }
+    await fetch(N8N_HOOK, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).catch(()=>{});
+    document.getElementById('s-ref').textContent = refParam || idParam?.substring(0,8) || '—';
+    document.getElementById('s-prest').textContent = nom;
+    document.getElementById('s-date').textContent = new Date().toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+    document.querySelectorAll('.step-page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-success').classList.add('active');
+    document.getElementById('steps-bar').style.display = 'none';
+    window.scrollTo(0,0);
+  } catch(e) {
+    btn.innerHTML = 'Valider et envoyer ✓'; btn.disabled = false;
+    document.getElementById('submit-alert').innerHTML = '<div class="alert alert-red">Erreur. Reessayez ou contactez ICA.</div>';
+  }
+}
+</script>
+</body>
+</html>
