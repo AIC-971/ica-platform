@@ -16,3 +16,612 @@
   --text: #1a1a18; --text-muted: #6b6b68; --text-faint: #9b9b98;
   --radius: 10px; --radius-lg: 14px;
 }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.5; min-height: 100vh; }
+
+/* TOPBAR */
+.topbar { position: sticky; top: 0; z-index: 100; background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 52px; }
+.topbar-left { display: flex; align-items: center; gap: 12px; }
+.logo { background: var(--green); color: #fff; font-weight: 700; font-size: 13px; padding: 5px 9px; border-radius: 7px; }
+.topbar-title { font-weight: 600; font-size: 15px; }
+.topbar-right { display: flex; align-items: center; gap: 10px; }
+.back-btn { text-decoration: none; font-size: 12px; color: var(--text-muted); padding: 6px 12px; border: 1px solid var(--border-strong); border-radius: 7px; }
+.back-btn:hover { background: var(--bg); }
+
+/* MODE SWITCHER */
+.mode-bar { padding: 16px 24px 0; display: flex; gap: 8px; align-items: center; }
+.mode-pill { padding: 8px 20px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; border: 2px solid var(--border-strong); background: var(--surface); color: var(--text-muted); transition: all 0.15s; user-select: none; }
+.mode-pill.active { background: var(--green); color: #fff; border-color: var(--green); }
+
+/* MAIN */
+.main { max-width: 1200px; margin: 0 auto; padding: 20px 24px 48px; }
+
+/* KPIS */
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 20px; }
+.kpi { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px; }
+.kpi-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.4px; font-weight: 500; margin-bottom: 6px; }
+.kpi-val { font-size: 24px; font-weight: 700; color: var(--text); line-height: 1; }
+.kpi-val.up { color: var(--green); }
+.kpi-val.warn { color: var(--amber); }
+.kpi-val.down { color: var(--red); }
+.kpi-sub { font-size: 11px; color: var(--text-faint); margin-top: 4px; }
+
+/* CARD */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; margin-bottom: 16px; }
+.card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.card-title { font-weight: 600; font-size: 14px; }
+
+/* FORM */
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media(max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
+.form-row { display: flex; flex-direction: column; gap: 4px; }
+.form-row label { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.3px; }
+.form-row input, .form-row select, .form-row textarea { border: 1px solid var(--border-strong); border-radius: 8px; padding: 9px 11px; font-size: 13px; color: var(--text); background: var(--surface); outline: none; font-family: inherit; transition: border 0.15s; }
+.form-row input:focus, .form-row select:focus { border-color: var(--green); box-shadow: 0 0 0 3px var(--green-light); }
+
+/* CALC BOX */
+.calc-box { background: var(--green-light); border: 1px solid #b8e8d4; border-radius: 10px; padding: 16px; margin-top: 16px; }
+.calc-line { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; font-size: 13px; }
+.calc-line.total { border-top: 1px solid #b8e8d4; margin-top: 8px; padding-top: 10px; font-weight: 700; font-size: 16px; color: var(--green-dark); }
+.calc-label { color: var(--text-muted); }
+.calc-val { font-weight: 600; }
+
+/* TABLE */
+.comm-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.comm-table th { font-size: 11px; color: var(--text-muted); font-weight: 600; padding: 8px 10px; border-bottom: 2px solid var(--border); text-align: left; text-transform: uppercase; letter-spacing: 0.3px; white-space: nowrap; }
+.comm-table td { padding: 11px 10px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.comm-table tr:last-child td { border-bottom: none; }
+.comm-table tr:hover td { background: var(--bg); }
+
+/* BADGES */
+.badge { display: inline-block; padding: 3px 10px; border-radius: 99px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+.badge-green { background: var(--green-light); color: var(--green-dark); }
+.badge-amber { background: var(--amber-light); color: var(--amber); }
+.badge-red { background: var(--red-light); color: var(--red); }
+.badge-blue { background: var(--blue-light); color: var(--blue); }
+.badge-gray { background: #f0f0ee; color: var(--gray); }
+
+/* BUTTONS */
+.btn { padding: 9px 18px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; transition: all 0.15s; font-family: inherit; }
+.btn-green { background: var(--green); color: #fff; }
+.btn-green:hover { background: var(--green-dark); }
+.btn-outline { background: transparent; border: 1px solid var(--border-strong); color: var(--text-muted); }
+.btn-outline:hover { background: var(--bg); }
+.btn-sm { padding: 5px 12px; font-size: 12px; border-radius: 6px; cursor: pointer; border: 1px solid var(--border-strong); background: var(--surface); color: var(--text-muted); font-family: inherit; font-weight: 600; }
+.btn-sm:hover { background: var(--bg); }
+.btn-sm.pay { background: var(--green); color: #fff; border-color: var(--green); }
+.btn-sm.pay:hover { background: var(--green-dark); }
+
+/* TAUX TABLE */
+.taux-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.taux-table th { font-size: 11px; color: var(--text-muted); font-weight: 600; padding: 6px 10px; border-bottom: 2px solid var(--border); text-align: left; text-transform: uppercase; }
+.taux-table td { padding: 8px 10px; border-bottom: 1px solid var(--border); }
+.taux-table td input { width: 70px; border: 1px solid var(--border-strong); border-radius: 6px; padding: 4px 8px; font-size: 13px; text-align: right; }
+.taux-table tr:last-child td { border-bottom: none; }
+
+.empty { text-align: center; padding: 32px; color: var(--text-muted); }
+.spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid var(--border); border-top-color: var(--green); border-radius: 50%; animation: spin 0.8s linear infinite; vertical-align: middle; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading { color: var(--text-muted); font-size: 13px; }
+.alert-banner { background: var(--red-light); border: 1px solid var(--red); border-radius: 10px; padding: 12px 16px; margin-bottom: 16px; font-size: 13px; color: var(--red); display: none; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <span class="logo">ICA</span>
+    <span class="topbar-title">💰 Module Commissions</span>
+  </div>
+  <div class="topbar-right">
+    <a href="index_final.html" class="back-btn">← Dashboard</a>
+    <span id="last-update" style="font-size:11px;color:var(--text-faint)">—</span>
+  </div>
+</div>
+
+<div class="mode-bar">
+  <div class="mode-pill active" id="pill-dir" onclick="setMode('direction')">👑 Vue Direction</div>
+  <div class="mode-pill" id="pill-com" onclick="setMode('commercial')">👤 Vue Commercial</div>
+</div>
+
+<div class="main">
+
+  <!-- ALERTE IMPAYES -->
+  <div class="alert-banner" id="alerte-impayes">
+    ⚠️ <strong id="nb-impayes">0</strong> commission(s) en attente de paiement depuis plus de 30 jours — action requise
+  </div>
+
+  <!-- KPIs -->
+  <div class="kpis" id="kpis-zone">
+    <div class="kpi"><div class="kpi-label">CA total HT</div><div class="kpi-val up" id="kpi-ca">—</div><div class="kpi-sub">Tous commerciaux</div></div>
+    <div class="kpi"><div class="kpi-label">Commissions dues</div><div class="kpi-val warn" id="kpi-dues">—</div><div class="kpi-sub">En attente paiement</div></div>
+    <div class="kpi"><div class="kpi-label">Commissions payées</div><div class="kpi-val up" id="kpi-payees">—</div><div class="kpi-sub">Ce mois</div></div>
+    <div class="kpi"><div class="kpi-label">Dossiers ce mois</div><div class="kpi-val" id="kpi-nb">—</div><div class="kpi-sub">Total</div></div>
+    <div class="kpi" id="kpi-impayes-card"><div class="kpi-label">Impayés +30j</div><div class="kpi-val down" id="kpi-impayes-val">—</div><div class="kpi-sub">Alerte direction</div></div>
+  </div>
+
+  <!-- SAISIE NOUVEAU DOSSIER -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">➕ Saisir un nouveau dossier</div>
+      <button class="btn btn-outline" onclick="toggleForm()">Ouvrir / Fermer</button>
+    </div>
+    <div id="form-zone" style="display:none">
+      <div class="form-grid">
+        <div class="form-row">
+          <label>Référence dossier *</label>
+          <input type="text" id="f-ref" placeholder="ex: VENTE-DUPONT-2026">
+        </div>
+        <div class="form-row">
+          <label>Type d'acte *</label>
+          <select id="f-type" onchange="toggleGestionLocative()">
+            <option value="">Sélectionner...</option>
+            <option value="vente">Vente</option>
+            <option value="location">Location</option>
+            <option value="divers">Divers (avis de valeur)</option>
+          </select>
+        </div>
+
+        <!-- Case gestion locative — visible uniquement si type = location -->
+        <div class="form-row" id="f-gestion-row" style="display:none;grid-column:1/-1">
+          <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:13px;text-transform:none;letter-spacing:0;font-weight:500">
+            <input type="checkbox" id="f-nouvelle-gestion" onchange="calcAuto()" style="width:18px;height:18px;accent-color:var(--green);cursor:pointer">
+            <span>🏠 Cette location génère une <strong>nouvelle gestion locative</strong> pour le cabinet</span>
+          </label>
+          <div id="f-gestion-info" style="font-size:12px;color:var(--text-muted);margin-top:4px;padding-left:28px;display:none">
+            Un bonus de <strong id="f-gestion-pct">—</strong> sera ajouté à la commission du commercial (taux configuré par la direction)
+          </div>
+        </div>
+        <div class="form-row">
+          <label>Commercial principal *</label>
+          <input type="text" id="f-commercial-a" placeholder="Nom du commercial">
+        </div>
+        <div class="form-row">
+          <label>Rôle *</label>
+          <select id="f-role" onchange="calcAuto()">
+            <option value="entree_sortie">Entrée + Sortie (100%)</option>
+            <option value="entree">Entrée seule (50%)</option>
+            <option value="sortie">Sortie seule (50%)</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>Origine du lead</label>
+          <select id="f-origine">
+            <option value="agence">Lead agence</option>
+            <option value="personnel">Lead personnel</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>Montant honoraires TTC (€) *</label>
+          <input type="number" id="f-ttc" placeholder="ex: 5000" oninput="calcAuto()" min="0" step="0.01">
+        </div>
+        <div class="form-row" id="f-cocom-row">
+          <label>Co-commercial (si partage)</label>
+          <input type="text" id="f-commercial-b" placeholder="Nom du co-commercial (optionnel)">
+        </div>
+        <div class="form-row" id="f-taux-row">
+          <label>Taux commission (%) — direction uniquement</label>
+          <input type="number" id="f-taux" placeholder="ex: 40" oninput="calcAuto()" step="0.5" min="0" max="100">
+        </div>
+      </div>
+
+      <!-- Calcul automatique -->
+      <div class="calc-box" id="calc-box" style="display:none">
+        <div class="calc-line"><span class="calc-label">Montant HT (TTC ÷ 1,085)</span><span class="calc-val" id="calc-ht">—</span></div>
+        <div class="calc-line"><span class="calc-label">CA produit (part de contribution)</span><span class="calc-val" id="calc-ca">—</span></div>
+        <div class="calc-line"><span class="calc-label">Taux appliqué</span><span class="calc-val" id="calc-taux-display">—</span></div>
+        <div class="calc-line total"><span>💰 Commission due</span><span id="calc-comm">—</span></div>
+      </div>
+
+      <div style="display:flex;gap:10px;margin-top:16px">
+        <button class="btn btn-green" onclick="saveDossier()">✓ Enregistrer le dossier</button>
+        <button class="btn btn-outline" onclick="toggleForm()">Annuler</button>
+      </div>
+      <div id="form-msg" style="margin-top:10px;font-size:13px"></div>
+    </div>
+  </div>
+
+  <!-- TABLEAU DES DOSSIERS -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">📋 Dossiers de commissions</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <select id="filtre-mois" onchange="loadDossiers()" style="font-size:12px;border:1px solid var(--border-strong);border-radius:6px;padding:4px 8px;background:var(--surface)">
+          <option value="">Tous les mois</option>
+        </select>
+        <select id="filtre-commercial" onchange="loadDossiers()" style="font-size:12px;border:1px solid var(--border-strong);border-radius:6px;padding:4px 8px;background:var(--surface)">
+          <option value="">Tous les commerciaux</option>
+        </select>
+        <button class="btn-sm" onclick="exportCSV()">⬇ CSV</button>
+      </div>
+    </div>
+    <div style="overflow-x:auto">
+      <table class="comm-table">
+        <thead>
+          <tr>
+            <th>Référence</th>
+            <th>Type</th>
+            <th>Commercial</th>
+            <th>Rôle</th>
+            <th>Origine</th>
+            <th>TTC saisi</th>
+            <th>HT calculé</th>
+            <th>CA produit</th>
+            <th id="th-taux" style="display:none">Taux</th>
+            <th>Commission</th>
+            <th>Statut</th>
+            <th id="th-actions" style="display:none">Actions</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody id="comm-tbody">
+          <tr><td colspan="13" class="loading"><span class="spinner"></span> Chargement...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAUX PAR COMMERCIAL — direction uniquement -->
+  <div class="card" id="card-taux" style="display:none">
+    <div class="card-header">
+      <div class="card-title">⚙️ Taux de commissionnement — Configuration direction</div>
+      <button class="btn-sm" onclick="saveTaux()">💾 Enregistrer les taux</button>
+    </div>
+    <p style="font-size:12px;color:var(--text-muted);margin-bottom:16px">Ces taux sont invisibles pour les commerciaux. Ils sont appliqués automatiquement au calcul des commissions.</p>
+    <div style="overflow-x:auto">
+      <table class="taux-table">
+        <thead>
+          <tr>
+            <th>Commercial</th>
+            <th>Statut</th>
+            <th>Vente entrée agence</th>
+            <th>Vente sortie agence</th>
+            <th>Vente entrée perso</th>
+            <th>Vente sortie perso</th>
+            <th>Location entrée</th>
+            <th>Location sortie</th>
+            <th style="background:var(--green-light);color:var(--green-dark)">🏠 Bonus nouvelle gestion</th>
+            <th>Divers</th>
+          </tr>
+        </thead>
+        <tbody id="taux-tbody">
+          <tr><td colspan="10" class="loading"><span class="spinner"></span> Chargement...</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div id="taux-msg" style="margin-top:10px;font-size:13px"></div>
+  </div>
+
+</div>
+
+<script>
+const SUPABASE_URL = 'https://xdrlgyqxdbdvzrneujgz.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhkcmxneXF4ZGJkdnpybmV1amd6Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NjM1MDE1NywiZXhwIjoyMDkxOTI2MTU3fQ.1gvVPGSBotPXP_U4_-lLGQ0SfG2HdzLNWY9mRUiSd-A';
+
+let currentMode = 'direction';
+let allDossiers = [];
+
+// Lire le mode depuis l'URL
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.get('mode') === 'commercial') currentMode = 'commercial';
+
+async function sbFetch(table, params = '') {
+  const r = await fetch(`${SUPABASE_URL}/rest/v1/${table}${params}`, {
+    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'count=exact' }
+  });
+  return r.json();
+}
+
+async function sbPost(table, body) {
+  const r = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
+    method: 'POST',
+    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=representation' },
+    body: JSON.stringify(body)
+  });
+  return { ok: r.ok, data: await r.json() };
+}
+
+async function sbPatch(table, id, body) {
+  const r = await fetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${id}`, {
+    method: 'PATCH',
+    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  return r.ok;
+}
+
+function fmt(n) { return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(n || 0); }
+function pct(n) { return (n || 0).toFixed(1) + '%'; }
+
+function setMode(mode) {
+  currentMode = mode;
+  document.getElementById('pill-dir').classList.toggle('active', mode === 'direction');
+  document.getElementById('pill-com').classList.toggle('active', mode === 'commercial');
+  // Montrer/cacher les éléments direction
+  document.getElementById('kpi-impayes-card').style.display = mode === 'direction' ? '' : 'none';
+  document.getElementById('th-taux').style.display = mode === 'direction' ? '' : 'none';
+  document.getElementById('th-actions').style.display = mode === 'direction' ? '' : 'none';
+  document.getElementById('card-taux').style.display = mode === 'direction' ? 'block' : 'none';
+  document.getElementById('f-taux-row').style.display = mode === 'direction' ? '' : 'none';
+  renderDossiers();
+}
+
+function toggleForm() {
+  const z = document.getElementById('form-zone');
+  z.style.display = z.style.display === 'none' ? 'block' : 'none';
+}
+
+function toggleGestionLocative() {
+  const type = document.getElementById('f-type').value;
+  const row = document.getElementById('f-gestion-row');
+  if (type === 'location') {
+    row.style.display = '';
+  } else {
+    row.style.display = 'none';
+    document.getElementById('f-nouvelle-gestion').checked = false;
+  }
+  calcAuto();
+}
+
+function calcAuto() {
+  const ttc = parseFloat(document.getElementById('f-ttc').value) || 0;
+  const taux = parseFloat(document.getElementById('f-taux').value) || 0;
+  const role = document.getElementById('f-role').value;
+  if (!ttc) { document.getElementById('calc-box').style.display = 'none'; return; }
+  const ht = ttc / 1.085;
+  const ca = role === 'entree_sortie' ? ht : ht * 0.5;
+  const comm = taux ? ca * (taux / 100) : 0;
+
+  // Bonus gestion locative
+  const nouvelleGestion = document.getElementById('f-nouvelle-gestion')?.checked;
+  // Pour affichage on ne peut pas connaître le taux bonus sans charger les commerciaux
+  // On affiche juste un indicateur
+  const infoGestion = document.getElementById('f-gestion-info');
+  if (infoGestion) infoGestion.style.display = nouvelleGestion ? 'block' : 'none';
+
+  document.getElementById('calc-box').style.display = 'block';
+  document.getElementById('calc-ht').textContent = fmt(ht);
+  document.getElementById('calc-ca').textContent = fmt(ca) + (role === 'entree_sortie' ? ' (100%)' : ' (50%)');
+  document.getElementById('calc-taux-display').textContent = taux ? pct(taux) : 'Non renseigné';
+  const commLabel = taux ? fmt(comm) + (nouvelleGestion ? ' + bonus gestion (voir direction)' : '') : '— (taux non renseigné)';
+  document.getElementById('calc-comm').textContent = commLabel;
+}
+
+async function saveDossier() {
+  const ref = document.getElementById('f-ref').value.trim();
+  const type = document.getElementById('f-type').value;
+  const commercialA = document.getElementById('f-commercial-a').value.trim();
+  const ttc = parseFloat(document.getElementById('f-ttc').value);
+  const msg = document.getElementById('form-msg');
+
+  if (!ref || !type || !commercialA || !ttc) {
+    msg.innerHTML = '<span style="color:var(--red)">⚠️ Remplir les champs obligatoires (référence, type, commercial, montant TTC)</span>';
+    return;
+  }
+
+  const role = document.getElementById('f-role').value;
+  const origine = document.getElementById('f-origine').value;
+  const commercialB = document.getElementById('f-commercial-b').value.trim();
+  const taux = parseFloat(document.getElementById('f-taux').value) || null;
+  const nouvelleGestion = type === 'location' && document.getElementById('f-nouvelle-gestion')?.checked;
+  const ht = ttc / 1.085;
+  const ca = role === 'entree_sortie' ? ht : ht * 0.5;
+  const commission = taux ? ca * (taux / 100) : null;
+
+  // Pour le bonus gestion, on récupère le taux depuis la table commerciaux
+  // La table est liée via utilisateur_id — on prend le premier enregistrement actif
+  // (dans une vraie implémentation, on filtrerait par l'utilisateur connecté)
+  let bonusGestion = null;
+  if (nouvelleGestion) {
+    try {
+      const comData = await sbFetch('commerciaux', `?select=taux_bonus_gestion&actif=eq.true&limit=10`);
+      // Chercher le commercial par nom dans la liste (approximation)
+      const tauxBonus = Array.isArray(comData) && comData[0]?.taux_bonus_gestion;
+      if (tauxBonus) bonusGestion = Math.round(ht * (tauxBonus / 100) * 100) / 100;
+    } catch(e) {}
+  }
+
+  msg.innerHTML = '<span class="spinner"></span> Enregistrement...';
+
+  const body = {
+    reference: ref, type_acte: type,
+    commercial_a: commercialA, commercial_b: commercialB || null,
+    role, origine_lead: origine,
+    montant_ttc: Math.round(ttc * 100) / 100,
+    montant_ht: Math.round(ht * 100) / 100,
+    ca_produit: Math.round(ca * 100) / 100,
+    taux_commission: taux,
+    montant_commission: commission ? Math.round(commission * 100) / 100 : null,
+    nouvelle_gestion: nouvelleGestion,
+    bonus_gestion: bonusGestion,
+    statut: 'en_attente',
+    date_dossier: new Date().toISOString().split('T')[0]
+  };
+
+  const { ok, data } = await sbPost('dossiers_commissions', body);
+  if (ok) {
+    msg.innerHTML = '<span style="color:var(--green)">✓ Dossier enregistré avec succès !</span>';
+    setTimeout(() => { toggleForm(); loadDossiers(); msg.innerHTML = ''; }, 1500);
+    // Reset
+    ['f-ref','f-commercial-a','f-commercial-b','f-ttc','f-taux'].forEach(id => document.getElementById(id).value = '');
+    if (document.getElementById('f-nouvelle-gestion')) document.getElementById('f-nouvelle-gestion').checked = false;
+    document.getElementById('f-gestion-row').style.display = 'none';
+    document.getElementById('calc-box').style.display = 'none';
+  } else {
+    msg.innerHTML = `<span style="color:var(--red)">Erreur: ${JSON.stringify(data).substring(0, 100)}</span>`;
+  }
+}
+
+async function marquerPaye(id) {
+  if (!confirm('Marquer cette commission comme payée ? Action irréversible.')) return;
+  const ok = await sbPatch('dossiers_commissions', id, {
+    statut: 'paye', date_paiement: new Date().toISOString().split('T')[0]
+  });
+  if (ok) loadDossiers();
+}
+
+function renderDossiers() {
+  const filtreMois = document.getElementById('filtre-mois').value;
+  const filtreCommercial = document.getElementById('filtre-commercial').value;
+  const now = new Date();
+
+  let data = allDossiers;
+  if (currentMode === 'commercial') {
+    // En mode commercial, masquer les taux et les autres commerciaux
+    // (dans un vrai système, filtrer par user connecté)
+  }
+  if (filtreMois) data = data.filter(d => (d.date_dossier || '').startsWith(filtreMois));
+  if (filtreCommercial) data = data.filter(d => d.commercial_a === filtreCommercial || d.commercial_b === filtreCommercial);
+
+  // KPIs
+  const thisMonth = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+  const cesMois = allDossiers.filter(d => (d.date_dossier||'').startsWith(thisMonth));
+  const caTotal = allDossiers.reduce((s,d) => s + (d.montant_ht || 0), 0);
+  const dues = allDossiers.filter(d => d.statut !== 'paye').reduce((s,d) => s + (d.montant_commission || 0), 0);
+  const payees = allDossiers.filter(d => d.statut === 'paye' && (d.date_paiement||'').startsWith(thisMonth)).reduce((s,d) => s + (d.montant_commission || 0), 0);
+  const impayes30 = allDossiers.filter(d => d.statut !== 'paye' && d.date_dossier && (now - new Date(d.date_dossier)) > 30*864e5).length;
+
+  document.getElementById('kpi-ca').textContent = fmt(caTotal);
+  document.getElementById('kpi-dues').textContent = fmt(dues);
+  document.getElementById('kpi-payees').textContent = fmt(payees);
+  document.getElementById('kpi-nb').textContent = cesMois.length;
+  document.getElementById('kpi-impayes-val').textContent = impayes30;
+
+  if (impayes30 > 0) {
+    document.getElementById('alerte-impayes').style.display = 'block';
+    document.getElementById('nb-impayes').textContent = impayes30;
+  }
+
+  const tbody = document.getElementById('comm-tbody');
+  if (!data.length) { tbody.innerHTML = '<tr><td colspan="13" class="empty">Aucun dossier trouvé</td></tr>'; return; }
+
+  const isDir = currentMode === 'direction';
+  tbody.innerHTML = data.map(d => {
+    const badge = d.statut === 'paye'
+      ? '<span class="badge badge-green">✓ Payé</span>'
+      : '<span class="badge badge-amber">En attente</span>';
+    const roleBadge = d.role === 'entree_sortie' ? '<span class="badge badge-blue">E+S</span>'
+      : d.role === 'entree' ? '<span class="badge badge-gray">Entrée</span>'
+      : '<span class="badge badge-gray">Sortie</span>';
+    const actionCell = isDir && d.statut !== 'paye'
+      ? `<button class="btn-sm pay" onclick="marquerPaye('${d.id}')">✓ Marquer payé</button>`
+      : '';
+    const tauxCell = isDir ? `<td>${d.taux_commission ? pct(d.taux_commission) : '—'}</td>` : '';
+    const actionsCell = isDir ? `<td>${actionCell}</td>` : '';
+
+    return `<tr>
+      <td style="font-weight:600">${d.reference || '—'}</td>
+      <td><span class="badge badge-${d.type_acte === 'vente' ? 'blue' : d.type_acte === 'location' ? 'green' : 'gray'}">${d.type_acte || '—'}${d.nouvelle_gestion ? ' 🏠' : ''}</span></td>
+      <td>${d.commercial_a || '—'}${d.commercial_b ? `<br><span style="font-size:11px;color:var(--text-muted)">+ ${d.commercial_b}</span>` : ''}</td>
+      <td>${roleBadge}</td>
+      <td style="font-size:12px;color:var(--text-muted)">${d.origine_lead === 'agence' ? 'Agence' : 'Personnel'}</td>
+      <td>${fmt(d.montant_ttc)}</td>
+      <td>${fmt(d.montant_ht)}</td>
+      <td style="font-weight:600">${fmt(d.ca_produit)}</td>
+      ${tauxCell}
+      <td style="font-weight:700;color:var(--green-dark)">${d.montant_commission ? fmt(d.montant_commission) : '—'}${d.bonus_gestion && d.bonus_gestion > 0 ? `<br><span style="font-size:11px;color:var(--green);font-weight:600">+ ${fmt(d.bonus_gestion)} gestion</span>` : ''}</td>
+      <td>${badge}</td>
+      ${actionsCell}
+      <td style="font-size:11px;color:var(--text-faint)">${d.date_dossier ? new Date(d.date_dossier).toLocaleDateString('fr-FR') : '—'}</td>
+    </tr>`;
+  }).join('');
+}
+
+async function loadDossiers() {
+  try {
+    allDossiers = await sbFetch('dossiers_commissions', '?order=date_dossier.desc&limit=500');
+    if (!Array.isArray(allDossiers)) allDossiers = [];
+
+    // Peupler filtres
+    const moisSet = new Set(allDossiers.map(d => (d.date_dossier||'').substring(0,7)).filter(Boolean));
+    const comSet = new Set(allDossiers.flatMap(d => [d.commercial_a, d.commercial_b]).filter(Boolean));
+    const selMois = document.getElementById('filtre-mois');
+    const selCom = document.getElementById('filtre-commercial');
+    const curMois = selMois.value, curCom = selCom.value;
+    selMois.innerHTML = '<option value="">Tous les mois</option>' + [...moisSet].sort().reverse().map(m => `<option value="${m}"${m===curMois?' selected':''}>${m}</option>`).join('');
+    selCom.innerHTML = '<option value="">Tous les commerciaux</option>' + [...comSet].sort().map(c => `<option value="${c}"${c===curCom?' selected':''}>${c}</option>`).join('');
+
+    renderDossiers();
+    document.getElementById('last-update').textContent = 'Mis à jour ' + new Date().toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'});
+  } catch(e) {
+    document.getElementById('comm-tbody').innerHTML = '<tr><td colspan="13" class="empty">Erreur de connexion Supabase</td></tr>';
+  }
+}
+
+async function loadTaux() {
+  try {
+    // Jointure commerciaux → utilisateurs pour avoir les noms
+    const data = await sbFetch('commerciaux', '?select=*,utilisateurs(nom,prenom,profil)&actif=eq.true&order=created_at.asc');
+    const tbody = document.getElementById('taux-tbody');
+    if (!Array.isArray(data) || !data.length) {
+      tbody.innerHTML = '<tr><td colspan="10" class="empty">Aucun commercial actif — à créer dans la table commerciaux (liée à utilisateurs)</td></tr>';
+      return;
+    }
+    tbody.innerHTML = data.map(c => {
+      const u = c.utilisateurs || {};
+      const nomAffiche = u.nom && u.prenom ? `${u.prenom} ${u.nom}` : `(id: ${c.utilisateur_id?.substring(0,8)}...)`;
+      return `<tr data-id="${c.id}">
+        <td><strong>${nomAffiche}</strong></td>
+        <td><span class="badge badge-${c.statut_emploi === 'independant' ? 'blue' : 'gray'}">${c.statut_emploi === 'independant' ? 'Indépendant' : 'Salarié'}</span></td>
+        <td><input type="number" step="0.5" min="0" max="100" value="${c.taux_vente_entree_agence||''}" placeholder="%" data-field="taux_vente_entree_agence"></td>
+        <td><input type="number" step="0.5" min="0" max="100" value="${c.taux_vente_sortie_agence||''}" placeholder="%" data-field="taux_vente_sortie_agence"></td>
+        <td><input type="number" step="0.5" min="0" max="100" value="${c.taux_vente_entree_perso||''}" placeholder="%" data-field="taux_vente_entree_perso"></td>
+        <td><input type="number" step="0.5" min="0" max="100" value="${c.taux_vente_sortie_perso||''}" placeholder="%" data-field="taux_vente_sortie_perso"></td>
+        <td><input type="number" step="0.5" min="0" max="100" value="${c.taux_location_entree_agence||''}" placeholder="%" data-field="taux_location_entree_agence"></td>
+        <td><input type="number" step="0.5" min="0" max="100" value="${c.taux_location_sortie_agence||''}" placeholder="%" data-field="taux_location_sortie_agence"></td>
+        <td style="background:var(--green-light)"><input type="number" step="0.5" min="0" max="100" value="${c.taux_bonus_gestion||''}" placeholder="%" data-field="taux_bonus_gestion" style="background:transparent" title="Bonus % sur HT location → nouvelle gestion"></td>
+        <td><input type="number" step="0.5" min="0" max="100" value="${c.taux_divers_entree_agence||''}" placeholder="%" data-field="taux_divers_entree_agence"></td>
+      </tr>`;
+    }).join('');
+  } catch(e) {
+    document.getElementById('taux-tbody').innerHTML = `<tr><td colspan="10" class="empty">Erreur chargement taux</td></tr>`;
+  }
+}
+
+async function saveTaux() {
+  const rows = document.querySelectorAll('#taux-tbody tr[data-id]');
+  const msg = document.getElementById('taux-msg');
+  msg.innerHTML = '<span class="spinner"></span> Enregistrement...';
+  let ok = true;
+  for (const row of rows) {
+    const id = row.dataset.id;
+    const body = {};
+    row.querySelectorAll('input[data-field]').forEach(inp => {
+      body[inp.dataset.field] = inp.value ? parseFloat(inp.value) : null;
+    });
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/commerciaux?id=eq.${id}`, {
+      method: 'PATCH',
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    if (!r.ok) ok = false;
+  }
+  msg.innerHTML = ok
+    ? '<span style="color:var(--green)">✓ Taux enregistrés avec succès</span>'
+    : '<span style="color:var(--red)">Erreur lors de l\'enregistrement</span>';
+  setTimeout(() => msg.innerHTML = '', 3000);
+}
+
+function exportCSV() {
+  const headers = ['Référence','Type','Commercial A','Commercial B','Rôle','Origine','TTC','HT','CA produit','Taux %','Commission','Statut','Date'];
+  const rows = allDossiers.map(d => [
+    d.reference, d.type_acte, d.commercial_a, d.commercial_b||'',
+    d.role, d.origine_lead,
+    (d.montant_ttc||0).toFixed(2), (d.montant_ht||0).toFixed(2),
+    (d.ca_produit||0).toFixed(2), d.taux_commission||'',
+    (d.montant_commission||0).toFixed(2), d.statut, d.date_dossier||''
+  ].join(';'));
+  const csv = '\uFEFF' + headers.join(';') + '\n' + rows.join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url;
+  a.download = `commissions_ica_${new Date().toISOString().split('T')[0]}.csv`;
+  a.click();
+}
+
+// Init
+setMode(currentMode);
+loadDossiers();
+if (currentMode === 'direction') loadTaux();
+</script>
+</body>
+</html>

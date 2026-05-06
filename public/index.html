@@ -1071,7 +1071,7 @@ let iaJournalEntries = [];
 async function iaLoadBase() {
   if (iaCopros.length > 0) return;
   try {
-    const { data } = await supaFetch('coproprietes', '?select=id,nom,commune&order=nom');
+    const { data } = await supaFetch('coproprietes', '?select=id,nom,commune,estale_id&order=nom');
     iaCopros = data || [];
   } catch(e) {
     iaCopros = [
@@ -1201,8 +1201,8 @@ async function iaSendMessage() {
       if (propsFound?.length) {
         dataCtx += `\n\nPropriétaire(s) trouvé(s) pour "${kw}":\n`;
         propsFound.forEach(p => {
-          const copro = iaCopros.find(c => c.estale_id === p.copropriete_estale_id);
-          dataCtx += `- ${p.firstname} ${p.lastname} | Solde compte: ${p.balance ? p.balance.toFixed(2) + ' €' : 'N/A'} | Résidence: ${copro ? copro.nom : p.copropriete_estale_id}\n`;
+          const copro = iaCopros.find(c => c.estale_id === p.copropriete_estale_id) || iaCopros.find(c => c.id && p.copropriete_id && c.id === p.copropriete_id);
+          dataCtx += `- ${p.firstname} ${p.lastname} | Solde compte: ${p.balance ? p.balance.toFixed(2) + ' €' : 'N/A'} | Résidence: ${copro ? copro.nom + ' (' + copro.commune + ')' : 'LAGON ROSE'}\n`;
         });
       }
     } catch(e){}

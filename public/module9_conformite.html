@@ -1,4 +1,492 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Module 9 — À migrer</title>
-<meta http-equiv="refresh" content="2;url=/">
-<style>body{font-family:system-ui;display:flex;align-items:center;justify-content:center;min-height:100vh;background:#F8F7F4;color:#1a1a18}</style>
-</head><body><p>Module 9 Conformité — fichier à déposer ici. Redirection vers le dashboard…</p></body></html>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Conformité RSAC/CCI — Immo Conseil Antilles</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --green: #1D9E75; --green-light: #E1F5EE; --green-dark: #0F6E56;
+  --red: #E24B4A; --red-light: #FCEBEB;
+  --amber: #BA7517; --amber-light: #FAEEDA;
+  --blue: #185FA5; --blue-light: #E6F1FB;
+  --purple: #6B3FA0; --purple-light: #F0EAF8;
+  --gray: #888780; --bg: #F8F7F4; --surface: #FFFFFF;
+  --border: rgba(0,0,0,0.08); --border-strong: rgba(0,0,0,0.15);
+  --text: #1a1a18; --text-muted: #6b6b68; --text-faint: #9b9b98;
+  --radius: 10px; --radius-lg: 14px;
+}
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.5; min-height: 100vh; }
+
+.topbar { position: sticky; top: 0; z-index: 100; background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 52px; }
+.topbar-left { display: flex; align-items: center; gap: 12px; }
+.logo { background: var(--green); color: #fff; font-weight: 700; font-size: 13px; padding: 5px 9px; border-radius: 7px; }
+.topbar-title { font-weight: 600; font-size: 15px; }
+.topbar-right { display: flex; align-items: center; gap: 10px; }
+.back-btn { text-decoration: none; font-size: 12px; color: var(--text-muted); padding: 6px 12px; border: 1px solid var(--border-strong); border-radius: 7px; }
+.back-btn:hover { background: var(--bg); }
+
+.main { max-width: 1100px; margin: 0 auto; padding: 20px 24px 48px; }
+
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 20px; }
+.kpi { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px; }
+.kpi-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.4px; font-weight: 500; margin-bottom: 6px; }
+.kpi-val { font-size: 28px; font-weight: 700; color: var(--text); line-height: 1; }
+.kpi-val.green { color: var(--green); }
+.kpi-val.amber { color: var(--amber); }
+.kpi-val.red { color: var(--red); }
+.kpi-sub { font-size: 11px; color: var(--text-faint); margin-top: 4px; }
+
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; margin-bottom: 16px; }
+.card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.card-title { font-weight: 600; font-size: 14px; }
+
+/* COMMERCIAL CARD */
+.comm-card { border: 1px solid var(--border); border-left: 5px solid; border-radius: var(--radius-lg); padding: 16px; margin-bottom: 12px; display: flex; gap: 16px; align-items: flex-start; }
+.comm-card.en_regle { border-left-color: var(--green); background: var(--green-light); }
+.comm-card.incomplet { border-left-color: var(--amber); background: var(--amber-light); }
+.comm-card.non_conforme { border-left-color: var(--red); background: var(--red-light); }
+.comm-card.en_attente { border-left-color: var(--gray); background: #f5f5f3; }
+.comm-icon { font-size: 26px; flex-shrink: 0; margin-top: 2px; }
+.comm-info { flex: 1; min-width: 0; }
+.comm-name { font-weight: 700; font-size: 15px; margin-bottom: 4px; }
+.comm-statut { flex-shrink: 0; text-align: right; }
+.comm-actions { margin-top: 8px; display: flex; gap: 6px; flex-wrap: wrap; }
+
+/* BADGES */
+.badge { display: inline-block; padding: 3px 10px; border-radius: 99px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+.badge-green { background: var(--green); color: #fff; }
+.badge-amber { background: var(--amber); color: #fff; }
+.badge-red { background: var(--red); color: #fff; }
+.badge-blue { background: var(--blue-light); color: var(--blue); }
+.badge-gray { background: #e0e0de; color: var(--gray); }
+.badge-purple { background: var(--purple-light); color: var(--purple); }
+
+/* ALERTES */
+.check-item { display: flex; align-items: center; gap: 8px; font-size: 12px; padding: 4px 0; }
+.check-item .ico { font-size: 14px; flex-shrink: 0; }
+
+/* FORM */
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media(max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
+.form-row { display: flex; flex-direction: column; gap: 4px; }
+.form-row label { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.3px; }
+.form-row input, .form-row select { border: 1px solid var(--border-strong); border-radius: 8px; padding: 9px 11px; font-size: 13px; color: var(--text); background: var(--surface); outline: none; font-family: inherit; transition: border 0.15s; }
+.form-row input:focus, .form-row select:focus { border-color: var(--green); box-shadow: 0 0 0 3px var(--green-light); }
+.form-section { font-weight: 600; font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin: 16px 0 8px; padding-bottom: 4px; border-bottom: 1px solid var(--border); }
+
+/* CALENDAR TIMELINE */
+.timeline { display: flex; flex-direction: column; gap: 8px; }
+.tl-item { display: flex; gap: 12px; align-items: flex-start; }
+.tl-dot { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 2px; }
+.tl-green { background: var(--green); color: #fff; }
+.tl-blue { background: var(--blue); color: #fff; }
+.tl-amber { background: var(--amber); color: #fff; }
+.tl-red { background: var(--red); color: #fff; }
+.tl-content { flex: 1; }
+.tl-label { font-size: 13px; font-weight: 600; }
+.tl-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+/* BUTTONS */
+.btn { padding: 9px 18px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; transition: all 0.15s; font-family: inherit; }
+.btn-green { background: var(--green); color: #fff; }
+.btn-green:hover { background: var(--green-dark); }
+.btn-outline { background: transparent; border: 1px solid var(--border-strong); color: var(--text-muted); }
+.btn-outline:hover { background: var(--bg); }
+.btn-sm { padding: 5px 12px; font-size: 11px; border-radius: 6px; cursor: pointer; border: 1px solid var(--border-strong); background: var(--surface); color: var(--text-muted); font-family: inherit; font-weight: 600; }
+.btn-sm:hover { background: var(--bg); }
+.btn-sm.primary { background: var(--green); color: #fff; border-color: var(--green); }
+
+.spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid var(--border); border-top-color: var(--green); border-radius: 50%; animation: spin 0.8s linear infinite; vertical-align: middle; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.empty { text-align: center; padding: 32px; color: var(--text-muted); font-size: 13px; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <span class="logo">ICA</span>
+    <span class="topbar-title">🛡️ Conformité RSAC/CCI</span>
+  </div>
+  <div class="topbar-right">
+    <a href="index_final.html" class="back-btn">← Dashboard</a>
+    <span id="last-update" style="font-size:11px;color:var(--text-faint)">—</span>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- KPIs -->
+  <div class="kpis">
+    <div class="kpi"><div class="kpi-label">En règle</div><div class="kpi-val green" id="kpi-ok">—</div><div class="kpi-sub">Tous documents OK</div></div>
+    <div class="kpi"><div class="kpi-label">Incomplets</div><div class="kpi-val amber" id="kpi-warn">—</div><div class="kpi-sub">Documents manquants</div></div>
+    <div class="kpi"><div class="kpi-label">Non conformes</div><div class="kpi-val red" id="kpi-danger">—</div><div class="kpi-sub">Action requise</div></div>
+    <div class="kpi"><div class="kpi-label">Total commerciaux</div><div class="kpi-val" id="kpi-total">—</div><div class="kpi-sub">Actifs</div></div>
+    <div class="kpi"><div class="kpi-label">CCI expirant</div><div class="kpi-val amber" id="kpi-cci-exp">—</div><div class="kpi-sub">Dans les 3 mois</div></div>
+  </div>
+
+  <!-- LISTE COMMERCIAUX -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">👥 Commerciaux — Statut conformité</div>
+      <button class="btn btn-green" onclick="toggleAjout()">+ Nouveau commercial</button>
+    </div>
+    <div id="list-commerciaux"><div style="color:var(--text-muted);font-size:13px"><span class="spinner"></span> Chargement...</div></div>
+  </div>
+
+  <!-- FORMULAIRE AJOUT -->
+  <div class="card" id="form-ajout" style="display:none;border:2px solid var(--green)">
+    <div class="card-header">
+      <div class="card-title">➕ Ajouter un commercial</div>
+      <button class="btn-sm" onclick="toggleAjout()">✕ Fermer</button>
+    </div>
+    <div class="form-section">Identité</div>
+    <div class="form-grid">
+      <div class="form-row"><label>Nom *</label><input type="text" id="rf-nom" placeholder="Nom de famille"></div>
+      <div class="form-row"><label>Prénom *</label><input type="text" id="rf-prenom" placeholder="Prénom"></div>
+      <div class="form-row"><label>Email</label><input type="email" id="rf-email" placeholder="email@..."></div>
+      <div class="form-row"><label>Téléphone</label><input type="tel" id="rf-tel" placeholder="+590..."></div>
+      <div class="form-row">
+        <label>Statut *</label>
+        <select id="rf-statut" onchange="toggleRsacFields()">
+          <option value="independant">Indépendant (agent commercial)</option>
+          <option value="salarie">Salarié</option>
+        </select>
+      </div>
+      <div class="form-row"><label>Date d'entrée *</label><input type="date" id="rf-date-entree"></div>
+    </div>
+
+    <div class="form-section" id="section-rsac">RSAC (indépendants uniquement)</div>
+    <div class="form-grid" id="rsac-fields">
+      <div class="form-row"><label>SIREN (si existant)</label><input type="text" id="rf-siren" placeholder="123456789"></div>
+      <div class="form-row"><label>N° RSAC (si déjà inscrit)</label><input type="text" id="rf-rsac-num" placeholder="Numéro d'immatriculation"></div>
+      <div class="form-row"><label>Date inscription RSAC</label><input type="date" id="rf-rsac-date"></div>
+      <div class="form-row"></div>
+    </div>
+
+    <div class="form-section">Attestation CCI</div>
+    <div class="form-grid">
+      <div class="form-row">
+        <label>Statut CCI</label>
+        <select id="rf-cci-statut">
+          <option value="non_delivree">Non délivrée</option>
+          <option value="delivree">Délivrée</option>
+          <option value="expiree">Expirée</option>
+        </select>
+      </div>
+      <div class="form-row"><label>Date attestation CCI</label><input type="date" id="rf-cci-date"></div>
+    </div>
+
+    <div class="form-section">RC Pro (indépendants)</div>
+    <div class="form-grid" id="rcpro-fields">
+      <div class="form-row">
+        <label>RC Pro fournie</label>
+        <select id="rf-rcpro-fournie">
+          <option value="false">Non</option>
+          <option value="true">Oui</option>
+        </select>
+      </div>
+      <div class="form-row"><label>Assureur</label><input type="text" id="rf-rcpro-assureur" placeholder="ex: MMA, Allianz..."></div>
+      <div class="form-row"><label>N° Police</label><input type="text" id="rf-rcpro-police"></div>
+      <div class="form-row"><label>Date expiration RC Pro</label><input type="date" id="rf-rcpro-exp"></div>
+    </div>
+
+    <div class="form-section">Documents reçus</div>
+    <div style="display:flex;gap:16px;flex-wrap:wrap">
+      <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" id="doc-id"> Pièce d'identité</label>
+      <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" id="doc-noncond"> Déclaration non-condamnation</label>
+      <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" id="doc-vitale"> Carte Vitale</label>
+      <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" id="doc-contrat"> Contrat signé</label>
+    </div>
+
+    <div style="display:flex;gap:10px;margin-top:20px">
+      <button class="btn btn-green" onclick="saveCommercial()">✓ Enregistrer</button>
+      <button class="btn btn-outline" onclick="toggleAjout()">Annuler</button>
+    </div>
+    <div id="form-msg" style="margin-top:10px;font-size:13px"></div>
+  </div>
+
+  <!-- CALENDRIER OBLIGATIONS -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+    <div class="card">
+      <div class="card-header"><div class="card-title">📅 Délais RSAC — Indépendants</div></div>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot tl-green">J</div>
+          <div class="tl-content"><div class="tl-label">Jour J — Contrat signé</div><div class="tl-sub">Déclenchement du chrono légal · Mail récapitulatif + PDF INPI envoyé</div></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot tl-blue">J+5</div>
+          <div class="tl-content"><div class="tl-label">Rappel mail</div><div class="tl-sub">Lien guichet unique INPI + liste des pièces</div></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot tl-blue">J+10</div>
+          <div class="tl-content"><div class="tl-label">2ème relance mail</div><div class="tl-sub">Vérification documents reçus</div></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot tl-amber">J+13</div>
+          <div class="tl-content"><div class="tl-label">Alerte WhatsApp</div><div class="tl-sub">"Délai légal dans 2 jours — action requise"</div></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot tl-red">J+15</div>
+          <div class="tl-content"><div class="tl-label">🔴 ALERTE ROUGE Direction</div><div class="tl-sub">Délai légal dépassé — commercial en infraction</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">🔄 Renouvellement CCI & RC Pro</div></div>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot tl-amber">M-3</div>
+          <div class="tl-content"><div class="tl-label">Alerte direction</div><div class="tl-sub">Renouvellement CCI / RC Pro à prévoir</div></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot tl-amber">M-1</div>
+          <div class="tl-content"><div class="tl-label">Relance urgente</div><div class="tl-sub">Renouvellement imminent</div></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot tl-red">Exp.</div>
+          <div class="tl-content"><div class="tl-label">🔴 Commercial en infraction</div><div class="tl-sub">Arrêt d'activité obligatoire jusqu'au renouvellement</div></div>
+        </div>
+      </div>
+      <div style="margin-top:16px;padding:12px 14px;background:var(--blue-light);border-radius:8px;font-size:12px">
+        <strong>Documents requis (indépendants) :</strong><br>
+        Pièce d'identité · Déclaration non-condamnation · Carte Vitale · Contrat signé<br><br>
+        Inscription en ligne uniquement : <a href="https://formalites.entreprises.gouv.fr" target="_blank" style="color:var(--blue);font-weight:700">formalites.entreprises.gouv.fr</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const SUPABASE_URL = 'https://xdrlgyqxdbdvzrneujgz.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhkcmxneXF4ZGJkdnpybmV1amd6Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NjM1MDE1NywiZXhwIjoyMDkxOTI2MTU3fQ.1gvVPGSBotPXP_U4_-lLGQ0SfG2HdzLNWY9mRUiSd-A';
+
+async function sbFetch(table, params = '') {
+  const r = await fetch(`${SUPABASE_URL}/rest/v1/${table}${params}`, {
+    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+  });
+  return r.json();
+}
+
+async function sbPost(table, body) {
+  const r = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
+    method: 'POST',
+    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=representation' },
+    body: JSON.stringify(body)
+  });
+  return { ok: r.ok, data: await r.json() };
+}
+
+function toggleAjout() {
+  const f = document.getElementById('form-ajout');
+  f.style.display = f.style.display === 'none' ? 'block' : 'none';
+  if (f.style.display === 'block') f.scrollIntoView({ behavior: 'smooth' });
+}
+
+function toggleRsacFields() {
+  const isIndep = document.getElementById('rf-statut').value === 'independant';
+  document.getElementById('rsac-fields').style.display = isIndep ? '' : 'none';
+  document.getElementById('section-rsac').style.display = isIndep ? '' : 'none';
+  document.getElementById('rcpro-fields').style.display = isIndep ? '' : 'none';
+}
+
+function calcStatutGlobal(c) {
+  const now = new Date();
+  const joursDepuis = c.date_entree ? Math.floor((now - new Date(c.date_entree)) / 864e5) : 0;
+
+  if (c.statut === 'independant') {
+    if (!c.rsac_numero && joursDepuis > 15) return 'non_conforme';
+    if (!c.rsac_numero) return 'incomplet';
+    if (c.cci_statut === 'expiree') return 'non_conforme';
+    if (c.cci_statut !== 'delivree') return 'incomplet';
+    if (c.rc_pro_fournie === false || c.rc_pro_fournie === 'false') return 'incomplet';
+    if (c.rc_pro_date_expiration && new Date(c.rc_pro_date_expiration) < now) return 'non_conforme';
+    return 'en_regle';
+  } else {
+    if (c.cci_statut === 'expiree') return 'non_conforme';
+    if (c.cci_statut !== 'delivree') return 'incomplet';
+    return 'en_regle';
+  }
+}
+
+function joursAvant(dateStr) {
+  if (!dateStr) return null;
+  return Math.floor((new Date(dateStr) - new Date()) / 864e5);
+}
+
+function renderCommercial(c) {
+  const statut = calcStatutGlobal(c);
+  const joursDepuis = c.date_entree ? Math.floor((new Date() - new Date(c.date_entree)) / 864e5) : 0;
+  const isIndep = c.statut === 'independant';
+
+  const statutBadge = {
+    en_regle: '<span class="badge badge-green">✅ En règle</span>',
+    incomplet: '<span class="badge badge-amber">⚠️ Incomplet</span>',
+    non_conforme: '<span class="badge badge-red">🔴 Non conforme</span>',
+    en_attente: '<span class="badge badge-gray">⏳ En attente</span>'
+  }[statut] || '';
+
+  const checks = [];
+
+  // RSAC
+  if (isIndep) {
+    if (c.rsac_numero) {
+      checks.push(`<div class="check-item"><span class="ico">✅</span> RSAC n°${c.rsac_numero} ${c.rsac_date ? '· inscrit le ' + new Date(c.rsac_date).toLocaleDateString('fr-FR') : ''}</div>`);
+    } else {
+      const alerte = joursDepuis > 15
+        ? `<strong style="color:var(--red)"> — DÉPASSÉ (${joursDepuis}j)</strong>`
+        : joursDepuis > 10 ? ` — J+${joursDepuis} <strong style="color:var(--amber)">(délai légal J+15)</strong>` : ` — J+${joursDepuis}`;
+      checks.push(`<div class="check-item"><span class="ico">❌</span> RSAC non inscrit${alerte}</div>`);
+    }
+    // RC Pro
+    if (c.rc_pro_fournie === true || c.rc_pro_fournie === 'true') {
+      const jours = joursAvant(c.rc_pro_date_expiration);
+      const expInfo = jours !== null ? (jours < 0 ? `<strong style="color:var(--red)"> EXPIRÉE</strong>` : jours < 90 ? ` — Expire dans ${jours}j <span class="badge badge-amber">⚠️ Renouveler</span>` : ` · Expire dans ${jours}j`) : '';
+      checks.push(`<div class="check-item"><span class="ico">✅</span> RC Pro${c.rc_pro_assureur ? ' · ' + c.rc_pro_assureur : ''}${expInfo}</div>`);
+    } else {
+      checks.push(`<div class="check-item"><span class="ico">⚠️</span> RC Pro non fournie</div>`);
+    }
+  }
+
+  // CCI
+  const cciJours = joursAvant(c.cci_date);
+  if (c.cci_statut === 'delivree') {
+    const expCci = cciJours !== null ? (cciJours < 0 ? `<strong style="color:var(--red)"> EXPIRÉE</strong>` : cciJours < 90 ? ` — Expire dans ${cciJours}j <span class="badge badge-amber">⚠️</span>` : '') : '';
+    checks.push(`<div class="check-item"><span class="ico">✅</span> Attestation CCI délivrée${c.cci_date ? ' le ' + new Date(c.cci_date).toLocaleDateString('fr-FR') : ''}${expCci}</div>`);
+  } else if (c.cci_statut === 'expiree') {
+    checks.push(`<div class="check-item"><span class="ico">❌</span> Attestation CCI <strong style="color:var(--red)">EXPIRÉE</strong></div>`);
+  } else {
+    checks.push(`<div class="check-item"><span class="ico">⚠️</span> Attestation CCI non délivrée</div>`);
+  }
+
+  // Documents
+  const docs = [c.doc_identite && 'ID', c.doc_non_condamnation && 'Non-cond.', c.doc_vitale && 'Vitale', c.doc_contrat && 'Contrat'].filter(Boolean);
+  if (docs.length) checks.push(`<div class="check-item"><span class="ico">📄</span> Documents reçus : ${docs.join(' · ')}</div>`);
+  else checks.push(`<div class="check-item"><span class="ico">📄</span> Aucun document enregistré</div>`);
+
+  return `<div class="comm-card ${statut}">
+    <div class="comm-icon">${isIndep ? '🧑‍💼' : '👔'}</div>
+    <div class="comm-info">
+      <div class="comm-name">${c.nom || ''} ${c.prenom || ''} <span class="badge badge-${isIndep ? 'purple' : 'blue'}">${isIndep ? 'Indépendant' : 'Salarié'}</span></div>
+      ${c.email ? `<div style="font-size:12px;color:var(--text-muted);margin-bottom:6px">${c.email}${c.telephone ? ' · ' + c.telephone : ''}</div>` : ''}
+      <div>${checks.join('')}</div>
+      ${!isIndep && c.statut === 'independant' || c.rsac_numero ? '' : isIndep && !c.rsac_numero ? `
+        <div class="comm-actions">
+          <a href="https://formalites.entreprises.gouv.fr" target="_blank" class="btn-sm primary">→ Guichet unique INPI</a>
+          <button class="btn-sm" onclick="validerRsac('${c.id}')">✓ Saisir n° RSAC</button>
+        </div>` : ''}
+    </div>
+    <div class="comm-statut">
+      ${statutBadge}
+      <div style="margin-top:8px">
+        <button class="btn-sm" onclick="editCommercial('${c.id}')">✏️ Modifier</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+async function loadCommerciaux() {
+  try {
+    const data = await sbFetch('commerciaux', '?order=nom.asc');
+    if (!Array.isArray(data) || !data.length) {
+      document.getElementById('list-commerciaux').innerHTML = '<div class="empty">Aucun commercial enregistré<br><span style="font-size:12px">Cliquez sur "+ Nouveau commercial" pour en ajouter</span></div>';
+      ['kpi-ok','kpi-warn','kpi-danger','kpi-total','kpi-cci-exp'].forEach(id => document.getElementById(id).textContent = '0');
+      return;
+    }
+
+    const statuts = data.map(c => calcStatutGlobal(c));
+    document.getElementById('kpi-ok').textContent = statuts.filter(s => s === 'en_regle').length;
+    document.getElementById('kpi-warn').textContent = statuts.filter(s => s === 'incomplet').length;
+    document.getElementById('kpi-danger').textContent = statuts.filter(s => s === 'non_conforme').length;
+    document.getElementById('kpi-total').textContent = data.length;
+
+    // CCI expirant dans 90j
+    const cciExp = data.filter(c => {
+      const j = joursAvant(c.cci_date);
+      return j !== null && j >= 0 && j <= 90;
+    }).length;
+    document.getElementById('kpi-cci-exp').textContent = cciExp;
+
+    document.getElementById('list-commerciaux').innerHTML = data.map(renderCommercial).join('');
+    document.getElementById('last-update').textContent = 'Mis à jour ' + new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+  } catch(e) {
+    document.getElementById('list-commerciaux').innerHTML = '<div class="empty">Erreur de connexion Supabase</div>';
+  }
+}
+
+async function saveCommercial() {
+  const nom = document.getElementById('rf-nom').value.trim();
+  const prenom = document.getElementById('rf-prenom').value.trim();
+  const msg = document.getElementById('form-msg');
+  if (!nom || !prenom) { msg.innerHTML = '<span style="color:var(--red)">⚠️ Nom et prénom obligatoires</span>'; return; }
+
+  const statut = document.getElementById('rf-statut').value;
+  const rsacNum = document.getElementById('rf-rsac-num').value.trim();
+  const rsacDate = document.getElementById('rf-rsac-date').value;
+  const cciStatut = document.getElementById('rf-cci-statut').value;
+  const cciDate = document.getElementById('rf-cci-date').value;
+  const rcproFournie = document.getElementById('rf-rcpro-fournie').value === 'true';
+  const rcproExp = document.getElementById('rf-rcpro-exp').value;
+  const dateEntree = document.getElementById('rf-date-entree').value;
+
+  const body = {
+    nom, prenom,
+    email: document.getElementById('rf-email').value.trim() || null,
+    telephone: document.getElementById('rf-tel').value.trim() || null,
+    statut, date_entree: dateEntree || null,
+    siren: document.getElementById('rf-siren').value.trim() || null,
+    rsac_numero: rsacNum || null,
+    rsac_date: rsacDate || null,
+    cci_statut: cciStatut,
+    cci_date: cciDate || null,
+    rc_pro_fournie: rcproFournie,
+    rc_pro_assureur: document.getElementById('rf-rcpro-assureur').value.trim() || null,
+    rc_pro_numero_police: document.getElementById('rf-rcpro-police').value.trim() || null,
+    rc_pro_date_expiration: rcproExp || null,
+    doc_identite: document.getElementById('doc-id').checked,
+    doc_non_condamnation: document.getElementById('doc-noncond').checked,
+    doc_vitale: document.getElementById('doc-vitale').checked,
+    doc_contrat: document.getElementById('doc-contrat').checked,
+    actif: true
+  };
+
+  msg.innerHTML = '<span class="spinner"></span> Enregistrement...';
+  const { ok, data } = await sbPost('commerciaux', body);
+  if (ok) {
+    msg.innerHTML = '<span style="color:var(--green)">✓ Commercial enregistré !</span>';
+    setTimeout(() => { toggleAjout(); loadCommerciaux(); msg.innerHTML = ''; }, 1500);
+  } else {
+    const errMsg = Array.isArray(data) ? 'OK' : (data?.message || data?.code || JSON.stringify(data).substring(0,100));
+    if (errMsg === 'OK' || (data && data.length)) {
+      msg.innerHTML = '<span style="color:var(--green)">✓ Commercial enregistré !</span>';
+      setTimeout(() => { toggleAjout(); loadCommerciaux(); }, 1500);
+    } else {
+      msg.innerHTML = `<span style="color:var(--red)">Erreur: ${errMsg} — vérifier que la table "commerciaux" existe dans Supabase</span>`;
+    }
+  }
+}
+
+function validerRsac(id) {
+  const num = prompt('Saisir le numéro RSAC obtenu :');
+  if (!num) return;
+  const date = prompt('Date d\'inscription RSAC (YYYY-MM-DD) :') || new Date().toISOString().split('T')[0];
+  fetch(`${SUPABASE_URL}/rest/v1/commerciaux?id=eq.${id}`, {
+    method: 'PATCH',
+    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ rsac_numero: num, rsac_date: date })
+  }).then(() => loadCommerciaux());
+}
+
+function editCommercial(id) {
+  alert('Modification directe à implémenter — pour l\'instant, mettre à jour directement dans Supabase → table commerciaux, ligne id=' + id);
+}
+
+// Init
+loadCommerciaux();
+</script>
+</body>
+</html>
