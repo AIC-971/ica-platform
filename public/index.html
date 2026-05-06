@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard Ã¢ÂÂ Immo Conseil Antilles</title>
+<title>Dashboard — Immo Conseil Antilles</title>
 <style>
   /* ===== RESET & BASE ===== */
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -93,7 +93,7 @@
 
   /* ===== LAYOUT ===== */
   .main { max-width: 1200px; margin: 0 auto; padding: 20px 24px; }
-  /* IA section override Ã¢ÂÂ pleine largeur sans padding horizontal */
+  /* IA section override — pleine largeur sans padding horizontal */
   #assistant-ia.section.visible { padding: 0; max-width: none; }
 
   /* ===== TABS ===== */
@@ -120,7 +120,7 @@
     min-width: 16px; text-align: center;
   }
   .tab.active .tab-badge { background: rgba(255,255,255,0.3); }
-  /* Tab IA spÃÂ©cial */
+  /* Tab IA spécial */
   .tab.tab-ia {
     background: linear-gradient(135deg, #1a2240, #1e2a45);
     border-color: #2a3a60;
@@ -236,7 +236,7 @@
   .last-update { font-size: 11px; color: var(--text-faint); }
 
   /* ===================================================================
-     ASSISTANT IA Ã¢ÂÂ STYLES (dark, intÃÂ©grÃÂ© dans la page)
+     ASSISTANT IA — STYLES (dark, intégré dans la page)
   =================================================================== */
   #assistant-ia.section.visible {
     display: flex;
@@ -532,7 +532,7 @@
 </style>
 
 <style id="auth-styles">
-#auth-screen{position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,#0F6E56 0%,#1D9E75 50%,#185FA5 100%);display:flex;align-items:center;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif}
+#auth-screen{position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,#0F6E56,#1D9E75 50%,#185FA5);display:flex;align-items:center;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif}
 #auth-screen.hidden{display:none}
 .auth-card{background:#fff;border-radius:20px;padding:40px 36px;width:100%;max-width:380px;box-shadow:0 24px 60px rgba(0,0,0,.25)}
 .auth-logo{display:flex;align-items:center;gap:12px;margin-bottom:28px}
@@ -558,32 +558,29 @@ body.role-gestionnaire [data-hide-gestionnaire]{display:none!important}
 <body>
 <div id="auth-screen">
   <div class="auth-card">
-    <div class="auth-logo">
-      <div class="auth-logo-badge">ICA</div>
-      <div><div class="auth-logo-name">Immo Conseil Antilles</div><div class="auth-logo-sub">Plateforme de direction</div></div>
-    </div>
+    <div class="auth-logo"><div class="auth-logo-badge">ICA</div><div><div class="auth-logo-name">Immo Conseil Antilles</div><div class="auth-logo-sub">Plateforme de direction</div></div></div>
     <div class="auth-title">Connexion</div>
-    <div class="auth-subtitle">AccÃ¨s sÃ©curisÃ© â Ã©quipe ICA</div>
-    <div class="auth-info"><span>ð</span><span>Utilisez votre identifiant et mot de passe fournis par la direction</span></div>
-    <div class="auth-error" id="auth-error">Identifiants incorrects. RÃ©essayez.</div>
+    <div class="auth-subtitle">Acces securise — equipe ICA</div>
+    <div class="auth-info"><span>🔐</span><span>Utilisez votre identifiant et mot de passe fournis par la direction</span></div>
+    <div class="auth-error" id="auth-error">Identifiants incorrects. Reessayez.</div>
     <div class="auth-field"><label>Identifiant</label><input type="text" id="auth-login" placeholder="Votre identifiant" autocomplete="username"></div>
-    <div class="auth-field"><label>Mot de passe</label><input type="password" id="auth-password" placeholder="â¢â¢â¢â¢â¢â¢â¢â¢" autocomplete="current-password" onkeydown="if(event.key==='Enter')authLogin()"></div>
-    <button class="auth-btn" onclick="authLogin()">â AccÃ©der Ã  la plateforme</button>
-    <div style="margin-top:16px;font-size:11px;color:#aaa;text-align:center">Connexion sÃ©curisÃ©e Â· Immo Conseil Antilles Â© 2026</div>
+    <div class="auth-field"><label>Mot de passe</label><input type="password" id="auth-password" placeholder="..." autocomplete="current-password" onkeydown="if(event.key==='Enter')authLogin()"></div>
+    <button class="auth-btn" onclick="authLogin()">Acceder a la plateforme</button>
+    <div style="margin-top:16px;font-size:11px;color:#aaa;text-align:center">Connexion securisee · Immo Conseil Antilles 2026</div>
   </div>
 </div>
+
 
 <!-- TOPBAR -->
 <div class="topbar">
   <div class="topbar-left">
     <span class="logo">ICA</span>
-    <span class="topbar-title">Dashboard de contrÃÂ´le</span>
+    <span class="topbar-title">Dashboard de contrôle</span>
   </div>
   <div class="topbar-right">
-    <span class="last-update" id="lastUpdate">Ã¢ÂÂ</span>
+    <span class="last-update" id="lastUpdate">—</span>
     <span class="live-badge"><span class="live-dot"></span>Supabase live</span>
-    <div id="auth-user-badge" onclick="authLogout()" title="Se déconnecter" style="display:flex;align-items:center;gap:6px;font-size:12px;padding:5px 12px;border-radius:8px;cursor:pointer;border:1px solid rgba(0,0,0,.15);background:#f8f7f4;color:#6b6b68;font-weight:600"><span id="auth-user-icon">👤</span><span id="auth-user-name">—</span><span style="font-size:10px;opacity:.6">↩</span></div>
-    <button class="refresh-btn" onclick="loadAll()">Ã¢ÂÂ» Actualiser</button>
+    <div id="auth-user-badge" onclick="authLogout()" title="Se deconnecter"><span id="auth-user-icon">👤</span> <span id="auth-user-name">—</span> <small>↩</small></div><button class="refresh-btn" onclick="loadAll()">↻ Actualiser</button>
   </div>
 </div>
 
@@ -597,79 +594,79 @@ body.role-gestionnaire [data-hide-gestionnaire]{display:none!important}
     <div class="tab" data-tab="mails">Mails IA <span class="tab-badge" id="badge-mails" style="display:none">0</span></div>
     <div class="tab" data-tab="alertes" data-hide-commercial data-hide-gestionnaire>Alertes <span class="tab-badge" id="badge-alertes" style="display:none">0</span></div>
     <div class="tab" data-tab="ia-workflows" data-hide-commercial data-hide-gestionnaire>IA & Workflows</div>
-    <div class="tab tab-ia" data-tab="assistant-ia">Ã°ÂÂ¤Â Assistant IA</div>
-    <div class="tab" onclick="window.open('module8_commissions.html?mode=direction','_blank')" style="cursor:pointer">Ã°ÂÂÂ° Commissions Ã¢ÂÂ</div>
-    <div class="tab" onclick="window.open('module9_conformite.html','_blank')" style="cursor:pointer">Ã°ÂÂÂ¡Ã¯Â¸Â ConformitÃÂ© Ã¢ÂÂ</div>
+    <div class="tab tab-ia" data-tab="assistant-ia">🤖 Assistant IA</div>
+    <div class="tab" onclick="window.open('module8_commissions.html?mode=direction','_blank')" style="cursor:pointer" data-hide-commercial data-hide-gestionnaire>💰 Commissions ↗</div>
+    <div class="tab" onclick="window.open('module9_conformite.html','_blank')" style="cursor:pointer" data-hide-commercial data-hide-gestionnaire>🛡️ Conformité ↗</div>
   </div>
 
   <!-- ===== VUE GLOBALE ===== -->
   <div id="global" class="section visible">
     <div id="acces-rapides" style="display:none;margin-bottom:20px">
-      <div style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">AccÃÂ¨s rapides Ã¢ÂÂ Direction</div>
+      <div style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">Accès rapides — Direction</div>
       <div style="display:flex;gap:10px;flex-wrap:wrap">
         <a href="module8_commissions.html?mode=direction" target="_blank" style="text-decoration:none">
           <div style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:12px 18px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:box-shadow 0.15s" onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)'" onmouseout="this.style.boxShadow=''">
-            <span style="font-size:20px">Ã°ÂÂÂ°</span>
+            <span style="font-size:20px">💰</span>
             <div><div style="font-size:13px;font-weight:500">Commissions</div><div style="font-size:11px;color:var(--text-muted)">Module 8</div></div>
-            <span style="font-size:11px;color:var(--text-muted);margin-left:4px">Ã¢ÂÂ</span>
+            <span style="font-size:11px;color:var(--text-muted);margin-left:4px">↗</span>
           </div>
         </a>
         <a href="module9_conformite.html" target="_blank" style="text-decoration:none">
           <div style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:12px 18px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:box-shadow 0.15s" onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)'" onmouseout="this.style.boxShadow=''">
-            <span style="font-size:20px">Ã°ÂÂÂ¡Ã¯Â¸Â</span>
-            <div><div style="font-size:13px;font-weight:500">ConformitÃÂ© RSAC/CCI</div><div style="font-size:11px;color:var(--text-muted)">Module 9</div></div>
-            <span style="font-size:11px;color:var(--text-muted);margin-left:4px">Ã¢ÂÂ</span>
+            <span style="font-size:20px">🛡️</span>
+            <div><div style="font-size:13px;font-weight:500">Conformité RSAC/CCI</div><div style="font-size:11px;color:var(--text-muted)">Module 9</div></div>
+            <span style="font-size:11px;color:var(--text-muted);margin-left:4px">↗</span>
           </div>
         </a>
         <a href="module8_commissions.html" target="_blank" style="text-decoration:none">
           <div style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:12px 18px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:box-shadow 0.15s" onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)'" onmouseout="this.style.boxShadow=''">
-            <span style="font-size:20px">Ã°ÂÂÂ¤</span>
-            <div><div style="font-size:13px;font-weight:500">Espace commerciale</div><div style="font-size:11px;color:var(--text-muted)">Commissions Ã¢ÂÂ accÃÂ¨s sÃÂ©curisÃÂ©</div></div>
-            <span style="font-size:11px;color:var(--text-muted);margin-left:4px">Ã¢ÂÂ</span>
+            <span style="font-size:20px">👤</span>
+            <div><div style="font-size:13px;font-weight:500">Espace commerciale</div><div style="font-size:11px;color:var(--text-muted)">Commissions — accès sécurisé</div></div>
+            <span style="font-size:11px;color:var(--text-muted);margin-left:4px">↗</span>
           </div>
         </a>
         <a href="cloture_intervention.html?ref=INT-2026-DEMO" target="_blank" style="text-decoration:none">
           <div style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:12px 18px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:box-shadow 0.15s" onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)'" onmouseout="this.style.boxShadow=''">
-            <span style="font-size:20px">Ã°ÂÂÂ§</span>
-            <div><div style="font-size:13px;font-weight:500">ClÃÂ´ture intervention</div><div style="font-size:11px;color:var(--text-muted)">Module 2B Ã¢ÂÂ prestataire</div></div>
-            <span style="font-size:11px;color:var(--text-muted);margin-left:4px">Ã¢ÂÂ</span>
+            <span style="font-size:20px">🔧</span>
+            <div><div style="font-size:13px;font-weight:500">Clôture intervention</div><div style="font-size:11px;color:var(--text-muted)">Module 2B — prestataire</div></div>
+            <span style="font-size:11px;color:var(--text-muted);margin-left:4px">↗</span>
           </div>
         </a>
-        <!-- NOUVEAU Ã¢ÂÂ accÃÂ¨s rapide Assistant IA -->
+        <!-- NOUVEAU — accès rapide Assistant IA -->
         <div onclick="switchTab('assistant-ia')" style="background:linear-gradient(135deg,#1a2240,#1e2a45);border:1px solid #2a3a60;border-radius:10px;padding:12px 18px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:box-shadow 0.15s" onmouseover="this.style.boxShadow='0 2px 12px rgba(61,127,255,0.3)'" onmouseout="this.style.boxShadow=''">
-          <span style="font-size:20px">Ã°ÂÂ¤Â</span>
-          <div><div style="font-size:13px;font-weight:500;color:#7eb3ff">Assistant IA</div><div style="font-size:11px;color:#4e5878">Recherche ÃÂ· Interventions ÃÂ· Journal</div></div>
+          <span style="font-size:20px">🤖</span>
+          <div><div style="font-size:13px;font-weight:500;color:#7eb3ff">Assistant IA</div><div style="font-size:11px;color:#4e5878">Recherche · Interventions · Journal</div></div>
         </div>
       </div>
     </div>
 
     <div class="kpis" id="kpis-global">
-      <div class="kpi"><div class="kpi-label">Mails traitÃÂ©s</div><div class="kpi-val" id="kpi-mails-total">Ã¢ÂÂ</div><div class="kpi-sub">Total base</div></div>
-      <div class="kpi"><div class="kpi-label">Mails aujourd'hui</div><div class="kpi-val" id="kpi-mails-today">Ã¢ÂÂ</div><div class="kpi-sub">24 derniÃÂ¨res heures</div></div>
-      <div class="kpi"><div class="kpi-label">Brouillons en attente</div><div class="kpi-val warn" id="kpi-brouillons">Ã¢ÂÂ</div><div class="kpi-sub">ÃÂ valider</div></div>
-      <div class="kpi"><div class="kpi-label">Alertes actives</div><div class="kpi-val down" id="kpi-alertes">Ã¢ÂÂ</div><div class="kpi-sub">Non lues</div></div>
-      <div class="kpi"><div class="kpi-label">Urgences</div><div class="kpi-val down" id="kpi-urgences">Ã¢ÂÂ</div><div class="kpi-sub">Niveau critique</div></div>
+      <div class="kpi"><div class="kpi-label">Mails traités</div><div class="kpi-val" id="kpi-mails-total">—</div><div class="kpi-sub">Total base</div></div>
+      <div class="kpi"><div class="kpi-label">Mails aujourd'hui</div><div class="kpi-val" id="kpi-mails-today">—</div><div class="kpi-sub">24 dernières heures</div></div>
+      <div class="kpi"><div class="kpi-label">Brouillons en attente</div><div class="kpi-val warn" id="kpi-brouillons">—</div><div class="kpi-sub">À valider</div></div>
+      <div class="kpi"><div class="kpi-label">Alertes actives</div><div class="kpi-val down" id="kpi-alertes">—</div><div class="kpi-sub">Non lues</div></div>
+      <div class="kpi"><div class="kpi-label">Urgences</div><div class="kpi-val down" id="kpi-urgences">—</div><div class="kpi-sub">Niveau critique</div></div>
     </div>
 
     <div class="grid2">
       <div class="card">
         <div class="card-header">
-          <div class="card-title">Derniers mails reÃÂ§us</div>
-          <span class="card-action" onclick="switchTab('mails')">Voir tout Ã¢ÂÂ</span>
+          <div class="card-title">Derniers mails reçus</div>
+          <span class="card-action" onclick="switchTab('mails')">Voir tout →</span>
         </div>
         <div id="list-mails-recent"><div class="loading-msg"><span class="spinner"></span>Chargement...</div></div>
       </div>
       <div class="card">
         <div class="card-header">
-          <div class="card-title">Alertes rÃÂ©centes</div>
-          <span class="card-action" onclick="switchTab('alertes')">Voir tout Ã¢ÂÂ</span>
+          <div class="card-title">Alertes récentes</div>
+          <span class="card-action" onclick="switchTab('alertes')">Voir tout →</span>
         </div>
         <div id="list-alertes-recent"><div class="loading-msg"><span class="spinner"></span>Chargement...</div></div>
       </div>
     </div>
 
     <div class="card">
-      <div class="card-header"><div class="card-title">RÃÂ©partition par catÃÂ©gorie (mails traitÃÂ©s)</div></div>
+      <div class="card-header"><div class="card-title">Répartition par catégorie (mails traités)</div></div>
       <div id="chart-cats" style="display:flex;gap:8px;flex-wrap:wrap;"></div>
     </div>
   </div>
@@ -677,16 +674,16 @@ body.role-gestionnaire [data-hide-gestionnaire]{display:none!important}
   <!-- ===== MAILS ===== -->
   <div id="mails" class="section">
     <div class="kpis">
-      <div class="kpi"><div class="kpi-label">Total traitÃÂ©s</div><div class="kpi-val" id="m-total">Ã¢ÂÂ</div></div>
-      <div class="kpi"><div class="kpi-label">Aujourd'hui</div><div class="kpi-val" id="m-today">Ã¢ÂÂ</div></div>
-      <div class="kpi"><div class="kpi-label">Brouillons</div><div class="kpi-val warn" id="m-brouillons">Ã¢ÂÂ</div></div>
-      <div class="kpi"><div class="kpi-label">Critiques</div><div class="kpi-val down" id="m-critiques">Ã¢ÂÂ</div></div>
+      <div class="kpi"><div class="kpi-label">Total traités</div><div class="kpi-val" id="m-total">—</div></div>
+      <div class="kpi"><div class="kpi-label">Aujourd'hui</div><div class="kpi-val" id="m-today">—</div></div>
+      <div class="kpi"><div class="kpi-label">Brouillons</div><div class="kpi-val warn" id="m-brouillons">—</div></div>
+      <div class="kpi"><div class="kpi-label">Critiques</div><div class="kpi-val down" id="m-critiques">—</div></div>
     </div>
     <div class="card">
-      <div class="card-header"><div class="card-title">Journal des mails traitÃÂ©s par l'IA</div></div>
+      <div class="card-header"><div class="card-title">Journal des mails traités par l'IA</div></div>
       <div style="overflow-x:auto;">
         <table class="mail-table">
-          <thead><tr><th>Date</th><th>ExpÃÂ©diteur</th><th>Sujet</th><th>CatÃÂ©gorie</th><th>Urgence</th><th>Statut</th></tr></thead>
+          <thead><tr><th>Date</th><th>Expéditeur</th><th>Sujet</th><th>Catégorie</th><th>Urgence</th><th>Statut</th></tr></thead>
           <tbody id="mails-tbody"><tr><td colspan="6" class="loading-msg"><span class="spinner"></span>Chargement...</td></tr></tbody>
         </table>
       </div>
@@ -696,12 +693,12 @@ body.role-gestionnaire [data-hide-gestionnaire]{display:none!important}
   <!-- ===== SYNDIC ===== -->
   <div id="syndic" class="section">
     <div class="kpis">
-      <div class="kpi"><div class="kpi-label">CopropriÃÂ©tÃÂ©s</div><div class="kpi-val" id="s-copros">Ã¢ÂÂ</div></div>
-      <div class="kpi"><div class="kpi-label">Mails syndic</div><div class="kpi-val" id="s-mails">Ã¢ÂÂ</div></div>
-      <div class="kpi"><div class="kpi-label">Urgences syndic</div><div class="kpi-val down" id="s-urgences">Ã¢ÂÂ</div></div>
+      <div class="kpi"><div class="kpi-label">Copropriétés</div><div class="kpi-val" id="s-copros">—</div></div>
+      <div class="kpi"><div class="kpi-label">Mails syndic</div><div class="kpi-val" id="s-mails">—</div></div>
+      <div class="kpi"><div class="kpi-label">Urgences syndic</div><div class="kpi-val down" id="s-urgences">—</div></div>
     </div>
     <div class="card">
-      <div class="card-header"><div class="card-title">Mails syndic rÃÂ©cents</div></div>
+      <div class="card-header"><div class="card-title">Mails syndic récents</div></div>
       <div id="syndic-mails-list"><div class="loading-msg"><span class="spinner"></span>Chargement...</div></div>
     </div>
   </div>
@@ -709,9 +706,9 @@ body.role-gestionnaire [data-hide-gestionnaire]{display:none!important}
   <!-- ===== ALERTES ===== -->
   <div id="alertes" class="section">
     <div class="kpis">
-      <div class="kpi"><div class="kpi-label">Total alertes</div><div class="kpi-val" id="a-total">Ã¢ÂÂ</div></div>
-      <div class="kpi"><div class="kpi-label">Non lues</div><div class="kpi-val down" id="a-nonlues">Ã¢ÂÂ</div></div>
-      <div class="kpi"><div class="kpi-label">Critiques</div><div class="kpi-val down" id="a-critiques">Ã¢ÂÂ</div></div>
+      <div class="kpi"><div class="kpi-label">Total alertes</div><div class="kpi-val" id="a-total">—</div></div>
+      <div class="kpi"><div class="kpi-label">Non lues</div><div class="kpi-val down" id="a-nonlues">—</div></div>
+      <div class="kpi"><div class="kpi-label">Critiques</div><div class="kpi-val down" id="a-critiques">—</div></div>
     </div>
     <div class="card">
       <div class="card-header"><div class="card-title">Toutes les alertes</div></div>
@@ -722,19 +719,19 @@ body.role-gestionnaire [data-hide-gestionnaire]{display:none!important}
   <!-- ===== IA & WORKFLOWS ===== -->
   <div id="ia-workflows" class="section">
     <div class="kpis">
-      <div class="kpi"><div class="kpi-label">Mails traitÃÂ©s IA</div><div class="kpi-val" id="ia-total">Ã¢ÂÂ</div><div class="kpi-sub">Depuis le dÃÂ©but</div></div>
+      <div class="kpi"><div class="kpi-label">Mails traités IA</div><div class="kpi-val" id="ia-total">—</div><div class="kpi-sub">Depuis le début</div></div>
       <div class="kpi"><div class="kpi-label">Mode actuel</div><div class="kpi-val" style="font-size:16px;color:var(--amber)">Vase clos</div><div class="kpi-sub">100% brouillon</div></div>
-      <div class="kpi"><div class="kpi-label">Taux traitement</div><div class="kpi-val up" id="ia-taux">Ã¢ÂÂ</div><div class="kpi-sub">Mails avec rÃÂ©ponse IA</div></div>
+      <div class="kpi"><div class="kpi-label">Taux traitement</div><div class="kpi-val up" id="ia-taux">—</div><div class="kpi-sub">Mails avec réponse IA</div></div>
     </div>
     <div class="card">
-      <div class="card-header"><div class="card-title">Workflows n8n Ã¢ÂÂ Statut</div></div>
-      <div class="row"><span class="dot dot-green"></span><div class="row-main"><div class="row-name">IA Mail Ã¢ÂÂ Traitement mails entrants</div><div class="row-sub">syndic@immoconseil-gpe.com ÃÂ· Trigger actif</div></div><span class="badge badge-green">Actif</span></div>
-      <div class="row"><span class="dot dot-amber"></span><div class="row-main"><div class="row-name">Module 2B Ã¢ÂÂ Cycle prestataires</div><div class="row-sub">ÃÂ dÃÂ©ployer</div></div><span class="badge badge-amber">En attente</span></div>
-      <div class="row"><span class="dot dot-green"></span><div class="row-main"><div class="row-name">Lookup Estale Ã¢ÂÂ CopropriÃÂ©taires</div><div class="row-sub">API GraphQL ÃÂ· Temps rÃÂ©el</div></div><span class="badge badge-green">Actif</span></div>
-      <div class="row"><span class="dot dot-amber"></span><div class="row-main"><div class="row-name">Mark as read</div><div class="row-sub">DÃÂ©sactivÃÂ© en mode vase clos</div></div><span class="badge badge-amber">DÃÂ©sactivÃÂ©</span></div>
+      <div class="card-header"><div class="card-title">Workflows n8n — Statut</div></div>
+      <div class="row"><span class="dot dot-green"></span><div class="row-main"><div class="row-name">IA Mail — Traitement mails entrants</div><div class="row-sub">syndic@immoconseil-gpe.com · Trigger actif</div></div><span class="badge badge-green">Actif</span></div>
+      <div class="row"><span class="dot dot-amber"></span><div class="row-main"><div class="row-name">Module 2B — Cycle prestataires</div><div class="row-sub">À déployer</div></div><span class="badge badge-amber">En attente</span></div>
+      <div class="row"><span class="dot dot-green"></span><div class="row-main"><div class="row-name">Lookup Estale — Copropriétaires</div><div class="row-sub">API GraphQL · Temps réel</div></div><span class="badge badge-green">Actif</span></div>
+      <div class="row"><span class="dot dot-amber"></span><div class="row-main"><div class="row-name">Mark as read</div><div class="row-sub">Désactivé en mode vase clos</div></div><span class="badge badge-amber">Désactivé</span></div>
     </div>
     <div class="card">
-      <div class="card-header"><div class="card-title">DerniÃÂ¨res exÃÂ©cutions</div></div>
+      <div class="card-header"><div class="card-title">Dernières exécutions</div></div>
       <div id="ia-executions"><div class="loading-msg"><span class="spinner"></span>Chargement depuis Supabase...</div></div>
     </div>
   </div>
@@ -746,25 +743,25 @@ body.role-gestionnaire [data-hide-gestionnaire]{display:none!important}
       <!-- Sidebar -->
       <div class="ia-sidebar">
         <div class="ia-sidebar-section">
-          <div class="ia-sidebar-title">Ã°ÂÂÂ Recherche rapide</div>
+          <div class="ia-sidebar-title">🔍 Recherche rapide</div>
           <div class="ia-search-box">
-            <span class="ia-search-icon">Ã¢ÂÂ</span>
-            <input type="text" id="iaSearchInput" placeholder="CopropriÃÂ©tÃÂ©, contactÃ¢ÂÂ¦" oninput="iaHandleSearch(this.value)">
+            <span class="ia-search-icon">⌕</span>
+            <input type="text" id="iaSearchInput" placeholder="Copropriété, contact…" oninput="iaHandleSearch(this.value)">
           </div>
           <div class="ia-search-results" id="iaSearchResults" style="display:none"></div>
         </div>
         <div class="ia-sidebar-section">
-          <div class="ia-sidebar-title">Ã¢ÂÂ¡ Questions frÃÂ©quentes</div>
-          <button class="ia-quick-btn" onclick="iaSendQuick('Liste les interventions en cours sur toutes les copropriÃÂ©tÃÂ©s')">Ã°ÂÂÂ¢ Interventions ouvertes</button>
-          <button class="ia-quick-btn" onclick="iaSendQuick('Quels commerciaux ont des documents de conformitÃÂ© ÃÂ  renouveler ?')">Ã°ÂÂÂ ConformitÃÂ© ÃÂ  renouveler</button>
-          <button class="ia-quick-btn" onclick="iaSendQuick('Montre-moi les lots vacants depuis plus de 60 jours')">Ã°ÂÂÂ Lots vacants</button>
-          <button class="ia-quick-btn" onclick="iaSendQuick('Quelles sont les commissions en attente de paiement ?')">Ã°ÂÂÂ° Commissions dues</button>
-          <button class="ia-quick-btn" onclick="iaSendQuick('Donne-moi la liste des prestataires enregistrÃÂ©s')">Ã°ÂÂÂ§ Prestataires</button>
+          <div class="ia-sidebar-title">⚡ Questions fréquentes</div>
+          <button class="ia-quick-btn" onclick="iaSendQuick('Liste les interventions en cours sur toutes les copropriétés')">🏢 Interventions ouvertes</button>
+          <button class="ia-quick-btn" onclick="iaSendQuick('Quels commerciaux ont des documents de conformité à renouveler ?')">📋 Conformité à renouveler</button>
+          <button class="ia-quick-btn" onclick="iaSendQuick('Montre-moi les lots vacants depuis plus de 60 jours')">🔑 Lots vacants</button>
+          <button class="ia-quick-btn" onclick="iaSendQuick('Quelles sont les commissions en attente de paiement ?')">💰 Commissions dues</button>
+          <button class="ia-quick-btn" onclick="iaSendQuick('Donne-moi la liste des prestataires enregistrés')">🔧 Prestataires</button>
         </div>
         <div class="ia-sidebar-section">
-          <div class="ia-sidebar-title">Ã°ÂÂÂ Actions rapides</div>
-          <button class="ia-quick-btn" onclick="iaShowTab('interventions');iaShowNewForm()">Ã¢ÂÂ Nouvelle intervention</button>
-          <button class="ia-quick-btn" onclick="iaSendQuick('GÃÂ©nÃÂ¨re un rapport d\'activitÃÂ© pour ce mois')">Ã°ÂÂÂ Rapport mensuel</button>
+          <div class="ia-sidebar-title">🚀 Actions rapides</div>
+          <button class="ia-quick-btn" onclick="iaShowTab('interventions');iaShowNewForm()">➕ Nouvelle intervention</button>
+          <button class="ia-quick-btn" onclick="iaSendQuick('Génère un rapport d\'activité pour ce mois')">📊 Rapport mensuel</button>
         </div>
       </div>
 
@@ -772,25 +769,25 @@ body.role-gestionnaire [data-hide-gestionnaire]{display:none!important}
       <div class="ia-main">
         <!-- Inner tabs -->
         <div class="ia-tabs">
-          <div class="ia-tab active" onclick="iaShowTab('chat')" id="ia-tab-chat">Ã°ÂÂÂ¬ Chat IA</div>
-          <div class="ia-tab" onclick="iaShowTab('interventions')" id="ia-tab-interventions">Ã°ÂÂÂ§ Interventions</div>
-          <div class="ia-tab" onclick="iaShowTab('journal')" id="ia-tab-journal">Ã°ÂÂÂ Journal</div>
+          <div class="ia-tab active" onclick="iaShowTab('chat')" id="ia-tab-chat">💬 Chat IA</div>
+          <div class="ia-tab" onclick="iaShowTab('interventions')" id="ia-tab-interventions">🔧 Interventions</div>
+          <div class="ia-tab" onclick="iaShowTab('journal')" id="ia-tab-journal">📋 Journal</div>
         </div>
 
         <!-- CHAT PANEL -->
         <div class="ia-panel active" id="ia-panel-chat">
           <div class="ia-messages" id="iaMessages">
             <div class="ia-msg ai">
-              <div class="ia-msg-avatar">Ã°ÂÂ¤Â</div>
+              <div class="ia-msg-avatar">🤖</div>
               <div>
                 <div class="ia-msg-bubble">
-                  Bonjour ! Je suis connectÃÂ© ÃÂ  votre base Supabase.<br><br>
-                  Je peux rechercher vos donnÃÂ©es, rÃÂ©pondre ÃÂ  vos questions terrain et crÃÂ©er des interventions prestataires.
+                  Bonjour ! Je suis connecté à votre base Supabase.<br><br>
+                  Je peux rechercher vos données, répondre à vos questions terrain et créer des interventions prestataires.
                   <div class="ia-result-card" style="margin-top:10px">
-                    <div class="ia-result-row"><strong>Ã°ÂÂÂ Rechercher</strong> <span>Contacts, lots, copropriÃÂ©tÃÂ©s</span></div>
-                    <div class="ia-result-row"><strong>Ã°ÂÂÂ Analyser</strong> <span>Charges, budgets, commissions</span></div>
-                    <div class="ia-result-row"><strong>Ã°ÂÂÂ§ CrÃÂ©er</strong> <span>Intervention, mission prestataire</span></div>
-                    <div class="ia-result-row"><strong>Ã°ÂÂÂ Journaliser</strong> <span>ActivitÃÂ© par rÃÂ©sidence</span></div>
+                    <div class="ia-result-row"><strong>🔍 Rechercher</strong> <span>Contacts, lots, copropriétés</span></div>
+                    <div class="ia-result-row"><strong>📊 Analyser</strong> <span>Charges, budgets, commissions</span></div>
+                    <div class="ia-result-row"><strong>🔧 Créer</strong> <span>Intervention, mission prestataire</span></div>
+                    <div class="ia-result-row"><strong>📋 Journaliser</strong> <span>Activité par résidence</span></div>
                   </div>
                 </div>
                 <div class="ia-msg-time">Maintenant</div>
@@ -799,19 +796,19 @@ body.role-gestionnaire [data-hide-gestionnaire]{display:none!important}
           </div>
           <div class="ia-input-zone">
             <div class="ia-hints">
-              <span class="ia-hint" onclick="iaSendQuick('Charges de [copropriÃÂ©taire] ÃÂ  [rÃÂ©sidence] ?')">Ã°ÂÂÂ¶ Charges</span>
-              <span class="ia-hint" onclick="iaSendQuick('Budget contrat espaces verts rÃÂ©sidence [nom] ?')">Ã°ÂÂÂ¿ Budget espaces verts</span>
-              <span class="ia-hint" onclick="iaSendQuick('RÃÂ©solutions votÃÂ©es en AG pour [rÃÂ©sidence] ?')">Ã°ÂÂÂ³Ã¯Â¸Â RÃÂ©solutions AG</span>
-              <span class="ia-hint" onclick="iaSendQuick('CrÃÂ©er une intervention ÃÂ  [rÃÂ©sidence] pour [prestataire]')">Ã°ÂÂÂ¨ Mission prestataire</span>
+              <span class="ia-hint" onclick="iaSendQuick('Charges de [copropriétaire] à [résidence] ?')">💶 Charges</span>
+              <span class="ia-hint" onclick="iaSendQuick('Budget contrat espaces verts résidence [nom] ?')">🌿 Budget espaces verts</span>
+              <span class="ia-hint" onclick="iaSendQuick('Résolutions votées en AG pour [résidence] ?')">🗳️ Résolutions AG</span>
+              <span class="ia-hint" onclick="iaSendQuick('Créer une intervention à [résidence] pour [prestataire]')">📨 Mission prestataire</span>
             </div>
             <div class="ia-input-row">
               <div class="ia-input-wrapper">
                 <textarea class="ia-textarea" id="iaChatInput" rows="1"
-                  placeholder="Posez votre questionÃ¢ÂÂ¦ ex: Charges de M. Dupont aux Flamboyants ?"
+                  placeholder="Posez votre question… ex: Charges de M. Dupont aux Flamboyants ?"
                   onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();iaSendMessage()}"
                   oninput="iaAutoResize(this)"></textarea>
               </div>
-              <button class="ia-send-btn" id="iaSendBtn" onclick="iaSendMessage()">Ã¢ÂÂ¤</button>
+              <button class="ia-send-btn" id="iaSendBtn" onclick="iaSendMessage()">➤</button>
             </div>
           </div>
         </div>
@@ -821,29 +818,29 @@ body.role-gestionnaire [data-hide-gestionnaire]{display:none!important}
           <div class="ia-scroll">
             <div class="ia-panel-header">
               <div class="ia-panel-title">Interventions prestataires</div>
-              <button class="ia-btn-primary" onclick="iaShowNewForm()">Ã¢ÂÂ Nouvelle intervention</button>
+              <button class="ia-btn-primary" onclick="iaShowNewForm()">➕ Nouvelle intervention</button>
             </div>
             <div id="iaNewForm" style="display:none">
               <div class="ia-form-card">
-                <div class="ia-form-title">Ã°ÂÂÂ CrÃÂ©er une intervention</div>
+                <div class="ia-form-title">📋 Créer une intervention</div>
                 <div class="ia-form-grid">
                   <div class="ia-form-group">
-                    <label class="ia-form-label">RÃÂ©sidence</label>
-                    <select class="ia-form-ctrl" id="iFiRes"><option value="">-- SÃÂ©lectionner --</option></select>
+                    <label class="ia-form-label">Résidence</label>
+                    <select class="ia-form-ctrl" id="iFiRes"><option value="">-- Sélectionner --</option></select>
                   </div>
                   <div class="ia-form-group">
                     <label class="ia-form-label">Type d'intervention</label>
                     <select class="ia-form-ctrl" id="iFiType">
-                      <option value="">-- SÃÂ©lectionner --</option>
-                      <option>Plomberie</option><option>ÃÂlectricitÃÂ©</option>
+                      <option value="">-- Sélectionner --</option>
+                      <option>Plomberie</option><option>Électricité</option>
                       <option>Espaces verts</option><option>Nettoyage parties communes</option>
-                      <option>Ascenseur</option><option>Toiture / ÃÂtanchÃÂ©itÃÂ©</option>
+                      <option>Ascenseur</option><option>Toiture / Étanchéité</option>
                       <option>Peinture</option><option>Vitrerie</option><option>Divers</option>
                     </select>
                   </div>
                   <div class="ia-form-group full">
                     <label class="ia-form-label">Description</label>
-                    <textarea class="ia-form-ctrl" id="iFiDesc" rows="3" placeholder="Ex: Fuite au local vÃÂ©lo, tuyau ÃÂ  remplacerÃ¢ÂÂ¦"></textarea>
+                    <textarea class="ia-form-ctrl" id="iFiDesc" rows="3" placeholder="Ex: Fuite au local vélo, tuyau à remplacer…"></textarea>
                   </div>
                   <div class="ia-form-group">
                     <label class="ia-form-label">Prestataire</label>
@@ -856,9 +853,9 @@ body.role-gestionnaire [data-hide-gestionnaire]{display:none!important}
                   <div class="ia-form-group">
                     <label class="ia-form-label">Urgence</label>
                     <select class="ia-form-ctrl" id="iFiUrg">
-                      <option value="faible">Faible Ã¢ÂÂ planifiable</option>
+                      <option value="faible">Faible — planifiable</option>
                       <option value="normal" selected>Normal</option>
-                      <option value="critique">Critique Ã¢ÂÂ urgent</option>
+                      <option value="critique">Critique — urgent</option>
                     </select>
                   </div>
                   <div class="ia-form-group">
@@ -871,17 +868,17 @@ body.role-gestionnaire [data-hide-gestionnaire]{display:none!important}
                   </div>
                   <div class="ia-form-group full">
                     <label class="ia-form-label">Notes internes</label>
-                    <input type="text" class="ia-form-ctrl" id="iFiNotes" placeholder="Informations supplÃÂ©mentaires">
+                    <input type="text" class="ia-form-ctrl" id="iFiNotes" placeholder="Informations supplémentaires">
                   </div>
                 </div>
                 <div class="ia-form-actions">
                   <button class="ia-btn-sec" onclick="iaHideForm()">Annuler</button>
-                  <button class="ia-btn-primary" onclick="iaCreateIntervention()">Ã°ÂÂÂ¨ CrÃÂ©er & notifier</button>
+                  <button class="ia-btn-primary" onclick="iaCreateIntervention()">📨 Créer & notifier</button>
                 </div>
               </div>
             </div>
             <div class="ia-int-list" id="iaIntList">
-              <div style="text-align:center;color:var(--ia-text3);padding:30px;font-size:0.83rem">ChargementÃ¢ÂÂ¦</div>
+              <div style="text-align:center;color:var(--ia-text3);padding:30px;font-size:0.83rem">Chargement…</div>
             </div>
           </div>
         </div>
@@ -890,13 +887,13 @@ body.role-gestionnaire [data-hide-gestionnaire]{display:none!important}
         <div class="ia-panel" id="ia-panel-journal">
           <div class="ia-scroll">
             <div class="ia-panel-header">
-              <div class="ia-panel-title">Journal d'activitÃÂ©</div>
+              <div class="ia-panel-title">Journal d'activité</div>
               <select class="ia-form-ctrl" id="iaJournalFilter" style="width:190px" onchange="iaFilterJournal()">
-                <option value="">Toutes les rÃÂ©sidences</option>
+                <option value="">Toutes les résidences</option>
               </select>
             </div>
             <div id="iaJournalEntries">
-              <div style="text-align:center;color:var(--ia-text3);padding:30px;font-size:0.83rem">Aucune activitÃÂ© enregistrÃÂ©e.</div>
+              <div style="text-align:center;color:var(--ia-text3);padding:30px;font-size:0.83rem">Aucune activité enregistrée.</div>
             </div>
           </div>
         </div>
@@ -909,7 +906,7 @@ body.role-gestionnaire [data-hide-gestionnaire]{display:none!important}
 <!-- MODAL CONFIRMATION -->
 <div class="ia-modal-overlay" id="iaConfirmModal">
   <div class="ia-modal">
-    <div class="ia-modal-title">Ã¢ÂÂ Intervention crÃÂ©ÃÂ©e</div>
+    <div class="ia-modal-title">✅ Intervention créée</div>
     <div class="ia-modal-body" id="iaConfirmText"></div>
     <div class="ia-modal-actions">
       <button class="ia-btn-primary" onclick="document.getElementById('iaConfirmModal').classList.remove('open')">Fermer</button>
@@ -954,7 +951,7 @@ async function supaPost(table, body) {
 
 // ===== HELPERS =====
 function formatDate(iso) {
-  if (!iso) return 'Ã¢ÂÂ';
+  if (!iso) return '—';
   const d = new Date(iso), now = new Date(), diff = now - d;
   if (diff < 3600000) return `il y a ${Math.round(diff/60000)} min`;
   if (diff < 86400000) return d.toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'});
@@ -969,10 +966,10 @@ function decisionBadge(d) {
   if ((d||'').toLowerCase()==='brouillon') return '<span class="badge badge-amber">Brouillon</span>';
   if ((d||'').toLowerCase()==='auto') return '<span class="badge badge-green">Auto</span>';
   if ((d||'').toLowerCase()==='escalade') return '<span class="badge badge-red">Escalade</span>';
-  return '<span class="badge badge-gray">Ã¢ÂÂ</span>';
+  return '<span class="badge badge-gray">—</span>';
 }
 function dotColor(u) { return u==='critique'?'dot-red':u==='normal'?'dot-blue':'dot-gray'; }
-function truncate(s,n) { if(!s) return 'Ã¢ÂÂ'; return s.length>n?s.substring(0,n)+'Ã¢ÂÂ¦':s; }
+function truncate(s,n) { if(!s) return '—'; return s.length>n?s.substring(0,n)+'…':s; }
 function isToday(iso) {
   if(!iso) return false;
   const d=new Date(iso),t=new Date();
@@ -998,11 +995,11 @@ document.querySelectorAll('.tab[data-tab]').forEach(tab => {
 
 // ===== LOAD ALL (dashboard) =====
 async function loadAll() {
-  document.getElementById('lastUpdate').textContent = 'Ã¢ÂÂ³ Actualisation...';
+  document.getElementById('lastUpdate').textContent = '⟳ Actualisation...';
   try {
     await Promise.all([loadMails(), loadAlertes()]);
     document.getElementById('lastUpdate').textContent =
-      'Mis ÃÂ  jour ' + new Date().toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'});
+      'Mis à jour ' + new Date().toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'});
     document.getElementById('acces-rapides').style.display = 'block';
   } catch(e) {
     document.getElementById('lastUpdate').textContent = 'Erreur connexion';
@@ -1025,22 +1022,22 @@ async function loadMails() {
   document.getElementById('m-brouillons').textContent = brouillons.length;
   document.getElementById('m-critiques').textContent = critiques.length;
   document.getElementById('ia-total').textContent = mails.length;
-  document.getElementById('ia-taux').textContent = mails.length ? Math.round(avecReponse.length/mails.length*100)+'%' : 'Ã¢ÂÂ';
+  document.getElementById('ia-taux').textContent = mails.length ? Math.round(avecReponse.length/mails.length*100)+'%' : '—';
 
   if (brouillons.length>0) { const b=document.getElementById('badge-mails'); b.textContent=brouillons.length; b.style.display='inline'; }
 
   document.getElementById('list-mails-recent').innerHTML = mails.slice(0,5).length ? mails.slice(0,5).map(m=>`
     <div class="row"><span class="dot ${dotColor(m.urgence)}"></span>
     <div class="row-main"><div class="row-name">${truncate(m.sujet||m.expediteur_email,40)}</div>
-    <div class="row-sub">${m.expediteur_email||'Ã¢ÂÂ'} ÃÂ· ${m.categorie||'NC'}</div></div>
+    <div class="row-sub">${m.expediteur_email||'—'} · ${m.categorie||'NC'}</div></div>
     ${decisionBadge(m.decision)}<span class="row-time">${formatDate(m.created_at)}</span></div>`).join('')
-    : '<div class="empty"><div class="empty-icon">Ã°ÂÂÂ­</div>Aucun mail traitÃÂ©</div>';
+    : '<div class="empty"><div class="empty-icon">📭</div>Aucun mail traité</div>';
 
   document.getElementById('mails-tbody').innerHTML = mails.length ? mails.map(m=>`
     <tr><td style="white-space:nowrap;color:var(--text-muted)">${formatDate(m.created_at)}</td>
-    <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${m.expediteur_email||'Ã¢ÂÂ'}</td>
-    <td style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${truncate(m.sujet,45)||'Ã¢ÂÂ'}</td>
-    <td><span class="badge badge-blue">${m.categorie||'Ã¢ÂÂ'}</span></td>
+    <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${m.expediteur_email||'—'}</td>
+    <td style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${truncate(m.sujet,45)||'—'}</td>
+    <td><span class="badge badge-blue">${m.categorie||'—'}</span></td>
     <td>${urgenceBadge(m.urgence)}</td><td>${decisionBadge(m.decision)}</td></tr>`).join('')
     : '<tr><td colspan="6" class="empty">Aucun mail</td></tr>';
 
@@ -1049,22 +1046,22 @@ async function loadMails() {
   document.getElementById('s-urgences').textContent = syndicMails.filter(m=>m.urgence==='critique').length;
   document.getElementById('syndic-mails-list').innerHTML = syndicMails.slice(0,8).length ? syndicMails.slice(0,8).map(m=>`
     <div class="row"><span class="dot ${dotColor(m.urgence)}"></span>
-    <div class="row-main"><div class="row-name">${truncate(m.sujet,50)||'Ã¢ÂÂ'}</div>
-    <div class="row-sub">${m.expediteur_email||'Ã¢ÂÂ'}</div></div>
+    <div class="row-main"><div class="row-name">${truncate(m.sujet,50)||'—'}</div>
+    <div class="row-sub">${m.expediteur_email||'—'}</div></div>
     ${decisionBadge(m.decision)}<span class="row-time">${formatDate(m.created_at)}</span></div>`).join('')
-    : '<div class="empty"><div class="empty-icon">Ã°ÂÂÂ­</div>Aucun mail syndic</div>';
+    : '<div class="empty"><div class="empty-icon">📭</div>Aucun mail syndic</div>';
 
   document.getElementById('ia-executions').innerHTML = mails.slice(0,6).length ? mails.slice(0,6).map(m=>`
     <div class="row"><span class="dot dot-green"></span>
-    <div class="row-main"><div class="row-name">${truncate(m.sujet||'Mail traitÃÂ©',50)}</div>
-    <div class="row-sub">${m.expediteur_email||'Ã¢ÂÂ'} ÃÂ· ${m.categorie||'NC'} ÃÂ· ${m.urgence||'normal'}</div></div>
+    <div class="row-main"><div class="row-name">${truncate(m.sujet||'Mail traité',50)}</div>
+    <div class="row-sub">${m.expediteur_email||'—'} · ${m.categorie||'NC'} · ${m.urgence||'normal'}</div></div>
     ${decisionBadge(m.decision)}<span class="row-time">${formatDate(m.created_at)}</span></div>`).join('')
-    : '<div class="empty">Aucune exÃÂ©cution</div>';
+    : '<div class="empty">Aucune exécution</div>';
 
   const cats={};
-  mails.forEach(m=>{const c=m.categorie||'Non catÃÂ©gorisÃÂ©';cats[c]=(cats[c]||0)+1;});
+  mails.forEach(m=>{const c=m.categorie||'Non catégorisé';cats[c]=(cats[c]||0)+1;});
   const total=mails.length||1;
-  const colors={'AG':'#185FA5','SINISTRE':'#E24B4A','TRAVAUX':'#BA7517','COMPTABILITE':'#1D9E75','AUTRE':'#888780','Non catÃÂ©gorisÃÂ©':'#888780'};
+  const colors={'AG':'#185FA5','SINISTRE':'#E24B4A','TRAVAUX':'#BA7517','COMPTABILITE':'#1D9E75','AUTRE':'#888780','Non catégorisé':'#888780'};
   document.getElementById('chart-cats').innerHTML = Object.entries(cats).length ?
     Object.entries(cats).sort((a,b)=>b[1]-a[1]).map(([cat,n])=>`
       <div style="display:flex;align-items:center;gap:8px;background:var(--bg);padding:8px 12px;border-radius:8px">
@@ -1072,7 +1069,7 @@ async function loadMails() {
         <span style="font-size:13px">${cat}</span>
         <span style="font-size:13px;font-weight:500">${n}</span>
         <span style="font-size:11px;color:var(--text-muted)">${Math.round(n/total*100)}%</span>
-      </div>`).join('') : '<div class="empty">DonnÃÂ©es insuffisantes</div>';
+      </div>`).join('') : '<div class="empty">Données insuffisantes</div>';
 }
 
 async function loadAlertes() {
@@ -1087,22 +1084,21 @@ async function loadAlertes() {
 
   const renderA = a=>`<div class="row">
     <span class="dot ${a.niveau==='critique'?'dot-red':a.niveau==='normal'?'dot-amber':'dot-gray'}"></span>
-    <div class="row-main"><div class="row-name">${a.titre||'Ã¢ÂÂ'}</div>
-    <div class="row-sub">${truncate(a.message,60)||a.type_alerte||'Ã¢ÂÂ'}</div></div>
+    <div class="row-main"><div class="row-name">${a.titre||'—'}</div>
+    <div class="row-sub">${truncate(a.message,60)||a.type_alerte||'—'}</div></div>
     ${urgenceBadge(a.niveau)}<span class="row-time">${formatDate(a.created_at)}</span></div>`;
 
   document.getElementById('list-alertes-recent').innerHTML = alertes.slice(0,4).length ?
-    alertes.slice(0,4).map(renderA).join('') : '<div class="empty"><div class="empty-icon">Ã°ÂÂÂ</div>Aucune alerte</div>';
-  document.getElementById('alertes-list').innerHTML = alertes.length ? alertes.map(renderA).join('') : '<div class="empty"><div class="empty-icon">Ã°ÂÂÂ</div>Aucune alerte</div>';
+    alertes.slice(0,4).map(renderA).join('') : '<div class="empty"><div class="empty-icon">🔔</div>Aucune alerte</div>';
+  document.getElementById('alertes-list').innerHTML = alertes.length ? alertes.map(renderA).join('') : '<div class="empty"><div class="empty-icon">🔔</div>Aucune alerte</div>';
 }
 
 document.getElementById('s-copros').textContent = '62';
 
-// loadAll() appelÃ© aprÃ¨s connexion par authApplyRole()
-setInterval(() => { if(currentUser) loadAll(); }, 60000);
+setInterval(()=>{ if(currentUser) loadAll(); }, 60000);
 
 // ===================================================================
-// ASSISTANT IA Ã¢ÂÂ LOGIQUE
+// ASSISTANT IA — LOGIQUE
 // ===================================================================
 let iaCopros = [];
 let iaConvHistory = [];
@@ -1116,22 +1112,22 @@ async function iaLoadBase() {
     iaCopros = data || [];
   } catch(e) {
     iaCopros = [
-      {id:'demo1',nom:'RÃÂ©sidence Les Flamboyants',commune:'Pointe-ÃÂ -Pitre'},
-      {id:'demo2',nom:'RÃÂ©sidence Le Manguier',commune:'Les Abymes'},
-      {id:'demo3',nom:'RÃÂ©sidence KarukÃÂ©ra',commune:'Baie-Mahault'},
+      {id:'demo1',nom:'Résidence Les Flamboyants',commune:'Pointe-à-Pitre'},
+      {id:'demo2',nom:'Résidence Le Manguier',commune:'Les Abymes'},
+      {id:'demo3',nom:'Résidence Karukéra',commune:'Baie-Mahault'},
     ];
   }
-  // Remplir sÃÂ©lect rÃÂ©sidences
+  // Remplir sélect résidences
   const sel = document.getElementById('iFiRes');
-  sel.innerHTML = '<option value="">-- SÃÂ©lectionner --</option>';
+  sel.innerHTML = '<option value="">-- Sélectionner --</option>';
   iaCopros.forEach(c => {
     const o = document.createElement('option');
-    o.value = c.id; o.textContent = `${c.nom} Ã¢ÂÂ ${c.commune||''}`;
+    o.value = c.id; o.textContent = `${c.nom} — ${c.commune||''}`;
     sel.appendChild(o);
   });
   // Journal filter
   const jf = document.getElementById('iaJournalFilter');
-  jf.innerHTML = '<option value="">Toutes les rÃÂ©sidences</option>';
+  jf.innerHTML = '<option value="">Toutes les résidences</option>';
   iaCopros.forEach(c => {
     const o = document.createElement('option');
     o.value = c.id; o.textContent = c.nom; jf.appendChild(o);
@@ -1161,16 +1157,16 @@ async function iaDoSearch(q) {
   const results = [];
   const lq = q.toLowerCase();
   iaCopros.filter(c => c.nom?.toLowerCase().includes(lq)||c.commune?.toLowerCase().includes(lq)).slice(0,4)
-    .forEach(c => results.push({icon:'Ã°ÂÂÂ¢',title:c.nom,sub:c.commune||'',action:()=>{iaSendQuick(`Informations sur la rÃÂ©sidence ${c.nom}`);box.style.display='none';}}));
+    .forEach(c => results.push({icon:'🏢',title:c.nom,sub:c.commune||'',action:()=>{iaSendQuick(`Informations sur la résidence ${c.nom}`);box.style.display='none';}}));
   try {
     const { data } = await supaFetch('utilisateurs', `?or=(nom.ilike.*${q}*,prenom.ilike.*${q}*)&select=nom,prenom,profil&limit=3`);
-    (data||[]).forEach(u => results.push({icon:'Ã°ÂÂÂ¤',title:`${u.prenom} ${u.nom}`,sub:u.profil||'',action:()=>{iaSendQuick(`Informations sur ${u.prenom} ${u.nom}`);box.style.display='none';}}));
+    (data||[]).forEach(u => results.push({icon:'👤',title:`${u.prenom} ${u.nom}`,sub:u.profil||'',action:()=>{iaSendQuick(`Informations sur ${u.prenom} ${u.nom}`);box.style.display='none';}}));
   } catch(e){}
   window._iaSearchActions = results.map(r=>r.action);
   box.innerHTML = results.length ? results.map((r,i)=>`
     <div class="ia-sr-item" onclick="_iaSearchActions[${i}]()">
       <strong>${r.icon} ${r.title}</strong><span>${r.sub}</span>
-    </div>`).join('') : '<div class="ia-sr-item"><span>Aucun rÃÂ©sultat</span></div>';
+    </div>`).join('') : '<div class="ia-sr-item"><span>Aucun résultat</span></div>';
   box.style.display = 'block';
 }
 
@@ -1189,7 +1185,7 @@ function iaAddMsg(role, content) {
   const d = document.createElement('div');
   d.className = 'ia-msg '+(role==='user'?'user':'ai');
   const time = new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
-  d.innerHTML = `<div class="ia-msg-avatar">${role==='user'?'Ã°ÂÂÂ¤':'Ã°ÂÂ¤Â'}</div>
+  d.innerHTML = `<div class="ia-msg-avatar">${role==='user'?'👤':'🤖'}</div>
     <div><div class="ia-msg-bubble">${content}</div><div class="ia-msg-time">${time}</div></div>`;
   c.appendChild(d);
   c.scrollTop = c.scrollHeight;
@@ -1199,7 +1195,7 @@ function iaAddTyping() {
   const c = document.getElementById('iaMessages');
   const d = document.createElement('div');
   d.className='ia-msg ai'; d.id='ia-typing';
-  d.innerHTML=`<div class="ia-msg-avatar">Ã°ÂÂ¤Â</div><div><div class="ia-msg-bubble"><div class="ia-typing"><span></span><span></span><span></span></div></div></div>`;
+  d.innerHTML=`<div class="ia-msg-avatar">🤖</div><div><div class="ia-msg-bubble"><div class="ia-typing"><span></span><span></span><span></span></div></div></div>`;
   c.appendChild(d); c.scrollTop=c.scrollHeight;
 }
 function iaRemoveTyping() { const el=document.getElementById('ia-typing'); if(el) el.remove(); }
@@ -1207,7 +1203,7 @@ function iaRemoveTyping() { const el=document.getElementById('ia-typing'); if(el
 function iaFormatResponse(text) {
   return text
     .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
-    .replace(/\n- (.*)/g,'<br>Ã¢ÂÂ¢ $1')
+    .replace(/\n- (.*)/g,'<br>• $1')
     .replace(/\n\n/g,'<br><br>')
     .replace(/\n/g,'<br>');
 }
@@ -1222,39 +1218,39 @@ async function iaSendMessage() {
   iaConvHistory.push({role:'user',content:text});
   iaAddTyping();
 
-  let dataCtx = `Agence syndic Guadeloupe. CopropriÃÂ©tÃÂ©s gÃÂ©rÃÂ©es (${iaCopros.length}):\n` +
+  let dataCtx = `Agence syndic Guadeloupe. Copropriétés gérées (${iaCopros.length}):\n` +
     iaCopros.map(c=>`- ${c.nom} (${c.commune})`).join('\n');
 
-  // Enrichir avec Supabase Ã¢ÂÂ recherche floue sur tous les mots de 3+ lettres
-  const keywords = text.match(/\b[a-zA-ZÃÂ-ÃÂ¿]{3,}\b/g)||[];
+  // Enrichir avec Supabase — recherche floue sur tous les mots de 3+ lettres
+  const keywords = text.match(/\b[a-zA-ZÀ-ÿ]{3,}\b/g)||[];
   const stopWords = ['les','des','une','pour','dans','avec','sur','par','que','qui','est','pas','plus','mais','les','aux','est','sont','ont','que','dans','par','sur','avec','une','des','les'];
   const searchWords = keywords.filter(k => !stopWords.includes(k.toLowerCase())).slice(0,4);
   for (const kw of searchWords) {
     try {
-      // Chercher dans les copropriÃÂ©tÃÂ©s
+      // Chercher dans les copropriétés
       const {data: coprosFound} = await supaFetch('coproprietes',`?nom=ilike.*${kw}*&select=id,nom,commune,estale_id&limit=3`);
       if (coprosFound?.length) {
-        dataCtx += `\n\nCopropriÃÂ©tÃÂ©(s) trouvÃÂ©e(s) pour "${kw}":\n`;
+        dataCtx += `\n\nCopropriété(s) trouvée(s) pour "${kw}":\n`;
         coprosFound.forEach(c => dataCtx += `- ${c.nom} (${c.commune})\n`);
       }
-      // Chercher dans les propriÃÂ©taires
+      // Chercher dans les propriétaires
       const {data: propsFound} = await supaFetch('proprietaires',`?or=(lastname.ilike.*${kw}*,firstname.ilike.*${kw}*)&select=firstname,lastname,balance,copropriete_estale_id&limit=5`);
       if (propsFound?.length) {
-        dataCtx += `\n\nPropriÃÂ©taire(s) trouvÃÂ©(s) pour "${kw}":\n`;
+        dataCtx += `\n\nPropriétaire(s) trouvé(s) pour "${kw}":\n`;
         propsFound.forEach(p => {
           const copro = iaCopros.find(c => c.estale_id === p.copropriete_estale_id) || iaCopros.find(c => c.id && p.copropriete_id && c.id === p.copropriete_id);
-          dataCtx += `- ${p.firstname} ${p.lastname} | Solde compte: ${p.balance ? p.balance.toFixed(2) + ' Ã¢ÂÂ¬' : 'N/A'} | RÃÂ©sidence: ${copro ? copro.nom + ' (' + copro.commune + ')' : 'LAGON ROSE'}\n`;
+          dataCtx += `- ${p.firstname} ${p.lastname} | Solde compte: ${p.balance ? p.balance.toFixed(2) + ' €' : 'N/A'} | Résidence: ${copro ? copro.nom + ' (' + copro.commune + ')' : 'LAGON ROSE'}\n`;
         });
       }
     } catch(e){}
   }
 
-  const system = `Tu es l'assistant IA d'Immo Conseil Antilles (ICA), agence immobiliÃÂ¨re et syndic en Guadeloupe.
-Tu es intÃÂ©grÃÂ© dans leur dashboard de direction. RÃÂ©ponds en franÃÂ§ais, de faÃÂ§on concise et professionnelle.
-Contexte base de donnÃÂ©es: ${dataCtx}
-Si une donnÃÂ©e Estale (budgets, rÃÂ©solutions AG, contrats) n'est pas encore synchronisÃÂ©e dans Supabase, dis-le clairement.
-Si la demande concerne une intervention prestataire, termine ta rÃÂ©ponse par [ACTION:INTERVENTION].
-Sois adaptÃÂ© au contexte terrain mobile (rÃÂ©ponse courte et directe).`;
+  const system = `Tu es l'assistant IA d'Immo Conseil Antilles (ICA), agence immobilière et syndic en Guadeloupe.
+Tu es intégré dans leur dashboard de direction. Réponds en français, de façon concise et professionnelle.
+Contexte base de données: ${dataCtx}
+Si une donnée Estale (budgets, résolutions AG, contrats) n'est pas encore synchronisée dans Supabase, dis-le clairement.
+Si la demande concerne une intervention prestataire, termine ta réponse par [ACTION:INTERVENTION].
+Sois adapté au contexte terrain mobile (réponse courte et directe).`;
 
   try {
     const resp = await fetch('/api/chat',{
@@ -1263,20 +1259,20 @@ Sois adaptÃÂ© au contexte terrain mobile (rÃÂ©ponse courte et directe)
       body:JSON.stringify({ system, messages: iaConvHistory })
     });
     const data = await resp.json();
-    const reply = data.content?.[0]?.text || 'DÃÂ©solÃÂ©, erreur de traitement.';
+    const reply = data.content?.[0]?.text || 'Désolé, erreur de traitement.';
     iaRemoveTyping();
     iaConvHistory.push({role:'assistant',content:reply});
 
     let display = iaFormatResponse(reply.replace(/\[ACTION:INTERVENTION\]/g,''));
     let actionHtml = '';
     if (reply.includes('[ACTION:INTERVENTION]')||text.toLowerCase().includes('intervention')||text.toLowerCase().includes('prestataire')||text.toLowerCase().includes('mission')) {
-      actionHtml = `<div class="ia-result-actions"><button class="ia-chat-btn success" onclick="iaShowTab('interventions');iaShowNewForm()">Ã¢ÂÂ CrÃÂ©er l'intervention</button></div>`;
+      actionHtml = `<div class="ia-result-actions"><button class="ia-chat-btn success" onclick="iaShowTab('interventions');iaShowNewForm()">➕ Créer l'intervention</button></div>`;
     }
     iaAddMsg('ai', display + actionHtml);
-    iaAddJournalEntry({icon:'Ã°ÂÂÂ¬',color:'ia-jd-blue',action:`Question IA : ${truncate(text,50)}`,meta:'Claude API ÃÂ· Supabase'});
+    iaAddJournalEntry({icon:'💬',color:'ia-jd-blue',action:`Question IA : ${truncate(text,50)}`,meta:'Claude API · Supabase'});
   } catch(e) {
     iaRemoveTyping();
-    iaAddMsg('ai', `Ã¢ÂÂ Ã¯Â¸Â Erreur API : ${e.message}`);
+    iaAddMsg('ai', `⚠️ Erreur API : ${e.message}`);
   }
   iaIsLoading=false; document.getElementById('iaSendBtn').disabled=false;
 }
@@ -1289,19 +1285,19 @@ async function iaLoadInterventions() {
   const list = document.getElementById('iaIntList');
   try {
     const {data} = await supaFetch('dossiers_interventions','?select=id,titre,statut,urgence,created_at,copropriete_id,prestataire_nom&order=created_at.desc&limit=20');
-    if (!data.length) { list.innerHTML=`<div style="text-align:center;color:var(--ia-text3);padding:30px;font-size:0.82rem">Aucune intervention. CrÃÂ©ez-en une ci-dessus.</div>`; return; }
+    if (!data.length) { list.innerHTML=`<div style="text-align:center;color:var(--ia-text3);padding:30px;font-size:0.82rem">Aucune intervention. Créez-en une ci-dessus.</div>`; return; }
     list.innerHTML = data.map(d=>{
       const copro = iaCopros.find(c=>c.id===d.copropriete_id);
       const bc = d.statut==='ouvert'?'ia-badge-ouvert':d.statut==='en_cours'?'ia-badge-cours':'ia-badge-clos';
-      const urgIcon = d.urgence==='critique'?'Ã°ÂÂÂ´':d.urgence==='normal'?'Ã°ÂÂÂ¡':'Ã°ÂÂÂ¢';
+      const urgIcon = d.urgence==='critique'?'🔴':d.urgence==='normal'?'🟡':'🟢';
       return `<div class="ia-int-card">
         <span class="ia-int-badge ${bc}">${d.statut}</span>
         <div class="ia-int-info">
           <div class="ia-int-titre">${urgIcon} ${d.titre||'Sans titre'}</div>
           <div class="ia-int-meta">
-            <span>Ã°ÂÂÂ¢ ${copro?.nom||'RÃÂ©sidence inconnue'}</span>
-            <span>Ã°ÂÂÂ§ ${d.prestataire_nom||'Prestataire ÃÂ  dÃÂ©finir'}</span>
-            <span>Ã°ÂÂÂ ${new Date(d.created_at).toLocaleDateString('fr-FR')}</span>
+            <span>🏢 ${copro?.nom||'Résidence inconnue'}</span>
+            <span>🔧 ${d.prestataire_nom||'Prestataire à définir'}</span>
+            <span>📅 ${new Date(d.created_at).toLocaleDateString('fr-FR')}</span>
           </div>
         </div>
       </div>`;
@@ -1320,9 +1316,9 @@ async function iaCreateIntervention() {
   const urg = document.getElementById('iFiUrg').value;
   const mission = document.getElementById('iFiMission').value;
   const notes = document.getElementById('iFiNotes').value;
-  if (!res_id||!type||!desc) { alert('Remplissez au moins : RÃÂ©sidence, Type et Description.'); return; }
+  if (!res_id||!type||!desc) { alert('Remplissez au moins : Résidence, Type et Description.'); return; }
   const copro = iaCopros.find(c=>c.id===res_id);
-  const titre = `${type} Ã¢ÂÂ ${copro?.nom||'RÃÂ©sidence'}`;
+  const titre = `${type} — ${copro?.nom||'Résidence'}`;
   try {
     await supaPost('dossiers_interventions',{
       titre,description:desc,statut:'ouvert',urgence:urg,
@@ -1331,8 +1327,8 @@ async function iaCreateIntervention() {
     });
     if (email) { try { await fetch(N8N_HOOK,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({titre,copropriete:copro?.nom,type,description:desc,prestataire:prest,email_prestataire:email,urgence:urg,mission,notes})}); } catch(e){} }
     iaHideForm(); iaLoadInterventions();
-    iaAddJournalEntry({icon:'Ã°ÂÂÂ§',color:'ia-jd-orange',action:`Intervention crÃÂ©ÃÂ©e : ${titre}`,meta:`${copro?.nom} ÃÂ· ${prest||'Prestataire ÃÂ  confirmer'}`});
-    document.getElementById('iaConfirmText').innerHTML=`<strong>${titre}</strong><br><br>Ã°ÂÂÂ ${copro?.nom}<br>Ã°ÂÂÂ§ ${prest||'ÃÂ dÃÂ©finir'}<br>Ã°ÂÂÂ¨ ${email||'Non renseignÃÂ©'}<br>Ã¢ÂÂ¡ ${urg}<br><br>${email?'Ã¢ÂÂ Notification envoyÃÂ©e via n8n.':'Ã¢ÂÂ¹Ã¯Â¸Â Aucun email prestataire.'}`;
+    iaAddJournalEntry({icon:'🔧',color:'ia-jd-orange',action:`Intervention créée : ${titre}`,meta:`${copro?.nom} · ${prest||'Prestataire à confirmer'}`});
+    document.getElementById('iaConfirmText').innerHTML=`<strong>${titre}</strong><br><br>📍 ${copro?.nom}<br>🔧 ${prest||'À définir'}<br>📨 ${email||'Non renseigné'}<br>⚡ ${urg}<br><br>${email?'✅ Notification envoyée via n8n.':'ℹ️ Aucun email prestataire.'}`;
     document.getElementById('iaConfirmModal').classList.add('open');
   } catch(e) { alert(`Erreur Supabase : ${e.message}`); }
 }
@@ -1345,48 +1341,36 @@ function iaAddJournalEntry(entry) {
 function iaRenderJournal(filterId='') {
   const c = document.getElementById('iaJournalEntries');
   const entries = filterId ? iaJournalEntries.filter(e=>e.copro_id===filterId) : iaJournalEntries;
-  if (!entries.length) { c.innerHTML=`<div style="text-align:center;color:var(--ia-text3);padding:30px;font-size:0.82rem">Aucune activitÃÂ© enregistrÃÂ©e.</div>`; return; }
+  if (!entries.length) { c.innerHTML=`<div style="text-align:center;color:var(--ia-text3);padding:30px;font-size:0.82rem">Aucune activité enregistrée.</div>`; return; }
   c.innerHTML = entries.map(e=>`<div class="ia-j-entry">
     <div class="ia-j-dot ${e.color||'ia-jd-blue'}"></div>
     <div class="ia-j-content">
       <div class="ia-j-action">${e.icon} ${e.action}</div>
-      <div class="ia-j-meta">${e.meta||''} ÃÂ· ${e.time.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}</div>
+      <div class="ia-j-meta">${e.meta||''} · ${e.time.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}</div>
     </div></div>`).join('');
 }
 function iaFilterJournal() { iaRenderJournal(document.getElementById('iaJournalFilter').value); }
 
 // Init journal
-iaAddJournalEntry({icon:'Ã°ÂÂÂ',color:'ia-jd-blue',action:'Plateforme ICA dÃÂ©marrÃÂ©e',meta:'Supabase ÃÂ· n8n ÃÂ· Claude API'});
+iaAddJournalEntry({icon:'🚀',color:'ia-jd-blue',action:'Plateforme ICA démarrée',meta:'Supabase · n8n · Claude API'});
 
-
-// =================================================================
-// SYSTÃME AUTH ICA â 3 RÃLES
-// =================================================================
+// ===== AUTH ICA — 3 ROLES =====
 const ICA_USERS = [
-  // ð ADMIN
-  { login:'jeremy', password:'ICA@Admin2026!', nom:'JÃ©rÃ©my Bedes', icon:'ð', role:'admin' },
-  // ð¢ GESTIONNAIRES
-  { login:'vanessa', password:'ICA@Gest2026!', nom:'Vanessa', icon:'ð¢', role:'gestionnaire' },
-  { login:'gestionnaire2', password:'ICA@Gest2026!', nom:'Gestionnaire 2', icon:'ð¢', role:'gestionnaire' },
-  // ð¤ COMMERCIAUX
-  { login:'commercial1', password:'ICA@Com2026!', nom:'Commercial 1', icon:'ð¤', role:'commercial', commercial_id:'commercial1' },
-  { login:'commercial2', password:'ICA@Com2026!', nom:'Commercial 2', icon:'ð¤', role:'commercial', commercial_id:'commercial2' }
+  {login:'jeremy',    password:'ICA@Admin2026!', nom:'Jeremy Bedes',  icon:'👑', role:'admin'},
+  {login:'vanessa',   password:'ICA@Gest2026!',  nom:'Vanessa',       icon:'🏢', role:'gestionnaire'},
+  {login:'gestionnaire2', password:'ICA@Gest2026!', nom:'Gestionnaire 2', icon:'🏢', role:'gestionnaire'},
+  {login:'commercial1', password:'ICA@Com2026!', nom:'Commercial 1',  icon:'👤', role:'commercial'},
+  {login:'commercial2', password:'ICA@Com2026!', nom:'Commercial 2',  icon:'👤', role:'commercial'}
 ];
-
 let currentUser = null;
 
 function authLogin() {
   const login = document.getElementById('auth-login').value.trim().toLowerCase();
-  const password = document.getElementById('auth-password').value;
-  const errorEl = document.getElementById('auth-error');
-  errorEl.style.display = 'none';
-  const user = ICA_USERS.find(u => u.login === login && u.password === password);
-  if (!user) {
-    errorEl.style.display = 'block';
-    document.getElementById('auth-password').value = '';
-    document.getElementById('auth-password').focus();
-    return;
-  }
+  const pwd   = document.getElementById('auth-password').value;
+  const errEl = document.getElementById('auth-error');
+  errEl.style.display = 'none';
+  const user = ICA_USERS.find(u => u.login === login && u.password === pwd);
+  if (!user) { errEl.style.display='block'; document.getElementById('auth-password').value=''; return; }
   currentUser = user;
   sessionStorage.setItem('ica_user', JSON.stringify(user));
   authApplyRole(user);
@@ -1395,41 +1379,42 @@ function authLogin() {
 function authApplyRole(user) {
   document.getElementById('auth-screen').classList.add('hidden');
   document.body.classList.remove('role-admin','role-gestionnaire','role-commercial');
-  document.body.classList.add('role-' + user.role);
-  document.getElementById('auth-user-icon').textContent = user.icon;
-  document.getElementById('auth-user-name').textContent = user.nom;
-  const colors = { admin:'rgba(29,158,117,.15)', gestionnaire:'rgba(186,117,23,.15)', commercial:'rgba(24,95,165,.15)' };
-  document.getElementById('auth-user-badge').style.background = colors[user.role] || '';
-
-  if (user.role === 'admin') {
-    document.querySelectorAll('[data-hide-commercial],[data-hide-gestionnaire]').forEach(el => el.style.display = '');
+  document.body.classList.add('role-'+user.role);
+  const icon = document.getElementById('auth-user-icon');
+  const name = document.getElementById('auth-user-name');
+  const badge = document.getElementById('auth-user-badge');
+  if (icon) icon.textContent = user.icon;
+  if (name) name.textContent = user.nom;
+  const colors = {admin:'rgba(29,158,117,.15)',gestionnaire:'rgba(186,117,23,.15)',commercial:'rgba(24,95,165,.15)'};
+  if (badge) badge.style.background = colors[user.role]||'';
+  if (user.role==='admin') {
+    document.querySelectorAll('[data-hide-commercial],[data-hide-gestionnaire]').forEach(el=>el.style.display='');
     switchTab('glob');
-  } else if (user.role === 'gestionnaire') {
-    document.querySelectorAll('[data-hide-gestionnaire]').forEach(el => el.style.display = 'none');
-    document.querySelectorAll('[data-hide-commercial]').forEach(el => el.style.display = '');
+  } else if (user.role==='gestionnaire') {
+    document.querySelectorAll('[data-hide-gestionnaire]').forEach(el=>el.style.display='none');
+    document.querySelectorAll('[data-hide-commercial]').forEach(el=>el.style.display='');
     switchTab('syndic');
-  } else if (user.role === 'commercial') {
-    document.querySelectorAll('[data-hide-commercial]').forEach(el => el.style.display = 'none');
+  } else {
+    document.querySelectorAll('[data-hide-commercial]').forEach(el=>el.style.display='none');
     switchTab('assistant-ia');
   }
   loadAll();
 }
 
 function authLogout() {
-  if (!confirm('Se dÃ©connecter de la plateforme ICA ?')) return;
+  if (!confirm('Se deconnecter ?')) return;
   sessionStorage.removeItem('ica_user');
   currentUser = null;
   document.body.classList.remove('role-admin','role-gestionnaire','role-commercial');
   document.getElementById('auth-screen').classList.remove('hidden');
-  document.getElementById('auth-login').value = '';
-  document.getElementById('auth-password').value = '';
-  document.getElementById('auth-error').style.display = 'none';
+  document.getElementById('auth-login').value='';
+  document.getElementById('auth-password').value='';
 }
 
-// Init â vÃ©rifier session existante
+// Bloquer loadAll auto — seulement apres connexion
 (function(){
-  const saved = sessionStorage.getItem('ica_user');
-  if (saved) { try { authApplyRole(JSON.parse(saved)); return; } catch(e){} }
+  const s = sessionStorage.getItem('ica_user');
+  if (s) { try { const u=JSON.parse(s); currentUser=u; authApplyRole(u); return; } catch(e){} }
 })();
 
 </script>
