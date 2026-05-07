@@ -543,7 +543,7 @@
 .auth-info{display:flex;align-items:center;gap:8px;padding:10px 14px;background:#f8f7f4;border-radius:10px;font-size:12px;color:#888;margin-bottom:20px}
 .auth-field{margin-bottom:16px}
 .auth-field label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px}
-.auth-field input{width:100%;padding:12px 14px;border:1.5px solid #e0e0de;border-radius:10px;font-size:14px;outline:none;font-family:inherit;color:#1a1a18;background:#fafafa;transition:all .15s}
+.auth-field input{width:100%;padding:12px 14px;border:1.5px solid #e0e0de;border-radius:10px;font-size:14px;outline:none;font-family:inherit;color:#1a1a18;background:#fafafa}
 .auth-field input:focus{border-color:#1D9E75;background:#fff;box-shadow:0 0 0 3px #E1F5EE}
 .auth-btn{width:100%;padding:13px;background:linear-gradient(135deg,#1D9E75,#185FA5);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:4px}
 .auth-error{background:#FCEBEB;border:1px solid #E24B4A;color:#E24B4A;padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:16px;display:none}
@@ -557,8 +557,7 @@ body.role-gestionnaire [data-hide-gestionnaire]{display:none!important}
 <div id="auth-screen">
   <div class="auth-card">
     <div class="auth-logo"><div class="auth-logo-badge">ICA</div><div><div class="auth-logo-name">Immo Conseil Antilles</div><div class="auth-logo-sub">Plateforme de direction</div></div></div>
-    <div class="auth-title">Connexion</div>
-    <div class="auth-subtitle">Acces securise — equipe ICA</div>
+    <div class="auth-title">Connexion</div><div class="auth-subtitle">Acces securise — equipe ICA</div>
     <div class="auth-info"><span>🔐</span><span>Identifiant et mot de passe fournis par la direction</span></div>
     <div class="auth-error" id="auth-error">Identifiants incorrects.</div>
     <div class="auth-field"><label>Identifiant</label><input type="text" id="auth-login" placeholder="Votre identifiant" autocomplete="username"></div>
@@ -912,22 +911,21 @@ body.role-gestionnaire [data-hide-gestionnaire]{display:none!important}
   </div>
 </div>
 
-  <!-- INTERVENTIONS & PRESTATAIRES -->
   <div id="interventions" class="section" style="display:none">
     <div style="display:flex;gap:0;margin-bottom:20px;border-bottom:2px solid var(--border)">
       <div id="itab-prest" onclick="iTabSwitch('prest')" style="padding:10px 18px;font-size:13px;font-weight:600;cursor:pointer;border-bottom:2px solid var(--green);margin-bottom:-2px;color:var(--green)">🔧 Prestataires (639)</div>
       <div id="itab-create" onclick="iTabSwitch('create')" style="padding:10px 18px;font-size:13px;font-weight:500;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;color:var(--text-muted)">➕ Nouvelle intervention</div>
     </div>
-    <div id="ipanel-prest">
+    <div id="ipanel-prest" style="display:block">
       <div class="kpi-grid" style="margin-bottom:16px">
-        <div class="kpi"><div class="kpi-label">Total</div><div class="kpi-val up" id="prest-count">639</div><div class="kpi-sub">Depuis Estale</div></div>
+        <div class="kpi"><div class="kpi-label">Total prestataires</div><div class="kpi-val up" id="prest-count">639</div><div class="kpi-sub">Depuis Estale</div></div>
         <div class="kpi"><div class="kpi-label">Resultats</div><div class="kpi-val" id="prest-filtered-count">—</div><div class="kpi-sub">Apres filtres</div></div>
       </div>
       <div class="card" style="padding:14px;margin-bottom:12px">
         <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end">
           <div><div style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;margin-bottom:5px">Categorie</div><select id="prest-cat" onchange="prestLoad()" style="width:100%;padding:9px 11px;border:1px solid var(--border-strong);border-radius:8px;font-size:13px;background:var(--surface);color:var(--text)"><option value="">Toutes</option></select></div>
           <div><div style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;margin-bottom:5px">Recherche</div><input type="text" id="prest-search" placeholder="Nom, specialite..." oninput="prestLoad()" style="width:100%;padding:9px 11px;border:1px solid var(--border-strong);border-radius:8px;font-size:13px;color:var(--text)"></div>
-          <div><div style="font-size:11px;margin-bottom:5px;color:transparent">.</div><label style="display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer;padding:9px 0;white-space:nowrap"><input type="checkbox" id="prest-important" onchange="prestLoad()"> Prioritaires</label></div>
+          <div><div style="font-size:11px;color:transparent;margin-bottom:5px">.</div><label style="display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer;padding:9px 0;white-space:nowrap"><input type="checkbox" id="prest-important" onchange="prestLoad()"> Prioritaires</label></div>
         </div>
       </div>
       <div class="card" style="padding:0;overflow:hidden"><div id="prest-list-container"><div style="padding:32px;text-align:center;color:var(--text-muted)"><span class="spinner"></span> Chargement...</div></div></div>
@@ -941,15 +939,15 @@ body.role-gestionnaire [data-hide-gestionnaire]{display:none!important}
           <div><div style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;margin-bottom:5px">Urgence</div><select id="int-urgence" style="width:100%;padding:10px 12px;border:1px solid var(--border-strong);border-radius:8px;font-size:13px;background:var(--surface);color:var(--text)"><option value="normal">Normal</option><option value="urgent">Urgent (24h)</option><option value="critique">Critique</option></select></div>
           <div><div style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;margin-bottom:5px">Nature</div><select id="int-nature" style="width:100%;padding:10px 12px;border:1px solid var(--border-strong);border-radius:8px;font-size:13px;background:var(--surface);color:var(--text)"><option value="parties_communes">Parties communes</option><option value="privatif">Privatif</option></select></div>
         </div>
-        <div style="margin-top:14px"><div style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;margin-bottom:5px">Description *</div><textarea id="int-description" placeholder="Nature du probleme, localisation precise..." style="width:100%;padding:10px 12px;border:1px solid var(--border-strong);border-radius:8px;font-size:13px;min-height:90px;resize:vertical;font-family:inherit;color:var(--text)"></textarea></div>
+        <div style="margin-top:14px"><div style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;margin-bottom:5px">Description *</div><textarea id="int-description" placeholder="Nature du probleme, localisation (etage, lot, zone)..." style="width:100%;padding:10px 12px;border:1px solid var(--border-strong);border-radius:8px;font-size:13px;min-height:90px;resize:vertical;font-family:inherit;color:var(--text)"></textarea></div>
       </div>
       <div class="card">
         <div class="card-header"><div class="card-title">🔧 Prestataire</div><button onclick="iTabSwitch('prest')" style="font-size:12px;padding:6px 12px;border:1px solid var(--border-strong);border-radius:7px;background:var(--surface);cursor:pointer;color:var(--text-muted)">← Choisir</button></div>
         <div id="int-prest-box" style="padding:14px;background:var(--bg);border-radius:10px;color:var(--text-muted);font-size:13px;text-align:center">Aucun prestataire selectionne</div>
       </div>
-      <div id="int-msg"></div>
+      <div id="int-msg" style="margin-bottom:8px"></div>
       <button onclick="intCreate()" style="width:100%;padding:14px;background:linear-gradient(135deg,var(--green),#185FA5);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:4px">Creer l'intervention ✓</button>
-      <button onclick="iTabSwitch('prest')" style="width:100%;padding:10px;background:transparent;border:1px solid var(--border-strong);border-radius:10px;font-size:13px;cursor:pointer;font-family:inherit;margin-top:8px;color:var(--text-muted)">← Retour prestataires</button>
+      <button onclick="iTabSwitch('prest')" style="width:100%;padding:10px;background:transparent;border:1px solid var(--border-strong);border-radius:10px;font-size:13px;cursor:pointer;font-family:inherit;margin-top:8px;color:var(--text-muted)">← Retour</button>
     </div>
   </div>
 
@@ -1017,7 +1015,7 @@ function isToday(iso) {
 
 // ===== TABS (dashboard) =====
 function switchTab(name) {
-  if (name === 'interventions') { setTimeout(prestInit, 50); }
+  if (name === 'interventions') { var s = document.getElementById('interventions'); if(s) s.style.display='block'; setTimeout(prestInit, 50); }
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.section').forEach(s => s.classList.remove('visible'));
   const tabEl = document.querySelector(`[data-tab="${name}"]`);
@@ -1135,7 +1133,7 @@ async function loadAlertes() {
 
 document.getElementById('s-copros').textContent = '62';
 
-setInterval(function(){ if(currentUser) loadAll(); }, 60000);
+setInterval(function(){if(currentUser)loadAll();}, 60000);
 
 // ===================================================================
 // ASSISTANT IA — LOGIQUE
@@ -1394,140 +1392,19 @@ function iaFilterJournal() { iaRenderJournal(document.getElementById('iaJournalF
 // Init journal
 iaAddJournalEntry({icon:'🚀',color:'ia-jd-blue',action:'Plateforme ICA démarrée',meta:'Supabase · n8n · Claude API'});
 
-// ===== AUTH =====
-const ICA_USERS=[
-  {login:'jeremy',password:'ICA@Admin2026!',nom:'Jeremy Bedes',icon:'👑',role:'admin'},
-  {login:'vanessa',password:'ICA@Gest2026!',nom:'Vanessa',icon:'🏢',role:'gestionnaire'},
-  {login:'gestionnaire2',password:'ICA@Gest2026!',nom:'Gestionnaire 2',icon:'🏢',role:'gestionnaire'},
-  {login:'commercial1',password:'ICA@Com2026!',nom:'Commercial 1',icon:'👤',role:'commercial'},
-  {login:'commercial2',password:'ICA@Com2026!',nom:'Commercial 2',icon:'👤',role:'commercial'}
-];
+const ICA_USERS=[{login:'jeremy',password:'ICA@Admin2026!',nom:'Jeremy Bedes',icon:'👑',role:'admin'},{login:'vanessa',password:'ICA@Gest2026!',nom:'Vanessa',icon:'🏢',role:'gestionnaire'},{login:'gestionnaire2',password:'ICA@Gest2026!',nom:'Gestionnaire 2',icon:'🏢',role:'gestionnaire'},{login:'commercial1',password:'ICA@Com2026!',nom:'Commercial 1',icon:'👤',role:'commercial'},{login:'commercial2',password:'ICA@Com2026!',nom:'Commercial 2',icon:'👤',role:'commercial'}];
 let currentUser=null;
-function authLogin(){
-  const login=(document.getElementById('auth-login').value||'').trim().toLowerCase();
-  const pwd=document.getElementById('auth-password').value||'';
-  const err=document.getElementById('auth-error');
-  err.style.display='none';
-  const user=ICA_USERS.find(function(u){return u.login===login&&u.password===pwd;});
-  if(!user){err.style.display='block';document.getElementById('auth-password').value='';return;}
-  currentUser=user;sessionStorage.setItem('ica_user',JSON.stringify(user));authApplyRole(user);
-}
-function authApplyRole(user){
-  document.getElementById('auth-screen').classList.add('hidden');
-  document.body.classList.remove('role-admin','role-gestionnaire','role-commercial');
-  document.body.classList.add('role-'+user.role);
-  const icon=document.getElementById('auth-user-icon');
-  const name=document.getElementById('auth-user-name');
-  const badge=document.getElementById('auth-user-badge');
-  if(icon)icon.textContent=user.icon;
-  if(name)name.textContent=user.nom;
-  const colors={admin:'rgba(29,158,117,.15)',gestionnaire:'rgba(186,117,23,.15)',commercial:'rgba(24,95,165,.15)'};
-  if(badge)badge.style.background=colors[user.role]||'';
-  if(user.role==='admin'){document.querySelectorAll('[data-hide-commercial],[data-hide-gestionnaire]').forEach(function(el){el.style.display='';});switchTab('global');}
-  else if(user.role==='gestionnaire'){document.querySelectorAll('[data-hide-gestionnaire]').forEach(function(el){el.style.display='none';});document.querySelectorAll('[data-hide-commercial]').forEach(function(el){el.style.display='';});switchTab('syndic');}
-  else{document.querySelectorAll('[data-hide-commercial]').forEach(function(el){el.style.display='none';});switchTab('assistant-ia');}
-  loadAll();
-}
-function authLogout(){
-  if(!confirm('Se deconnecter ?'))return;
-  sessionStorage.removeItem('ica_user');currentUser=null;
-  document.body.classList.remove('role-admin','role-gestionnaire','role-commercial');
-  document.getElementById('auth-screen').classList.remove('hidden');
-  document.getElementById('auth-login').value='';document.getElementById('auth-password').value='';
-}
+function authLogin(){var login=(document.getElementById('auth-login').value||'').trim().toLowerCase();var pwd=document.getElementById('auth-password').value||'';var errEl=document.getElementById('auth-error');errEl.style.display='none';var user=ICA_USERS.find(function(u){return u.login===login&&u.password===pwd;});if(!user){errEl.style.display='block';document.getElementById('auth-password').value='';return;}currentUser=user;sessionStorage.setItem('ica_user',JSON.stringify(user));authApplyRole(user);}
+function authApplyRole(user){document.getElementById('auth-screen').classList.add('hidden');document.body.classList.remove('role-admin','role-gestionnaire','role-commercial');document.body.classList.add('role-'+user.role);var icon=document.getElementById('auth-user-icon');var name=document.getElementById('auth-user-name');var badge=document.getElementById('auth-user-badge');if(icon)icon.textContent=user.icon;if(name)name.textContent=user.nom;var colors={admin:'rgba(29,158,117,.15)',gestionnaire:'rgba(186,117,23,.15)',commercial:'rgba(24,95,165,.15)'};if(badge)badge.style.background=colors[user.role]||'';if(user.role==='admin'){document.querySelectorAll('[data-hide-commercial],[data-hide-gestionnaire]').forEach(function(el){el.style.display='';});switchTab('global');}else if(user.role==='gestionnaire'){document.querySelectorAll('[data-hide-gestionnaire]').forEach(function(el){el.style.display='none';});document.querySelectorAll('[data-hide-commercial]').forEach(function(el){el.style.display='';});switchTab('syndic');}else{document.querySelectorAll('[data-hide-commercial]').forEach(function(el){el.style.display='none';});switchTab('assistant-ia');}loadAll();}
+function authLogout(){if(!confirm('Se deconnecter ?'))return;sessionStorage.removeItem('ica_user');currentUser=null;document.body.classList.remove('role-admin','role-gestionnaire','role-commercial');document.getElementById('auth-screen').classList.remove('hidden');document.getElementById('auth-login').value='';document.getElementById('auth-password').value='';}
 (function(){var s=sessionStorage.getItem('ica_user');if(s){try{var u=JSON.parse(s);currentUser=u;authApplyRole(u);return;}catch(e){}}})();
-
-// ===== INTERVENTIONS & PRESTATAIRES =====
 var _prestInited=false;var _selectedPrest=null;
-function iTabSwitch(tab){
-  ['prest','create'].forEach(function(p){
-    var panel=document.getElementById('ipanel-'+p);
-    var itab=document.getElementById('itab-'+p);
-    if(panel)panel.style.display=(p===tab)?'':'none';
-    if(itab){itab.style.borderBottomColor=(p===tab)?'var(--green)':'transparent';itab.style.color=(p===tab)?'var(--green)':'var(--text-muted)';itab.style.fontWeight=(p===tab)?'600':'500';}
-  });
-  if(tab==='create')prestLoadCopros();
-}
-async function prestLoadCopros(){
-  var sel=document.getElementById('int-residence');
-  if(!sel||sel.options.length>2)return;
-  try{
-    var r=await fetch(SUPABASE_URL+'/rest/v1/coproprietes?select=id,nom&order=nom.asc&limit=200',{headers:{apikey:SUPABASE_KEY,Authorization:'Bearer '+SUPABASE_KEY}});
-    var data=await r.json();
-    if(Array.isArray(data)&&data.length)sel.innerHTML='<option value="">Selectionner une residence...</option>'+data.map(function(c){return '<option value="'+c.id+'">'+(c.nom||c.id)+'</option>';}).join('');
-  }catch(e){sel.innerHTML='<option value="">Erreur</option>';}
-}
-async function prestLoad(){
-  var cat=(document.getElementById('prest-cat')||{}).value||'';
-  var search=((document.getElementById('prest-search')||{}).value||'').trim().toLowerCase();
-  var impOnly=(document.getElementById('prest-important')||{}).checked;
-  var container=document.getElementById('prest-list-container');
-  if(!container)return;
-  container.innerHTML='<div style="padding:32px;text-align:center;color:var(--text-muted)"><span class="spinner"></span> Chargement...</div>';
-  var url=SUPABASE_URL+'/rest/v1/prestataires?select=id,nom,categorie,telephone,email,specialite,important,commentaire&actif=eq.true&order=important.desc,nom.asc&limit=500';
-  if(cat)url+='&categorie=eq.'+encodeURIComponent(cat);
-  if(impOnly)url+='&important=eq.true';
-  try{
-    var r=await fetch(url,{headers:{apikey:SUPABASE_KEY,Authorization:'Bearer '+SUPABASE_KEY}});
-    var data=await r.json();
-    if(!Array.isArray(data))throw new Error('Erreur API');
-    if(search)data=data.filter(function(p){return (p.nom||'').toLowerCase().includes(search)||(p.categorie||'').toLowerCase().includes(search)||(p.specialite||'').toLowerCase().includes(search);});
-    var nb=document.getElementById('prest-filtered-count');if(nb)nb.textContent=data.length;
-    if(!data.length){container.innerHTML='<div style="padding:32px;text-align:center;color:var(--text-muted)">Aucun prestataire.</div>';return;}
-    container.innerHTML=data.map(function(p){
-      var imp=p.important?'<span style="background:#FAEEDA;color:#BA7517;font-size:10px;font-weight:700;padding:2px 6px;border-radius:99px;margin-left:6px">★</span>':'';
-      var catB=p.categorie?'<span style="background:var(--blue-light);color:var(--blue);font-size:10px;font-weight:600;padding:2px 8px;border-radius:99px;margin-left:4px">'+p.categorie+'</span>':'';
-      var tel=p.telephone||'';
-      var telH=tel?'<a href="tel:'+tel+'" style="color:var(--green);font-weight:600;font-size:13px;text-decoration:none;display:block">📞 '+tel+'</a>':'<span style="color:var(--text-faint);font-size:12px">—</span>';
-      var spec=(p.specialite||p.commentaire||'').substring(0,60);
-      var pData=JSON.stringify({id:p.id,nom:p.nom||'',tel:tel,email:p.email||'',cat:p.categorie||''}).replace(/"/g,'&quot;');
-      return '<div style="display:flex;align-items:center;gap:12px;padding:11px 16px;border-bottom:1px solid var(--border)">'
-        +'<div style="width:36px;height:36px;border-radius:8px;background:var(--green-light);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">🔧</div>'
-        +'<div style="flex:1;min-width:0"><div style="display:flex;align-items:center;flex-wrap:wrap;margin-bottom:2px"><span style="font-weight:600;font-size:13px">'+(p.nom||'—')+'</span>'+imp+catB+'</div>'+(spec?'<div style="font-size:12px;color:var(--text-muted)">'+spec+'</div>':'')+'</div>'
-        +'<div style="flex-shrink:0;min-width:110px;text-align:right">'+telH+'</div>'
-        +'<button onclick="prestSelect(&quot;'+pData+'&quot;)" style="padding:6px 14px;border:1px solid var(--green);background:var(--green-light);color:var(--green-dark);border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;flex-shrink:0;white-space:nowrap">Selectionner →</button>'
-        +'</div>';
-    }).join('');
-  }catch(e){container.innerHTML='<div style="padding:24px;text-align:center;color:var(--red)">Erreur: '+e.message+'</div>';}
-}
-function prestSelect(pJSON){
-  var p=JSON.parse(pJSON.replace(/&quot;/g,'"'));_selectedPrest=p;
-  var box=document.getElementById('int-prest-box');
-  if(box){
-    box.innerHTML='<div style="display:flex;align-items:center;gap:12px"><div style="width:40px;height:40px;border-radius:10px;background:var(--green-light);display:flex;align-items:center;justify-content:center;font-size:20px">🔧</div><div><div style="font-weight:700;font-size:14px">'+p.nom+'</div><div style="font-size:12px;color:var(--text-muted)">'+p.cat+' · '+(p.tel||'pas de tel.')+'</div></div><span style="margin-left:auto;background:var(--green-light);color:var(--green-dark);font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px">✓</span></div>';
-    box.style.background='var(--green-light)';box.style.border='1px solid #b8e8d4';
-  }
-  iTabSwitch('create');
-}
-async function intCreate(){
-  var res=(document.getElementById('int-residence')||{}).value;
-  var type=(document.getElementById('int-type')||{}).value;
-  var desc=((document.getElementById('int-description')||{}).value||'').trim();
-  var msg=document.getElementById('int-msg');
-  if(!res||!type||!desc){if(msg)msg.innerHTML='<div style="padding:12px;background:var(--red-light);border:1px solid var(--red);color:var(--red);border-radius:8px;font-size:13px;margin-bottom:12px">Residence, type et description obligatoires.</div>';return;}
-  if(msg)msg.innerHTML='<div style="padding:12px;background:var(--blue-light);border-radius:8px;font-size:13px;margin-bottom:12px"><span class="spinner"></span> Creation...</div>';
-  var body={copropriete_id:res,type_intervention:type,urgence:(document.getElementById('int-urgence')||{}).value||'normal',nature:(document.getElementById('int-nature')||{}).value||'parties_communes',description:desc,statut:'ouvert',prestataire_id:_selectedPrest?_selectedPrest.id:null,prestataire_nom:_selectedPrest?_selectedPrest.nom:null,prestataire_tel:_selectedPrest?_selectedPrest.tel:null,created_at:new Date().toISOString()};
-  try{
-    var r=await fetch(SUPABASE_URL+'/rest/v1/dossiers_interventions',{method:'POST',headers:{apikey:SUPABASE_KEY,Authorization:'Bearer '+SUPABASE_KEY,'Content-Type':'application/json',Prefer:'return=representation'},body:JSON.stringify(body)});
-    var data=await r.json();
-    if(r.ok&&data[0]){
-      await fetch('https://immo-conseil-antilles.app.n8n.cloud/webhook/intervention-prestataire',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.assign({},body,{intervention_id:data[0].id}))}).catch(function(){});
-      if(msg)msg.innerHTML='<div style="padding:12px;background:var(--green-light);border:1px solid var(--green);color:var(--green-dark);border-radius:8px;font-size:13px;margin-bottom:12px">✓ Intervention creee ! Prestataire notifie.</div>';
-      setTimeout(function(){document.getElementById('int-description').value='';_selectedPrest=null;var box=document.getElementById('int-prest-box');if(box){box.innerHTML='Aucun prestataire selectionne';box.style.background='';box.style.border='';}iTabSwitch('prest');if(msg)msg.innerHTML='';},2500);
-    }else throw new Error(JSON.stringify(data).substring(0,100));
-  }catch(e){if(msg)msg.innerHTML='<div style="padding:12px;background:var(--red-light);border:1px solid var(--red);color:var(--red);border-radius:8px;font-size:13px;margin-bottom:12px">Erreur: '+e.message+'</div>';}
-}
-async function prestInit(){
-  if(_prestInited){prestLoad();return;}_prestInited=true;
-  try{
-    var r=await fetch(SUPABASE_URL+'/rest/v1/prestataires?select=categorie&actif=eq.true&limit=1000',{headers:{apikey:SUPABASE_KEY,Authorization:'Bearer '+SUPABASE_KEY}});
-    var data=await r.json();
-    var cats=[...new Set(data.map(function(p){return p.categorie;}).filter(Boolean))].sort();
-    var sel=document.getElementById('prest-cat');
-    if(sel)sel.innerHTML='<option value="">Toutes ('+cats.length+' categories)</option>'+cats.map(function(c){return '<option value="'+c+'">'+c+'</option>';}).join('');
-  }catch(e){}
-  prestLoad();
-}
+function iTabSwitch(tab){['prest','create'].forEach(function(p){var panel=document.getElementById('ipanel-'+p);var itab=document.getElementById('itab-'+p);if(panel)panel.style.display=(p===tab)?'block':'none';if(itab){itab.style.borderBottomColor=(p===tab)?'var(--green)':'transparent';itab.style.color=(p===tab)?'var(--green)':'var(--text-muted)';itab.style.fontWeight=(p===tab)?'600':'500';}});if(tab==='create')prestLoadCopros();}
+async function prestLoadCopros(){var sel=document.getElementById('int-residence');if(!sel||sel.options.length>2)return;try{var r=await fetch(SUPABASE_URL+'/rest/v1/coproprietes?select=id,nom&order=nom.asc&limit=200',{headers:{apikey:SUPABASE_KEY,Authorization:'Bearer '+SUPABASE_KEY}});var data=await r.json();if(Array.isArray(data)&&data.length)sel.innerHTML='<option value="">Selectionner une residence...</option>'+data.map(function(c){return'<option value="'+c.id+'">'+(c.nom||c.id)+'</option>';}).join('');}catch(e){sel.innerHTML='<option value="">Erreur</option>';}}
+async function prestLoad(){var cat=(document.getElementById('prest-cat')||{}).value||'';var search=((document.getElementById('prest-search')||{}).value||'').trim().toLowerCase();var impOnly=(document.getElementById('prest-important')||{}).checked;var container=document.getElementById('prest-list-container');if(!container)return;container.innerHTML='<div style="padding:32px;text-align:center;color:var(--text-muted)"><span class="spinner"></span> Chargement...</div>';var url=SUPABASE_URL+'/rest/v1/prestataires?select=id,nom,categorie,telephone,email,specialite,important,commentaire&actif=eq.true&order=important.desc,nom.asc&limit=500';if(cat)url+='&categorie=eq.'+encodeURIComponent(cat);if(impOnly)url+='&important=eq.true';try{var r=await fetch(url,{headers:{apikey:SUPABASE_KEY,Authorization:'Bearer '+SUPABASE_KEY}});var data=await r.json();if(!Array.isArray(data))throw new Error('Erreur API');if(search)data=data.filter(function(p){return(p.nom||'').toLowerCase().includes(search)||(p.categorie||'').toLowerCase().includes(search)||(p.specialite||'').toLowerCase().includes(search);});var nb=document.getElementById('prest-filtered-count');if(nb)nb.textContent=data.length;if(!data.length){container.innerHTML='<div style="padding:32px;text-align:center;color:var(--text-muted)">Aucun prestataire.</div>';return;}container.innerHTML=data.map(function(p){var imp=p.important?'<span style="background:#FAEEDA;color:#BA7517;font-size:10px;font-weight:700;padding:2px 6px;border-radius:99px;margin-left:6px">★</span>':'';var catB=p.categorie?'<span style="background:var(--blue-light);color:var(--blue);font-size:10px;font-weight:600;padding:2px 8px;border-radius:99px;margin-left:4px">'+p.categorie+'</span>':'';var tel=p.telephone||'';var telH=tel?'<a href="tel:'+tel+'" style="color:var(--green);font-weight:600;font-size:13px;text-decoration:none;display:block">📞 '+tel+'</a>':'<span style="color:var(--text-faint);font-size:12px">—</span>';var spec=(p.specialite||p.commentaire||'').substring(0,60);var pData=JSON.stringify({id:p.id,nom:p.nom||'',tel:tel,email:p.email||'',cat:p.categorie||''}).replace(/"/g,'&quot;');return'<div style="display:flex;align-items:center;gap:12px;padding:11px 16px;border-bottom:1px solid var(--border)"><div style="width:36px;height:36px;border-radius:8px;background:var(--green-light);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">🔧</div><div style="flex:1;min-width:0"><div style="display:flex;align-items:center;flex-wrap:wrap;margin-bottom:2px"><span style="font-weight:600;font-size:13px">'+(p.nom||'—')+'</span>'+imp+catB+'</div>'+(spec?'<div style="font-size:12px;color:var(--text-muted)">'+spec+'</div>':'')+'</div><div style="flex-shrink:0;min-width:120px;text-align:right">'+telH+'</div><button onclick="prestSelect(&quot;'+pData+'&quot;)" style="padding:6px 14px;border:1px solid var(--green);background:var(--green-light);color:var(--green-dark);border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;flex-shrink:0;white-space:nowrap">Selectionner →</button></div>';}).join('');}catch(e){container.innerHTML='<div style="padding:24px;text-align:center;color:var(--red)">Erreur: '+e.message+'</div>';}}
+function prestSelect(pJSON){var p=JSON.parse(pJSON.replace(/&quot;/g,'"'));_selectedPrest=p;var box=document.getElementById('int-prest-box');if(box){box.innerHTML='<div style="display:flex;align-items:center;gap:12px"><div style="width:40px;height:40px;border-radius:10px;background:var(--green-light);display:flex;align-items:center;justify-content:center;font-size:20px">🔧</div><div><div style="font-weight:700;font-size:14px">'+p.nom+'</div><div style="font-size:12px;color:var(--text-muted)">'+p.cat+' · '+(p.tel||'pas de tel.')+'</div></div><span style="margin-left:auto;background:var(--green-light);color:var(--green-dark);font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px">✓</span></div>';box.style.background='var(--green-light)';box.style.border='1px solid #b8e8d4';}iTabSwitch('create');}
+async function intCreate(){var res=(document.getElementById('int-residence')||{}).value;var type=(document.getElementById('int-type')||{}).value;var desc=((document.getElementById('int-description')||{}).value||'').trim();var msg=document.getElementById('int-msg');if(!res||!type||!desc){if(msg)msg.innerHTML='<div style="padding:12px;background:var(--red-light);border:1px solid var(--red);color:var(--red);border-radius:8px;font-size:13px;margin-bottom:8px">Residence, type et description sont obligatoires.</div>';return;}if(msg)msg.innerHTML='<div style="padding:12px;background:var(--blue-light);border-radius:8px;font-size:13px;margin-bottom:8px"><span class="spinner"></span> Creation...</div>';var body={copropriete_id:res,type_intervention:type,urgence:(document.getElementById('int-urgence')||{}).value||'normal',nature:(document.getElementById('int-nature')||{}).value||'parties_communes',description:desc,statut:'ouvert',prestataire_id:_selectedPrest?_selectedPrest.id:null,prestataire_nom:_selectedPrest?_selectedPrest.nom:null,prestataire_tel:_selectedPrest?_selectedPrest.tel:null,created_at:new Date().toISOString()};try{var r=await fetch(SUPABASE_URL+'/rest/v1/dossiers_interventions',{method:'POST',headers:{apikey:SUPABASE_KEY,Authorization:'Bearer '+SUPABASE_KEY,'Content-Type':'application/json',Prefer:'return=representation'},body:JSON.stringify(body)});var data=await r.json();if(r.ok&&data[0]){await fetch('https://immo-conseil-antilles.app.n8n.cloud/webhook/intervention-prestataire',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.assign({},body,{intervention_id:data[0].id}))}).catch(function(){});if(msg)msg.innerHTML='<div style="padding:12px;background:var(--green-light);border:1px solid var(--green);color:var(--green-dark);border-radius:8px;font-size:13px;margin-bottom:8px">✓ Intervention creee !</div>';setTimeout(function(){document.getElementById('int-description').value='';_selectedPrest=null;var box=document.getElementById('int-prest-box');if(box){box.innerHTML='Aucun prestataire selectionne';box.style.background='';box.style.border='';}iTabSwitch('prest');if(msg)msg.innerHTML='';},2500);}else throw new Error(JSON.stringify(data).substring(0,100));}catch(e){if(msg)msg.innerHTML='<div style="padding:12px;background:var(--red-light);border:1px solid var(--red);color:var(--red);border-radius:8px;font-size:13px;margin-bottom:8px">Erreur: '+e.message+'</div>';}}
+async function prestInit(){if(_prestInited){prestLoad();return;}_prestInited=true;try{var r=await fetch(SUPABASE_URL+'/rest/v1/prestataires?select=categorie&actif=eq.true&limit=1000',{headers:{apikey:SUPABASE_KEY,Authorization:'Bearer '+SUPABASE_KEY}});var data=await r.json();var cats=Array.from(new Set(data.map(function(p){return p.categorie;}).filter(Boolean))).sort();var sel=document.getElementById('prest-cat');if(sel)sel.innerHTML='<option value="">Toutes ('+cats.length+' categories)</option>'+cats.map(function(c){return'<option value="'+c+'">'+c+'</option>';}).join('');}catch(e){}prestLoad();}
 
 </script>
 </body>
