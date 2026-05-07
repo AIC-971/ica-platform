@@ -911,7 +911,7 @@ body.role-gestionnaire [data-hide-gestionnaire]{display:none!important}
   </div>
 </div>
 
-  <div id="interventions" class="section" style="display:none">
+  <div id="interventions" class="section">
     <div style="display:flex;gap:0;margin-bottom:20px;border-bottom:2px solid var(--border)">
       <div id="itab-prest" onclick="iTabSwitch('prest')" style="padding:10px 18px;font-size:13px;font-weight:600;cursor:pointer;border-bottom:2px solid var(--green);margin-bottom:-2px;color:var(--green)">🔧 Prestataires (639)</div>
       <div id="itab-create" onclick="iTabSwitch('create')" style="padding:10px 18px;font-size:13px;font-weight:500;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;color:var(--text-muted)">➕ Nouvelle intervention</div>
@@ -1015,7 +1015,7 @@ function isToday(iso) {
 
 // ===== TABS (dashboard) =====
 function switchTab(name) {
-  if (name === 'interventions') { var s = document.getElementById('interventions'); if(s) s.style.display='block'; setTimeout(prestInit, 50); }
+  if (name === 'interventions') { setTimeout(prestInit, 50); }
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.section').forEach(s => s.classList.remove('visible'));
   const tabEl = document.querySelector(`[data-tab="${name}"]`);
