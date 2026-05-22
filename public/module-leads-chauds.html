@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Léa — Leads Chauds | ICA Platform</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f4f6f9; color: #1a1a2e; }
+  
+  .header { background: #1a1a2e; color: white; padding: 16px 24px; display: flex; align-items: center; gap: 12px; }
+  .header .logo { font-size: 20px; font-weight: 700; color: #4fc3f7; }
+  .header .subtitle { font-size: 13px; color: rgba(255,255,255,0.6); }
+  .badge-live { background: #22c55e; color: white; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; margin-left: auto; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.6} }
+
+  .stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; padding: 16px 24px; }
+  .stat { background: white; border-radius: 10px; padding: 14px 16px; border-left: 4px solid transparent; }
+  .stat.rouge { border-color: #ef4444; }
+  .stat.orange { border-color: #f97316; }
+  .stat.vert { border-color: #22c55e; }
+  .stat.bleu { border-color: #3b82f6; }
+  .stat-num { font-size: 28px; font-weight: 700; }
+  .stat-label { font-size: 12px; color: #64748b; margin-top: 2px; }
+
+  .content { padding: 0 24px 24px; }
+  .section-title { font-size: 15px; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  .lead-card { background: white; border-radius: 12px; padding: 16px 20px; margin-bottom: 12px; border-left: 5px solid #3b82f6; box-shadow: 0 1px 4px rgba(0,0,0,0.06); transition: box-shadow 0.2s; }
+  .lead-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+  .lead-card.interesse { border-color: #ef4444; }
+  .lead-card.veut_rappel { border-color: #f97316; }
+  .lead-card.question { border-color: #3b82f6; }
+  .lead-card.attribue { border-color: #22c55e; opacity: 0.7; }
+
+  .lead-header { display: flex; align-items: flex-start; gap: 12px; }
+  .lead-avatar { width: 42px; height: 42px; border-radius: 50%; background: #e2e8f0; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; color: #475569; flex-shrink: 0; }
+  .lead-info { flex: 1; }
+  .lead-nom { font-weight: 600; font-size: 15px; }
+  .lead-email { font-size: 12px; color: #64748b; margin-top: 2px; }
+  .lead-meta { display: flex; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
+  .chip { font-size: 11px; padding: 2px 10px; border-radius: 20px; font-weight: 500; }
+  .chip-type { background: #e0f2fe; color: #0277bd; }
+  .chip-intention { background: #fce7f3; color: #be185d; }
+  .chip-intention.interesse { background: #fee2e2; color: #991b1b; }
+  .chip-intention.veut_rappel { background: #ffedd5; color: #9a3412; }
+  .chip-date { background: #f1f5f9; color: #475569; }
+
+  .lead-resume { margin-top: 10px; font-size: 13px; color: #374151; background: #f8fafc; border-radius: 8px; padding: 10px 12px; line-height: 1.5; }
+  .lead-message { margin-top: 8px; font-size: 12px; color: #64748b; border-left: 3px solid #e2e8f0; padding-left: 10px; font-style: italic; max-height: 60px; overflow: hidden; }
+
+  .lead-actions { margin-top: 14px; display: flex; gap: 10px; align-items: center; }
+  .btn { padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; border: none; transition: all 0.15s; }
+  .btn-attribuer { background: #1a1a2e; color: white; }
+  .btn-attribuer:hover { background: #2d2d50; }
+  .btn-rappeler { background: #dbeafe; color: #1d4ed8; }
+  .btn-rappeler:hover { background: #bfdbfe; }
+  .btn-ignorer { background: #f1f5f9; color: #64748b; }
+  .btn-ignorer:hover { background: #e2e8f0; }
+  .attribue-badge { font-size: 12px; color: #22c55e; font-weight: 500; }
+
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; align-items: center; justify-content: center; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: white; border-radius: 16px; padding: 28px; width: 400px; max-width: 90vw; }
+  .modal h3 { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+  .modal p { font-size: 14px; color: #64748b; margin-bottom: 20px; }
+  .modal select { width: 100%; padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; margin-bottom: 16px; }
+  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+
+  .empty-state { text-align: center; padding: 60px 20px; color: #94a3b8; }
+  .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
+  .loading { text-align: center; padding: 40px; color: #64748b; }
+
+  .refresh-bar { display: flex; align-items: center; justify-content: space-between; padding: 0 24px 12px; }
+  .refresh-info { font-size: 12px; color: #94a3b8; }
+  .btn-refresh { background: #f1f5f9; border: none; padding: 6px 14px; border-radius: 8px; font-size: 12px; cursor: pointer; color: #475569; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="logo">🔥 Léa — Leads Chauds</div>
+    <div class="subtitle">Réponses clients reçues sur lea@immoconseil-gpe.com</div>
+  </div>
+  <div class="badge-live">● LIVE</div>
+</div>
+
+<div class="stats-bar" id="statsBar">
+  <div class="stat rouge"><div class="stat-num" id="statInteresse">—</div><div class="stat-label">Intéressés</div></div>
+  <div class="stat orange"><div class="stat-num" id="statRappel">—</div><div class="stat-label">Veulent être rappelés</div></div>
+  <div class="stat bleu"><div class="stat-num" id="statQuestion">—</div><div class="stat-label">Questions</div></div>
+  <div class="stat vert"><div class="stat-num" id="statAttribue">—</div><div class="stat-label">Attribués</div></div>
+</div>
+
+<div class="refresh-bar">
+  <div class="refresh-info" id="lastRefresh">Actualisation...</div>
+  <button class="btn-refresh" onclick="loadLeads()">↻ Actualiser</button>
+</div>
+
+<div class="content">
+  <div class="section-title"><div class="dot" style="background:#ef4444"></div>Leads en attente d'attribution</div>
+  <div id="leadsList"><div class="loading">Chargement...</div></div>
+</div>
+
+<!-- Modal attribution -->
+<div class="modal-overlay" id="modalAttribution">
+  <div class="modal">
+    <h3>Attribuer ce lead</h3>
+    <p id="modalDesc">Sélectionner un commercial</p>
+    <select id="commercialSelect">
+      <option value="">— Choisir un commercial —</option>
+    </select>
+    <div class="modal-actions">
+      <button class="btn btn-ignorer" onclick="closeModal()">Annuler</button>
+      <button class="btn btn-attribuer" onclick="confirmerAttribution()">Attribuer</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const SB = 'https://xdrlgyqxdbdvzrneujgz.supabase.co';
+const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhkcmxneXF4ZGJkdnpybmV1amd6Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0MzUwNjMwNiwiZXhwIjoyMDU5MDgyMzA2fQ.placeholder';
+
+let currentLeadId = null;
+let commerciaux = [];
+
+const headers = {
+  'apikey': KEY,
+  'Authorization': 'Bearer ' + KEY,
+  'Content-Type': 'application/json'
+};
+
+async function loadStats(leads) {
+  document.getElementById('statInteresse').textContent = leads.filter(l => l.intention === 'interesse').length;
+  document.getElementById('statRappel').textContent = leads.filter(l => l.intention === 'veut_rappel').length;
+  document.getElementById('statQuestion').textContent = leads.filter(l => l.intention === 'question').length;
+  document.getElementById('statAttribue').textContent = leads.filter(l => l.statut === 'attribue').length;
+}
+
+async function loadCommerciaux() {
+  const r = await fetch(SB + '/rest/v1/commerciaux?select=id,nom,prenom&order=nom.asc', { headers });
+  if (r.ok) {
+    commerciaux = await r.json();
+    const sel = document.getElementById('commercialSelect');
+    commerciaux.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c.id;
+      opt.textContent = (c.prenom || '') + ' ' + (c.nom || '');
+      sel.appendChild(opt);
+    });
+  }
+}
+
+function intentionLabel(i) {
+  const map = { interesse: '🔥 Intéressé', veut_rappel: '📞 Veut être rappelé', question: '❓ Question', autre: '💬 Autre' };
+  return map[i] || i;
+}
+
+function formatDate(d) {
+  if (!d) return '';
+  return new Date(d).toLocaleDateString('fr-FR', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' });
+}
+
+function initiales(nom) {
+  return (nom || 'XX').split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase();
+}
+
+async function loadLeads() {
+  const r = await fetch(SB + '/rest/v1/leads_chauds?order=created_at.desc&limit=50', { headers });
+  if (!r.ok) { document.getElementById('leadsList').innerHTML = '<div class="empty-state"><div class="icon">⚠️</div><p>Erreur de connexion Supabase</p></div>'; return; }
+  
+  const leads = await r.json();
+  loadStats(leads);
+  document.getElementById('lastRefresh').textContent = 'Actualisé ' + new Date().toLocaleTimeString('fr-FR');
+
+  const enAttente = leads.filter(l => l.statut !== 'ignore');
+  
+  if (enAttente.length === 0) {
+    document.getElementById('leadsList').innerHTML = '<div class="empty-state"><div class="icon">✅</div><p>Aucun lead en attente</p><p style="font-size:12px;margin-top:8px">Les réponses reçues sur lea@ apparaîtront ici automatiquement</p></div>';
+    return;
+  }
+
+  document.getElementById('leadsList').innerHTML = enAttente.map(lead => `
+    <div class="lead-card ${lead.intention} ${lead.statut === 'attribue' ? 'attribue' : ''}">
+      <div class="lead-header">
+        <div class="lead-avatar">${initiales(lead.contact_nom)}</div>
+        <div class="lead-info">
+          <div class="lead-nom">${lead.contact_nom || lead.contact_email}</div>
+          <div class="lead-email">${lead.contact_email}</div>
+          <div class="lead-meta">
+            ${lead.type_contact ? '<span class="chip chip-type">' + lead.type_contact + '</span>' : ''}
+            <span class="chip chip-intention ${lead.intention}">${intentionLabel(lead.intention)}</span>
+            <span class="chip chip-date">${formatDate(lead.created_at)}</span>
+          </div>
+        </div>
+      </div>
+      ${lead.resume ? '<div class="lead-resume">' + lead.resume + '</div>' : ''}
+      ${lead.message_original ? '<div class="lead-message">"' + lead.message_original.substring(0,200) + '"</div>' : ''}
+      <div class="lead-actions">
+        ${lead.statut === 'attribue' 
+          ? '<span class="attribue-badge">✅ Attribué à ' + (lead.commercial_nom || 'un commercial') + '</span>'
+          : `<button class="btn btn-attribuer" onclick="ouvrirModal('${lead.id}', '${(lead.contact_nom||lead.contact_email).replace(/'/g,"\\'")}')">👤 Attribuer</button>
+             <button class="btn btn-rappeler" onclick="marquerStatut('${lead.id}', 'a_rappeler')">📞 Marquer à rappeler</button>
+             <button class="btn btn-ignorer" onclick="marquerStatut('${lead.id}', 'ignore')">Ignorer</button>`
+        }
+      </div>
+    </div>
+  `).join('');
+}
+
+function ouvrirModal(leadId, nomContact) {
+  currentLeadId = leadId;
+  document.getElementById('modalDesc').textContent = 'Attribuer "' + nomContact + '" à :';
+  document.getElementById('modalAttribution').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modalAttribution').classList.remove('open');
+  currentLeadId = null;
+}
+
+async function confirmerAttribution() {
+  const commercialId = document.getElementById('commercialSelect').value;
+  if (!commercialId) { alert('Sélectionner un commercial'); return; }
+  
+  const commercial = commerciaux.find(c => c.id === commercialId);
+  const nomCommercial = commercial ? (commercial.prenom + ' ' + commercial.nom).trim() : '';
+
+  const r = await fetch(SB + '/rest/v1/leads_chauds?id=eq.' + currentLeadId, {
+    method: 'PATCH',
+    headers,
+    body: JSON.stringify({ statut: 'attribue', commercial_id: commercialId, commercial_nom: nomCommercial, date_attribution: new Date().toISOString() })
+  });
+  
+  closeModal();
+  loadLeads();
+}
+
+async function marquerStatut(leadId, statut) {
+  await fetch(SB + '/rest/v1/leads_chauds?id=eq.' + leadId, {
+    method: 'PATCH', headers,
+    body: JSON.stringify({ statut })
+  });
+  loadLeads();
+}
+
+// Init
+loadCommerciaux();
+loadLeads();
+setInterval(loadLeads, 30000); // Auto-refresh 30s
+</script>
+</body>
+  </html>
