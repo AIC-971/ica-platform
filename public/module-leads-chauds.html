@@ -3,254 +3,219 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lea - Leads Chauds | ICA Platform</title>
+<title>Lea - Leads Chauds | ICA</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f4f6f9; color: #1a1a2e; }
-  .header { background: #1a1a2e; color: white; padding: 16px 24px; display: flex; align-items: center; gap: 12px; }
-  .header .logo { font-size: 20px; font-weight: 700; color: #4fc3f7; }
-  .header .subtitle { font-size: 13px; color: rgba(255,255,255,0.6); }
-  .badge-live { background: #22c55e; color: white; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; margin-left: auto; animation: pulse 2s infinite; }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.6} }
-  .stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; padding: 16px 24px; }
-  .stat { background: white; border-radius: 10px; padding: 14px 16px; border-left: 4px solid transparent; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
-  .stat.rouge { border-color: #ef4444; }
-  .stat.orange { border-color: #f97316; }
-  .stat.vert { border-color: #22c55e; }
-  .stat.bleu { border-color: #3b82f6; }
-  .stat-num { font-size: 28px; font-weight: 700; }
-  .stat-label { font-size: 12px; color: #64748b; margin-top: 2px; }
-  .content { padding: 0 24px 24px; }
-  .section-title { font-size: 15px; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-  .dot { width: 8px; height: 8px; border-radius: 50%; }
-  .lead-card { background: white; border-radius: 12px; padding: 16px 20px; margin-bottom: 12px; border-left: 5px solid #3b82f6; box-shadow: 0 1px 4px rgba(0,0,0,0.06); transition: box-shadow 0.2s; }
-  .lead-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
-  .lead-card.interesse { border-color: #ef4444; }
-  .lead-card.veut_rappel { border-color: #f97316; }
-  .lead-card.question { border-color: #3b82f6; }
-  .lead-card.attribue { border-color: #22c55e; opacity: 0.75; }
-  .lead-header { display: flex; align-items: flex-start; gap: 12px; }
-  .lead-avatar { width: 42px; height: 42px; border-radius: 50%; background: #e2e8f0; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; color: #475569; flex-shrink: 0; }
-  .lead-info { flex: 1; }
-  .lead-nom { font-weight: 600; font-size: 15px; }
-  .lead-email { font-size: 12px; color: #64748b; margin-top: 2px; }
-  .lead-meta { display: flex; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
-  .chip { font-size: 11px; padding: 2px 10px; border-radius: 20px; font-weight: 500; }
-  .chip-type { background: #e0f2fe; color: #0277bd; }
-  .chip-intention { background: #fce7f3; color: #be185d; }
-  .chip-intention.interesse { background: #fee2e2; color: #991b1b; }
-  .chip-intention.veut_rappel { background: #ffedd5; color: #9a3412; }
-  .chip-date { background: #f1f5f9; color: #475569; }
-  .lead-resume { margin-top: 10px; font-size: 13px; color: #374151; background: #f8fafc; border-radius: 8px; padding: 10px 12px; line-height: 1.5; }
-  .lead-message { margin-top: 8px; font-size: 12px; color: #64748b; border-left: 3px solid #e2e8f0; padding-left: 10px; font-style: italic; max-height: 60px; overflow: hidden; }
-  .lead-actions { margin-top: 14px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-  .btn { padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; border: none; transition: all 0.15s; }
-  .btn-attribuer { background: #1a1a2e; color: white; }
-  .btn-attribuer:hover { background: #2d2d50; }
-  .btn-rappeler { background: #dbeafe; color: #1d4ed8; }
-  .btn-rappeler:hover { background: #bfdbfe; }
-  .btn-ignorer { background: #f1f5f9; color: #64748b; }
-  .btn-ignorer:hover { background: #e2e8f0; }
-  .attribue-badge { font-size: 12px; color: #22c55e; font-weight: 600; }
-  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; align-items: center; justify-content: center; }
-  .modal-overlay.open { display: flex; }
-  .modal { background: white; border-radius: 16px; padding: 28px; width: 420px; max-width: 90vw; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
-  .modal h3 { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
-  .modal p { font-size: 14px; color: #64748b; margin-bottom: 20px; }
-  .modal select { width: 100%; padding: 10px 14px; border: 1.5px solid #e2e8f0; border-radius: 8px; font-size: 14px; margin-bottom: 16px; outline: none; }
-  .modal select:focus { border-color: #1a1a2e; }
-  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
-  .empty-state { text-align: center; padding: 60px 20px; color: #94a3b8; }
-  .empty-icon { font-size: 48px; margin-bottom: 16px; }
-  .loading { text-align: center; padding: 40px; color: #64748b; }
-  .refresh-bar { display: flex; align-items: center; justify-content: space-between; padding: 0 24px 12px; }
-  .refresh-info { font-size: 12px; color: #94a3b8; }
-  .btn-refresh { background: #f1f5f9; border: none; padding: 6px 14px; border-radius: 8px; font-size: 12px; cursor: pointer; color: #475569; }
-  .btn-refresh:hover { background: #e2e8f0; }
-  .priority-1 { border-color: #dc2626 !important; }
-  .priority-2 { border-color: #ea580c !important; }
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f4f6f9;color:#1a1a2e}
+.hdr{background:#1a1a2e;color:#fff;padding:16px 24px;display:flex;align-items:center;gap:12px}
+.hdr-logo{font-size:20px;font-weight:700;color:#4fc3f7}
+.hdr-sub{font-size:13px;color:rgba(255,255,255,.6)}
+.live{background:#22c55e;color:#fff;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;margin-left:auto;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:16px 24px}
+.stat{background:#fff;border-radius:10px;padding:14px 16px;border-left:4px solid transparent;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.stat.r{border-color:#ef4444}.stat.o{border-color:#f97316}.stat.v{border-color:#22c55e}.stat.b{border-color:#3b82f6}
+.stat-n{font-size:28px;font-weight:700}.stat-l{font-size:12px;color:#64748b;margin-top:2px}
+.bar{display:flex;align-items:center;justify-content:space-between;padding:0 24px 12px}
+.bar-info{font-size:12px;color:#94a3b8}
+.btn-refresh{background:#f1f5f9;border:none;padding:6px 14px;border-radius:8px;font-size:12px;cursor:pointer;color:#475569}
+.content{padding:0 24px 24px}
+.sec-title{font-size:15px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.dot{width:8px;height:8px;border-radius:50%}
+.card{background:#fff;border-radius:12px;padding:16px 20px;margin-bottom:12px;border-left:5px solid #3b82f6;box-shadow:0 1px 4px rgba(0,0,0,.06);transition:box-shadow .2s}
+.card:hover{box-shadow:0 4px 16px rgba(0,0,0,.1)}
+.card.interesse{border-color:#ef4444}.card.veut_rappel{border-color:#f97316}.card.question{border-color:#3b82f6}.card.attribue{border-color:#22c55e;opacity:.75}
+.card-hdr{display:flex;align-items:flex-start;gap:12px}
+.avatar{width:42px;height:42px;border-radius:50%;background:#e2e8f0;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;color:#475569;flex-shrink:0}
+.info{flex:1}
+.nom{font-weight:600;font-size:15px}
+.email{font-size:12px;color:#64748b;margin-top:2px}
+.meta{display:flex;gap:8px;margin-top:6px;flex-wrap:wrap}
+.chip{font-size:11px;padding:2px 10px;border-radius:20px;font-weight:500}
+.ct{background:#e0f2fe;color:#0277bd}.ci{background:#fce7f3;color:#be185d}
+.ci.interesse{background:#fee2e2;color:#991b1b}.ci.veut_rappel{background:#ffedd5;color:#9a3412}
+.cd{background:#f1f5f9;color:#475569}
+.resume{margin-top:10px;font-size:13px;color:#374151;background:#f8fafc;border-radius:8px;padding:10px 12px;line-height:1.5}
+.msg{margin-top:8px;font-size:12px;color:#64748b;border-left:3px solid #e2e8f0;padding-left:10px;font-style:italic;max-height:60px;overflow:hidden}
+.actions{margin-top:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.btn{padding:8px 16px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;border:none;transition:all .15s}
+.btn-a{background:#1a1a2e;color:#fff}.btn-a:hover{background:#2d2d50}
+.btn-r{background:#dbeafe;color:#1d4ed8}.btn-r:hover{background:#bfdbfe}
+.btn-i{background:#f1f5f9;color:#64748b}.btn-i:hover{background:#e2e8f0}
+.ok{font-size:12px;color:#22c55e;font-weight:600}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;align-items:center;justify-content:center}
+.overlay.open{display:flex}
+.modal{background:#fff;border-radius:16px;padding:28px;width:420px;max-width:90vw;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.modal h3{font-size:18px;font-weight:700;margin-bottom:6px}
+.modal p{font-size:14px;color:#64748b;margin-bottom:20px}
+.modal select{width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:14px;margin-bottom:16px;outline:none}
+.modal select:focus{border-color:#1a1a2e}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end}
+.empty{text-align:center;padding:60px 20px;color:#94a3b8}
+.load{text-align:center;padding:40px;color:#64748b}
 </style>
 </head>
 <body>
-
-<div class="header">
+<div class="hdr">
   <div>
-    <div class="logo">Lea &mdash; Leads Chauds</div>
-    <div class="subtitle">Reponses clients recues sur lea@immoconseil-gpe.com</div>
+    <div class="hdr-logo">Lea &mdash; Leads Chauds</div>
+    <div class="hdr-sub">Reponses clients sur lea@immoconseil-gpe.com</div>
   </div>
-  <div class="badge-live">&#9679; LIVE</div>
+  <span class="live">LIVE</span>
 </div>
-
-<div class="stats-bar">
-  <div class="stat rouge"><div class="stat-num" id="statInteresse">-</div><div class="stat-label">Interesses</div></div>
-  <div class="stat orange"><div class="stat-num" id="statRappel">-</div><div class="stat-label">Veulent etre rappeles</div></div>
-  <div class="stat bleu"><div class="stat-num" id="statQuestion">-</div><div class="stat-label">Questions</div></div>
-  <div class="stat vert"><div class="stat-num" id="statAttribue">-</div><div class="stat-label">Attribues</div></div>
+<div class="stats">
+  <div class="stat r"><div class="stat-n" id="sI">-</div><div class="stat-l">Interesses</div></div>
+  <div class="stat o"><div class="stat-n" id="sR">-</div><div class="stat-l">Rappel demande</div></div>
+  <div class="stat b"><div class="stat-n" id="sQ">-</div><div class="stat-l">Questions</div></div>
+  <div class="stat v"><div class="stat-n" id="sA">-</div><div class="stat-l">Attribues</div></div>
 </div>
-
-<div class="refresh-bar">
-  <div class="refresh-info" id="lastRefresh">Chargement...</div>
-  <button class="btn-refresh" onclick="loadLeads()">&#8635; Actualiser</button>
+<div class="bar">
+  <span class="bar-info" id="ts">Chargement...</span>
+  <button class="btn-refresh" onclick="loadLeads()">Actualiser</button>
 </div>
-
 <div class="content">
-  <div class="section-title"><div class="dot" style="background:#ef4444"></div>Leads en attente</div>
-  <div id="leadsList"><div class="loading">Chargement des leads...</div></div>
+  <div class="sec-title"><div class="dot" style="background:#ef4444"></div>Leads en attente</div>
+  <div id="lst"><div class="load">Chargement...</div></div>
 </div>
-
-<div class="modal-overlay" id="modalAttribution">
+<div class="overlay" id="ov">
   <div class="modal">
     <h3>Attribuer ce lead</h3>
-    <p id="modalDesc">Selectionner un commercial</p>
-    <select id="commercialSelect"><option value="">-- Choisir un commercial --</option></select>
+    <p id="mdesc">Selectionnez un commercial</p>
+    <select id="csel"><option value="">-- Choisir --</option></select>
     <div class="modal-actions">
-      <button class="btn btn-ignorer" onclick="closeModal()">Annuler</button>
-      <button class="btn btn-attribuer" onclick="confirmerAttribution()">Attribuer</button>
+      <button class="btn btn-i" onclick="closeM()">Annuler</button>
+      <button class="btn btn-a" onclick="confirmer()">Attribuer</button>
     </div>
   </div>
 </div>
-
 <script>
-const SB = 'https://xdrlgyqxdbdvzrneujgz.supabase.co';
-const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhkcmxneXF4ZGJkdnpybmV1amd6Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NjM1MDE1NywiZXhwIjoyMDkxOTI2MTU3fQ.1gvVPGSBotPXP_U4_-lLGQ0SfG2HdzLNWY9mRUiSd-A';
-const HEADERS = { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY, 'Content-Type': 'application/json' };
+var SB = "https://xdrlgyqxdbdvzrneujgz.supabase.co";
+var KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhkcmxneXF4ZGJkdnpybmV1amd6Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NjM1MDE1NywiZXhwIjoyMDkxOTI2MTU3fQ.1gvVPGSBotPXP_U4_-lLGQ0SfG2HdzLNWY9mRUiSd-A";
+var HD = {"apikey": KEY, "Authorization": "Bearer " + KEY, "Content-Type": "application/json"};
+var curId = null;
+var coms = [];
 
-let currentLeadId = null;
-let commerciaux = [];
-
-function formatDate(d) {
-  if (!d) return '';
-  return new Date(d).toLocaleDateString('fr-FR', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' });
+function fd(d) {
+  if (!d) return "";
+  return new Date(d).toLocaleDateString("fr-FR", {day:"2-digit", month:"short", hour:"2-digit", minute:"2-digit"});
 }
 
-function initiales(nom) {
-  return (nom || 'XX').split(' ').map(function(n) { return n[0] || ''; }).join('').substring(0,2).toUpperCase();
+function ini(n) {
+  return (n || "XX").split(" ").map(function(x) { return x[0] || ""; }).join("").substring(0,2).toUpperCase();
 }
 
-function intentionLabel(i) {
-  var map = { interesse: 'Interesse', veut_rappel: 'Rappel demande', question: 'Question', autre: 'Autre' };
-  return map[i] || i;
+function ilab(i) {
+  var m = {"interesse": "Interesse", "veut_rappel": "Rappel demande", "question": "Question", "autre": "Autre"};
+  return m[i] || (i || "");
 }
 
-function intentionIcon(i) {
-  var map = { interesse: '&#128293;', veut_rappel: '&#128222;', question: '&#10067;', autre: '&#128172;' };
-  return map[i] || '';
-}
-
-async function loadCommerciaux() {
-  try {
-    var r = await fetch(SB + '/rest/v1/commerciaux?select=id,nom,prenom&order=nom.asc', { headers: HEADERS });
-    if (r.ok) {
-      commerciaux = await r.json();
-      var sel = document.getElementById('commercialSelect');
-      commerciaux.forEach(function(c) {
-        var opt = document.createElement('option');
-        opt.value = c.id;
-        opt.textContent = ((c.prenom || '') + ' ' + (c.nom || '')).trim();
-        sel.appendChild(opt);
+function loadComs() {
+  fetch(SB + "/rest/v1/commerciaux?select=id,nom,prenom&order=nom.asc", {headers: HD})
+    .then(function(r) { return r.ok ? r.json() : []; })
+    .then(function(data) {
+      coms = data;
+      var s = document.getElementById("csel");
+      data.forEach(function(c) {
+        var o = document.createElement("option");
+        o.value = c.id;
+        o.textContent = ((c.prenom || "") + " " + (c.nom || "")).trim();
+        s.appendChild(o);
       });
-    }
-  } catch(e) { console.error('Erreur commerciaux:', e); }
+    }).catch(function(e) { console.error("Erreur commerciaux:", e); });
 }
 
-async function loadLeads() {
-  try {
-    var r = await fetch(SB + '/rest/v1/leads_chauds?order=priorite.asc,created_at.desc&limit=50', { headers: HEADERS });
-    if (!r.ok) {
-      document.getElementById('leadsList').innerHTML = '<div class="empty-state"><div class="empty-icon">&#9888;</div><p>Erreur de connexion Supabase (' + r.status + ')</p></div>';
-      return;
-    }
-    var leads = await r.json();
-    document.getElementById('lastRefresh').textContent = 'Actualise ' + new Date().toLocaleTimeString('fr-FR');
-    
-    document.getElementById('statInteresse').textContent = leads.filter(function(l) { return l.intention === 'interesse'; }).length;
-    document.getElementById('statRappel').textContent = leads.filter(function(l) { return l.intention === 'veut_rappel'; }).length;
-    document.getElementById('statQuestion').textContent = leads.filter(function(l) { return l.intention === 'question'; }).length;
-    document.getElementById('statAttribue').textContent = leads.filter(function(l) { return l.statut === 'attribue'; }).length;
+function loadLeads() {
+  fetch(SB + "/rest/v1/leads_chauds?order=priorite.asc,created_at.desc&limit=50", {headers: HD})
+    .then(function(r) {
+      if (!r.ok) {
+        document.getElementById("lst").innerHTML = "<div class='empty'><p>Erreur connexion Supabase (" + r.status + ")</p></div>";
+        throw new Error("HTTP " + r.status);
+      }
+      return r.json();
+    })
+    .then(function(leads) {
+      document.getElementById("ts").textContent = "Actualise " + new Date().toLocaleTimeString("fr-FR");
+      document.getElementById("sI").textContent = leads.filter(function(l) { return l.intention === "interesse"; }).length;
+      document.getElementById("sR").textContent = leads.filter(function(l) { return l.intention === "veut_rappel"; }).length;
+      document.getElementById("sQ").textContent = leads.filter(function(l) { return l.intention === "question"; }).length;
+      document.getElementById("sA").textContent = leads.filter(function(l) { return l.statut === "attribue"; }).length;
 
-    var actifs = leads.filter(function(l) { return l.statut !== 'ignore'; });
-    
-    if (actifs.length === 0) {
-      document.getElementById('leadsList').innerHTML = '<div class="empty-state"><div class="empty-icon">&#9989;</div><p>Aucun lead en attente</p><p style="font-size:12px;margin-top:8px;color:#94a3b8">Les reponses recues sur lea@ apparaitront ici automatiquement</p></div>';
-      return;
-    }
+      var actifs = leads.filter(function(l) { return l.statut !== "ignore"; });
+      if (!actifs.length) {
+        document.getElementById("lst").innerHTML = "<div class='empty'><p>Aucun lead en attente</p><p style='font-size:12px;margin-top:8px'>Les reponses sur lea@ apparaitront ici automatiquement</p></div>";
+        return;
+      }
 
-    document.getElementById('leadsList').innerHTML = actifs.map(function(lead) {
-      var prioClass = lead.priorite <= 1 ? 'priority-1' : (lead.priorite <= 2 ? 'priority-2' : '');
-      var attribueHtml = lead.statut === 'attribue'
-        ? '<span class="attribue-badge">&#10003; Attribue a ' + (lead.commercial_nom || 'un commercial') + '</span>'
-        : '<button class="btn btn-attribuer" onclick="ouvrirModal('' + lead.id + '', '' + (lead.contact_nom||lead.contact_email||'').replace(/'/g,"\'") + '')">Attribuer</button>' +
-          '<button class="btn btn-rappeler" onclick="marquerStatut('' + lead.id + '', 'a_rappeler')">Marquer a rappeler</button>' +
-          '<button class="btn btn-ignorer" onclick="marquerStatut('' + lead.id + '', 'ignore')">Ignorer</button>';
-
-      return '<div class="lead-card ' + (lead.intention||'') + ' ' + prioClass + '">' +
-        '<div class="lead-header">' +
-          '<div class="lead-avatar">' + initiales(lead.contact_nom) + '</div>' +
-          '<div class="lead-info">' +
-            '<div class="lead-nom">' + (lead.contact_nom || lead.contact_email || 'Inconnu') + '</div>' +
-            '<div class="lead-email">' + (lead.contact_email || '') + '</div>' +
-            '<div class="lead-meta">' +
-              (lead.type_contact ? '<span class="chip chip-type">' + lead.type_contact + '</span>' : '') +
-              '<span class="chip chip-intention ' + (lead.intention||'') + '">' + intentionIcon(lead.intention) + ' ' + intentionLabel(lead.intention) + '</span>' +
-              '<span class="chip chip-date">' + formatDate(lead.created_at) + '</span>' +
-            '</div>' +
-          '</div>' +
-        '</div>' +
-        (lead.resume ? '<div class="lead-resume">' + lead.resume + '</div>' : '') +
-        (lead.message_original ? '<div class="lead-message">"' + lead.message_original.substring(0,250) + '"</div>' : '') +
-        '<div class="lead-actions">' + attribueHtml + '</div>' +
-      '</div>';
-    }).join('');
-
-  } catch(e) {
-    document.getElementById('leadsList').innerHTML = '<div class="empty-state"><div class="empty-icon">&#9888;</div><p>Erreur: ' + e.message + '</p></div>';
-  }
-}
-
-function ouvrirModal(leadId, nomContact) {
-  currentLeadId = leadId;
-  document.getElementById('modalDesc').textContent = 'Attribuer "' + nomContact + '" a :';
-  document.getElementById('modalAttribution').classList.add('open');
-}
-
-function closeModal() {
-  document.getElementById('modalAttribution').classList.remove('open');
-  currentLeadId = null;
-}
-
-async function confirmerAttribution() {
-  var commercialId = document.getElementById('commercialSelect').value;
-  if (!commercialId) { alert('Selectionner un commercial'); return; }
-  var commercial = commerciaux.find(function(c) { return c.id === commercialId; });
-  var nomCommercial = commercial ? ((commercial.prenom||'') + ' ' + (commercial.nom||'')).trim() : '';
-  try {
-    await fetch(SB + '/rest/v1/leads_chauds?id=eq.' + currentLeadId, {
-      method: 'PATCH', headers: HEADERS,
-      body: JSON.stringify({ statut: 'attribue', commercial_id: commercialId, commercial_nom: nomCommercial, date_attribution: new Date().toISOString() })
+      document.getElementById("lst").innerHTML = actifs.map(function(l) {
+        var nom = l.contact_nom || l.contact_email || "Inconnu";
+        var nomEsc = nom.replace(/\\/g,"\\\\").replace(/'/g,"\\'");
+        var actions = "";
+        if (l.statut === "attribue") {
+          actions = "<span class='ok'>Attribue a " + (l.commercial_nom || "commercial") + "</span>";
+        } else {
+          actions = "<button class='btn btn-a' onclick=\"ouvrirM('" + l.id + "','" + nomEsc + "')\">Attribuer</button>" +
+            "<button class='btn btn-r' onclick=\"maj('" + l.id + "','a_rappeler')\">Marquer rappel</button>" +
+            "<button class='btn btn-i' onclick=\"maj('" + l.id + "','ignore')\">Ignorer</button>";
+        }
+        return "<div class='card " + (l.intention || "") + "'>" +
+          "<div class='card-hdr'>" +
+            "<div class='avatar'>" + ini(l.contact_nom) + "</div>" +
+            "<div class='info'>" +
+              "<div class='nom'>" + nom + "</div>" +
+              "<div class='email'>" + (l.contact_email || "") + "</div>" +
+              "<div class='meta'>" +
+                (l.type_contact ? "<span class='chip ct'>" + l.type_contact + "</span>" : "") +
+                "<span class='chip ci " + (l.intention||"") + "'>" + ilab(l.intention) + "</span>" +
+                "<span class='chip cd'>" + fd(l.created_at) + "</span>" +
+              "</div>" +
+            "</div>" +
+          "</div>" +
+          (l.resume ? "<div class='resume'>" + l.resume + "</div>" : "") +
+          (l.message_original ? "<div class='msg'>" + l.message_original.substring(0,250) + "</div>" : "") +
+          "<div class='actions'>" + actions + "</div>" +
+        "</div>";
+      }).join("");
+    })
+    .catch(function(e) {
+      if (e.message !== "HTTP " + (e.message.match(/\d+/)||[""])[0]) {
+        document.getElementById("lst").innerHTML = "<div class='empty'><p>Erreur: " + e.message + "</p></div>";
+      }
     });
-    closeModal();
-    loadLeads();
-  } catch(e) { alert('Erreur attribution: ' + e.message); }
 }
 
-async function marquerStatut(leadId, statut) {
-  try {
-    await fetch(SB + '/rest/v1/leads_chauds?id=eq.' + leadId, {
-      method: 'PATCH', headers: HEADERS,
-      body: JSON.stringify({ statut: statut })
-    });
-    loadLeads();
-  } catch(e) { alert('Erreur: ' + e.message); }
+function ouvrirM(id, nom) {
+  curId = id;
+  document.getElementById("mdesc").textContent = "Attribuer " + nom + " a :";
+  document.getElementById("ov").classList.add("open");
 }
 
-// Fermer modal si clic exterieur
-document.getElementById('modalAttribution').addEventListener('click', function(e) {
-  if (e.target === this) closeModal();
-});
+function closeM() {
+  document.getElementById("ov").classList.remove("open");
+  curId = null;
+}
 
-loadCommerciaux();
+function confirmer() {
+  var cid = document.getElementById("csel").value;
+  if (!cid) { alert("Selectionnez un commercial"); return; }
+  var c = coms.find(function(x) { return x.id === cid; });
+  var cnom = c ? ((c.prenom||"") + " " + (c.nom||"")).trim() : "";
+  fetch(SB + "/rest/v1/leads_chauds?id=eq." + curId, {
+    method: "PATCH", headers: HD,
+    body: JSON.stringify({statut:"attribue", commercial_id:cid, commercial_nom:cnom, date_attribution:new Date().toISOString()})
+  }).then(function() { closeM(); loadLeads(); }).catch(function(e) { alert("Erreur: " + e.message); });
+}
+
+function maj(id, statut) {
+  fetch(SB + "/rest/v1/leads_chauds?id=eq." + id, {
+    method: "PATCH", headers: HD,
+    body: JSON.stringify({statut:statut})
+  }).then(loadLeads).catch(function(e) { alert("Erreur: " + e.message); });
+}
+
+document.getElementById("ov").addEventListener("click", function(e) { if (e.target===this) closeM(); });
+loadComs();
 loadLeads();
 setInterval(loadLeads, 30000);
 </script>
 </body>
-</html>
+ </html>
