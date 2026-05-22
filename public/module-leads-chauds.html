@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LÃ©a â Leads Chauds | ICA Platform</title>
+<title>Léa — Leads Chauds | ICA Platform</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f4f6f9; color: #1a1a2e; }
@@ -81,22 +81,22 @@
 
 <div class="header">
   <div>
-    <div class="logo">ð¥ LÃ©a â Leads Chauds</div>
-    <div class="subtitle">RÃ©ponses clients reÃ§ues sur lea@immoconseil-gpe.com</div>
+    <div class="logo">ð¥ Léa — Leads Chauds</div>
+    <div class="subtitle">Réponses clients reçues sur lea@immoconseil-gpe.com</div>
   </div>
-  <div class="badge-live">â LIVE</div>
+  <div class="badge-live">— LIVE</div>
 </div>
 
 <div class="stats-bar" id="statsBar">
-  <div class="stat rouge"><div class="stat-num" id="statInteresse">â</div><div class="stat-label">IntÃ©ressÃ©s</div></div>
-  <div class="stat orange"><div class="stat-num" id="statRappel">â</div><div class="stat-label">Veulent Ãªtre rappelÃ©s</div></div>
-  <div class="stat bleu"><div class="stat-num" id="statQuestion">â</div><div class="stat-label">Questions</div></div>
-  <div class="stat vert"><div class="stat-num" id="statAttribue">â</div><div class="stat-label">AttribuÃ©s</div></div>
+  <div class="stat rouge"><div class="stat-num" id="statInteresse">—</div><div class="stat-label">Intéressés</div></div>
+  <div class="stat orange"><div class="stat-num" id="statRappel">—</div><div class="stat-label">Veulent être rappelés</div></div>
+  <div class="stat bleu"><div class="stat-num" id="statQuestion">—</div><div class="stat-label">Questions</div></div>
+  <div class="stat vert"><div class="stat-num" id="statAttribue">—</div><div class="stat-label">Attribués</div></div>
 </div>
 
 <div class="refresh-bar">
   <div class="refresh-info" id="lastRefresh">Actualisation...</div>
-  <button class="btn-refresh" onclick="loadLeads()">â» Actualiser</button>
+  <button class="btn-refresh" onclick="loadLeads()">—» Actualiser</button>
 </div>
 
 <div class="content">
@@ -108,9 +108,9 @@
 <div class="modal-overlay" id="modalAttribution">
   <div class="modal">
     <h3>Attribuer ce lead</h3>
-    <p id="modalDesc">SÃ©lectionner un commercial</p>
+    <p id="modalDesc">Sélectionner un commercial</p>
     <select id="commercialSelect">
-      <option value="">â Choisir un commercial â</option>
+      <option value="">— Choisir un commercial —</option>
     </select>
     <div class="modal-actions">
       <button class="btn btn-ignorer" onclick="closeModal()">Annuler</button>
@@ -154,7 +154,7 @@ async function loadCommerciaux() {
 }
 
 function intentionLabel(i) {
-  const map = { interesse: 'ð¥ IntÃ©ressÃ©', veut_rappel: 'ð Veut Ãªtre rappelÃ©', question: 'â Question', autre: 'ð¬ Autre' };
+  const map = { interesse: 'ð¥ Intéressé', veut_rappel: 'ð Veut être rappelé', question: '— Question', autre: 'ð¬ Autre' };
   return map[i] || i;
 }
 
@@ -169,16 +169,16 @@ function initiales(nom) {
 
 async function loadLeads() {
   const r = await fetch(SB + '/rest/v1/leads_chauds?order=created_at.desc&limit=50', { headers });
-  if (!r.ok) { document.getElementById('leadsList').innerHTML = '<div class="empty-state"><div class="icon">â ï¸</div><p>Erreur de connexion Supabase</p></div>'; return; }
+  if (!r.ok) { document.getElementById('leadsList').innerHTML = '<div class="empty-state"><div class="icon">— ï¸</div><p>Erreur de connexion Supabase</p></div>'; return; }
   
   const leads = await r.json();
   loadStats(leads);
-  document.getElementById('lastRefresh').textContent = 'ActualisÃ© ' + new Date().toLocaleTimeString('fr-FR');
+  document.getElementById('lastRefresh').textContent = 'Actualisé ' + new Date().toLocaleTimeString('fr-FR');
 
   const enAttente = leads.filter(l => l.statut !== 'ignore');
   
   if (enAttente.length === 0) {
-    document.getElementById('leadsList').innerHTML = '<div class="empty-state"><div class="icon">â</div><p>Aucun lead en attente</p><p style="font-size:12px;margin-top:8px">Les rÃ©ponses reÃ§ues sur lea@ apparaÃ®tront ici automatiquement</p></div>';
+    document.getElementById('leadsList').innerHTML = '<div class="empty-state"><div class="icon">—</div><p>Aucun lead en attente</p><p style="font-size:12px;margin-top:8px">Les réponses reçues sur lea@ apparaîtront ici automatiquement</p></div>';
     return;
   }
 
@@ -200,9 +200,9 @@ async function loadLeads() {
       ${lead.message_original ? '<div class="lead-message">"' + lead.message_original.substring(0,200) + '"</div>' : ''}
       <div class="lead-actions">
         ${lead.statut === 'attribue' 
-          ? '<span class="attribue-badge">â AttribuÃ© Ã  ' + (lead.commercial_nom || 'un commercial') + '</span>'
+          ? '<span class="attribue-badge">— Attribué à  ' + (lead.commercial_nom || 'un commercial') + '</span>'
           : `<button class="btn btn-attribuer" onclick="ouvrirModal('${lead.id}', '${(lead.contact_nom||lead.contact_email).replace(/'/g,"\\'")}')">ð¤ Attribuer</button>
-             <button class="btn btn-rappeler" onclick="marquerStatut('${lead.id}', 'a_rappeler')">ð Marquer Ã  rappeler</button>
+             <button class="btn btn-rappeler" onclick="marquerStatut('${lead.id}', 'a_rappeler')">ð Marquer à  rappeler</button>
              <button class="btn btn-ignorer" onclick="marquerStatut('${lead.id}', 'ignore')">Ignorer</button>`
         }
       </div>
@@ -212,7 +212,7 @@ async function loadLeads() {
 
 function ouvrirModal(leadId, nomContact) {
   currentLeadId = leadId;
-  document.getElementById('modalDesc').textContent = 'Attribuer "' + nomContact + '" Ã  :';
+  document.getElementById('modalDesc').textContent = 'Attribuer "' + nomContact + '" à  :';
   document.getElementById('modalAttribution').classList.add('open');
 }
 
@@ -223,7 +223,7 @@ function closeModal() {
 
 async function confirmerAttribution() {
   const commercialId = document.getElementById('commercialSelect').value;
-  if (!commercialId) { alert('SÃ©lectionner un commercial'); return; }
+  if (!commercialId) { alert('Sélectionner un commercial'); return; }
   
   const commercial = commerciaux.find(c => c.id === commercialId);
   const nomCommercial = commercial ? (commercial.prenom + ' ' + commercial.nom).trim() : '';
