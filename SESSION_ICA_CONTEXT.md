@@ -1,4 +1,69 @@
-# CONTEXT SESSION ICA — Fichier de demarrage Claude
+# SESSION ICA CONTEXT — Auto-genere Dream Worker
+> Mis a jour chaque nuit par Dream Worker n8n (cron 3h du matin).
+> Source de verite : table ia_memory Supabase (xdrlgyqxdbdvzrneujgz).
+> Au demarrage de session : lire ce fichier + interroger ia_memory pour les MAJ recentes.
+
+---
+
+## REGLES IMMUABLES
+
+1. IA Mail syndic@ : UNPUBLISHED — NE PAS PUBLIER avant prestataires + labels Gmail + 10 E2E + approbation Jeremy
+2. Scraping FB/LBC/PAP/Amivac : SUSPENDU DEFINITIVEMENT — ne pas relancer
+3. Jeremy valide tous les textes mail Lea avant prod
+4. Tiers inconnu : TOUJOURS REPONDRE courtoisement jamais ignorer — decision Jeremy 06/2026
+5. Supabase headers : service_role dans apikey ET Authorization jamais anon key
+6. n8n PUT : settings = UNIQUEMENT executionOrder, staticData: null obligatoire
+
+---
+
+## WORKFLOWS (etat 03/06/2026)
+
+- Demarchage Lea NXvKhsUcjOl5zN8R : Published OK logs NULL corriges resolveVars OK
+- Sync Estale 9JmHqRKkjDx88qqw : Published OK cron 2h communes correctes postcode/city
+- IA Mail syndic@ 9WLzlCKNGEn5B97B : UNPUBLISHED vase clos valide model claude-sonnet-4-5
+- Dream Worker EB1xXO82jojuUxMv : Published OK cron 3h upsert ia_memory quotidien
+
+---
+
+## DONNEES SUPABASE (projet xdrlgyqxdbdvzrneujgz)
+
+- contacts_demarchage : 19386 contacts (13879 Hektor)
+- coproprietes : 62 residences communes correctes depuis Estale
+- lots : 1677 proprietaires estale_condo_id NULL (lien copro-lots a etablir)
+- ia_memory : memoire persistante cle UNIQUE 16+ entrees
+
+---
+
+## ARCHITECTURE IA MAIL (vase clos valide 06/2026)
+
+Gmail Trigger → Code Preparer (filtre @immoconseil-gpe.com)
+→ Contexte Estale Syndic → Chercher Coproprietaire + Historique Mails Supabase
+→ Fusionner Contexte → Preparer Prompt Claude
+→ Appel API Anthropic claude-sonnet-4-5 → Parser Claude
+→ Switch Decision 4 branches :
+  branch0=REPONDRE → Repondre Auto
+  branch1=BROUILLON → Creer Brouillon
+  branch2=ESCALADE → Alerte Escalade
+  branch3=IGNORER → Mail Ignore
+→ Logger Supabase → Gestion Prospect
+
+---
+
+## ROADMAP
+
+P1 Dreaming OK | P2 Demarchage logs OK | P3 Alertes Estale TODO
+P4 IA Mail vase clos OK | P5 Interventions PDF TODO
+P6 Platform Module1 TODO | P7 Vapi/Twilio TODO | P8 Cold prospecting TODO
+
+---
+
+## TECH CRITIQUES
+
+- Estale GraphQL : address.postcode (PAS zipCode) address.city
+- Model Anthropic : claude-sonnet-4-5
+- Supabase upsert : ?on_conflict=field + Prefer: resolution=merge-duplicates
+- ia_memory : cle UNIQUE upsert via ?on_conflict=cle
+- n8n API key : via hash trick Supabase settings → n8n settings API# CONTEXT SESSION ICA — Fichier de demarrage Claude
 
 > Ce fichier est lu automatiquement par Claude au debut de chaque session.
 > Mis a jour chaque nuit par le Dream Worker n8n (cron 3h).
