@@ -1,123 +1,155 @@
-# SESSION ICA CONTEXT — Auto-genere Dream Worker
-> Mis a jour chaque nuit par Dream Worker n8n (cron 3h du matin).
-> Source de verite : table ia_memory Supabase (xdrlgyqxdbdvzrneujgz).
-> Au demarrage de session : lire ce fichier + interroger ia_memory pour les MAJ recentes.
+# SESSION_ICA_CONTEXT.md — Immo Conseil Antilles
+*Dernière mise à jour : 09/06/2026 — Sync Estale complète + remapping estale_id*
 
 ---
 
-## REGLES IMMUABLES
+## PROTOCOL DÉBUT DE SESSION
 
-1. IA Mail syndic@ : UNPUBLISHED — NE PAS PUBLIER avant prestataires + labels Gmail + 10 E2E + approbation Jeremy
-2. Scraping FB/LBC/PAP/Amivac : SUSPENDU DEFINITIVEMENT — ne pas relancer
-3. Jeremy valide tous les textes mail Lea avant prod
-4. Tiers inconnu : TOUJOURS REPONDRE courtoisement jamais ignorer — decision Jeremy 06/2026
-5. Supabase headers : service_role dans apikey ET Authorization jamais anon key
-6. n8n PUT : settings = UNIQUEMENT executionOrder, staticData: null obligatoire
+1. web_fetch https://raw.githubusercontent.com/AIC-971/ica-platform/main/SESSION_ICA_CONTEXT.md
+2. Consulter ia_memory Supabase (Dream Worker MAJ quotidienne à 3h)
+3. Reprendre sans demander à Jeremy de réexpliquer
 
----
-
-## WORKFLOWS (etat 03/06/2026)
-
-- Demarchage Lea NXvKhsUcjOl5zN8R : Published OK logs NULL corriges resolveVars OK
-- Sync Estale 9JmHqRKkjDx88qqw : Published OK cron 2h communes correctes postcode/city
-- IA Mail syndic@ 9WLzlCKNGEn5B97B : UNPUBLISHED vase clos valide model claude-sonnet-4-5
-- Dream Worker EB1xXO82jojuUxMv : Published OK cron 3h upsert ia_memory quotidien
+**PRIORITÉ PROCHAINE SESSION : P7 Vapi → clone voix ElevenLabs + numéro téléphone**
 
 ---
 
-## DONNEES SUPABASE (projet xdrlgyqxdbdvzrneujgz)
+## STACK TECHNIQUE
 
-- contacts_demarchage : 19386 contacts (13879 Hektor)
-- coproprietes : 62 residences communes correctes depuis Estale
-- lots : 1677 proprietaires estale_condo_id NULL (lien copro-lots a etablir)
-- ia_memory : memoire persistante cle UNIQUE 16+ entrees
-
----
-
-## ARCHITECTURE IA MAIL (vase clos valide 06/2026)
-
-Gmail Trigger → Code Preparer (filtre @immoconseil-gpe.com)
-→ Contexte Estale Syndic → Chercher Coproprietaire + Historique Mails Supabase
-→ Fusionner Contexte → Preparer Prompt Claude
-→ Appel API Anthropic claude-sonnet-4-5 → Parser Claude
-→ Switch Decision 4 branches :
-  branch0=REPONDRE → Repondre Auto
-  branch1=BROUILLON → Creer Brouillon
-  branch2=ESCALADE → Alerte Escalade
-  branch3=IGNORER → Mail Ignore
-→ Logger Supabase → Gestion Prospect
+- **n8n Cloud Pro** : immo-conseil-antilles.app.n8n.cloud — 10 000 exec/mois — API key "Claude-Fix-Temp" expire 28/06/2026
+- **Supabase** : xdrlgyqxdbdvzrneujgz — RLS activé 13 tables — clé: [voir userMemories Claude]
+- **Vercel** : ica-platform.vercel.app — commit: ec12257f — auto-deploy GitHub main
+- **GitHub** : AIC-971/ica-platform — source: public/index_final.html
+- **Vapi** : assistant Léa ID d3997dfd-6122-477f-9f20-fbabfeaedf22
+- **ElevenLabs** : voix Bella Multilingual v2 connectée Vapi
+- **Google Workspace** : lea@immoconseil-gpe.com + agence@immoconseil-gpe.com
 
 ---
 
 ## ROADMAP
 
-P1 Dreaming OK | P2 Demarchage logs OK | P3 Alertes Estale TODO
-P4 IA Mail vase clos OK | P5 Interventions PDF TODO
-P6 Platform Module1 TODO | P7 Vapi/Twilio TODO | P8 Cold prospecting TODO
+| P | Item | Statut |
+|---|------|--------|
+| P1 | Dreaming (ia_memory + Dream Worker) | ✅ COMPLET |
+| P2 | Démarchage logs | ✅ COMPLET |
+| P3 | Alertes Estale gestionnaires | ⬜ |
+| P4 | IA Mail 4 boîtes vase clos | ✅ UNPUBLISHED volontaire |
+| P5 | Module 2B rapport PDF | ✅ configuré, non activé |
+| P6 | Platform Module 1 + RT | ⬜ |
+| P7 | Vapi voix Léa | 🔄 PRIORITÉ ACTIVE |
+| P8 | WhatsApp Twilio | ⬜ |
+| P9 | Prospection froide DVF+BODACC | ⬜ |
+| SYNC | Estale→Supabase coproprietes estale_id | ✅ COMPLET 09/06 |
 
 ---
 
-## TECH CRITIQUES
+## SYNC ESTALE → SUPABASE (9JmHqRKkjDx88qqw) — ✅ COMPLET 09/06/2026
 
-- Estale GraphQL : address.postcode (PAS zipCode) address.city
-- Model Anthropic : claude-sonnet-4-5
-- Supabase upsert : ?on_conflict=field + Prefer: resolution=merge-duplicates
-- ia_memory : cle UNIQUE upsert via ?on_conflict=cle
-- n8n API key : via hash trick Supabase settings → n8n settings API# CONTEXT SESSION ICA — Fichier de demarrage Claude
+### État table coproprietes
+- **60 lignes** (2 doublons supprimés : LES JARDINS DE PRIMAVERA + VILLAGE VIVA)
+- **59/60** avec vrai estale_id Estale (manquant : LES ARAUCARIAS — absente cache Apollo)
+- **Contrainte UNIQUE** : CREATE UNIQUE INDEX coproprietes_estale_id_key ON coproprietes(estale_id) WHERE estale_id IS NOT NULL
+- **avec_ag** : 38+ (sera ~58 après prochain cron 2h du matin)
+- **Cron 2h** : timeout 300s — suffisant pour 60 GraphQL + 60 PATCHs
+- **Exécution manuelle** : timeout 60s — trop court, normal
 
-> Ce fichier est lu automatiquement par Claude au debut de chaque session.
-> Mis a jour chaque nuit par le Dream Worker n8n (cron 3h).
-> Source de verite : table ia_memory dans Supabase (xdrlgyqxdbdvzrneujgz)
+### Architecture Formatter (code final fonctionnel)
+- Mode: runOnceForAllItems
+- Pour chaque item HTTP Request: récupère condo_id via pairedItem → $('Filtrer GL + Split par condo').all()[pIdx].json.condo_id
+- **Fait sa propre requête GraphQL** sans balance (query propre: name + meetings{startAt isFutur} + address)
+- Cookie Estale: $('Extraire Cookie').item.json.cookie
+- PATCH Supabase via this.helpers.httpRequest()
+- isFutur:false → date_derniere_ag / isFutur:true → prochaine_ag
+
+### Règles critiques n8n Code node
+- fetch() = INDISPONIBLE
+- $http.request() = INDISPONIBLE
+- **this.helpers.httpRequest() = SEUL HTTP disponible**
+- $input.item.json = indisponible en runOnceForAllItems → utiliser $input.all()[i].json
+- Accès nœud non-adjacent: $('NomNoeud').all()[pairedItem.item].json
+
+### Remapping estale_id (fait le 09/06)
+- UUIDs récupérés depuis localStorage['apollo-cache-persist'] sur estale.app (cache Apollo)
+- SQL exécuté: DROP CONSTRAINT → UPDATE NULL → UPDATE CASE (59 noms→UUIDs) → CREATE UNIQUE INDEX
+- Doublons Supabase supprimés: LES JARDINS DE PRIMAVERA (2 lignes) + VILLAGE VIVA (2 lignes)
+
+---
+
+## VAPI / LÉA VOIX (P7 — PRIORITÉ ACTIVE)
+
+- Assistant ID: d3997dfd-6122-477f-9f20-fbabfeaedf22
+- First message: "Agence Immo Conseil, bonjour, comment puis-je vous aider ?"
+- Voix: ElevenLabs Bella Multilingual v2
+- Modèle: Claude Haiku 4.5
+- 3 tools configurés: chercher_info (3555c59c) ✅ testé, creer_dossier_intervention (80aebb2b), transfert_humain (7dd40782)
+- Webhook: https://immo-conseil-antilles.app.n8n.cloud/webhook/vapi-events
+- Workflow Léa Vapi: x6XxHa9GXJfcw40p PUBLIÉ ✅
+
+**Prochaines étapes (ordre impératif) :**
+1. Clone voix ElevenLabs (1 min enregistrement voix humaine réelle)
+2. Numéro téléphone sur Vapi
+3. Tests internes depuis mobile
+4. Renvoi conditionnel SFR → Vapi (côté SFR, fait par Jeremy)
+
+NE PAS brancher SFR avant tests internes validés.
+Horaires Vapi: Lun-Sam 03h-21h | Transfert humain: Lun-Jeu 08h30-17h / Ven 08h30-13h
 
 ---
 
-## PHASE COURANTE
+## IA MAIL 4 BOÎTES (toutes UNPUBLISHED volontaire)
 
-Phase 1 Dreaming COMPLETE (2026-05-21)
-Phase 2 DemarchageLea EN COURS — bug trim() + WhatsApp Twilio
+| Boîte | Workflow ID |
+|-------|-------------|
+| syndic@ | 9WLzlCKNGEn5B97B |
+| service.juridique@ | MMUAHW8vgEPd4UKo |
+| service.technique@ | SaxB3VWFwbZvCHHY |
+| mf.berret@ | kc6si9C7UTTnBYO9 |
 
-## ETAT DES COMPOSANTS
-
-- Workflow demarchage Lea NXvKhsUcjOl5zN8R : PUBLIE a retester — bug trim() corrige pas encore teste
-- Sync Estale Supabase 9JmHqRKkjDx88qqw : OK cron 2h 1677 proprietaires
-- IA Mail syndic@ : BLOQUE chaine Gmail-Claude-Supabase cassee Phase 4
-- ICA Platform : PARTIEL auth OK interventions OK module1 KO credits
-- Dream Worker Ag9VOniwKSadQq94 : PUBLIE cron 3h matin
-- ia_memory Supabase : ACTIVE 9 entrees + RLS + trigger
-
-## BUGS ACTIFS PRIORITAIRES
-
-1. bug_trim_lea (priorite 2) : trim() sur message_sujet. Fix : $input.first().json.text dans Parser Message. A retester.
-2. ia_mail_bloque (priorite 2) : IA Mail syndic@ chaine cassee. Phase 4.
-
-## PLAN 8 PHASES
-
-P1 Dreaming : COMPLETE
-P2 DemarchageLea : EN COURS
-P3 SyncEstale + alCONTEXT_SESSION_ICA.mdertes
-P4 IaMail syndic@
-P5 Interventions PDF + Drive
-P6 ICA Platform Module1 + RT
-P7 Vapi + Twilio
-P8 ProspectionFroide Apify + DVF + BODACC
-
-## PLAYBOOKS DISPONIBLES
-
-- /playbooks/playbook_n8n.md
-- /playbooks/playbook_supabase.md
-- /playbooks/playbook_lea.md
-- /playbooks/playbook_erreurs.md
-
-## INSTRUCTION POUR CLAUDE
-
-Au debut de chaque session :
-1. Ce fichier est deja lu (tu lis ceci)
-2. Consulter ia_memory Supabase pour les mises a jour recentes du Dream Worker
-3. Signaler a Jeremy l etat exact sans lui demander de reexpliquer
-4. Proposer directement la suite selon la phase courante
-
-URL ia_memory : https://xdrlgyqxdbdvzrneujgz.supabase.co/rest/v1/ia_memory?statut=eq.actif&order=priorite.asc
+Chaîne: Gmail→Supabase→Claude (claude-sonnet-4-5)→4 branches
+NE PAS PUBLIER avant: module prestataires + labels Gmail + 10 tests E2E + approbation Jeremy
+Règle: tiers inconnu → TOUJOURS RÉPONDRE courtoisement
 
 ---
-Derniere MAJ manuelle : 2026-05-21
-Prochaine MAJ auto : Dream Worker 3h du matin
+
+## DÉMARCHAGE (NXvKhsUcjOl5zN8R) ✅ PUBLIÉ
+
+- 19 386 contacts (13 879 hektor_archive)
+- logs_demarchage: 5 rows — email/canal/sujet encore NULL dans "Log envoi" → à corriger
+- WhatsApp branch (2 337 sans email) → Twilio/Meta à connecter
+
+---
+
+## DREAMING ✅ COMPLET
+
+- Dream Worker: EB1xXO82jojuUxMv — cron 3h — PUBLIÉ
+- ia_memory Supabase: 16 entrées + MAJ quotidienne
+
+---
+
+## PLATFORM ICA
+
+- Auth 3 rôles ✅ | Interventions 639 prestataires ✅ | Module 2B ✅ | Module 8 ✅ | Module 9 ✅
+- Module 1 IA Mail: NON fonctionnel (crédits consommés)
+- Module 2B PDF: 6oJ6ST7mjyeZGeZn NON ACTIVÉ — Vercel api/generate-rapport-pdf.js déployé
+
+---
+
+## RÈGLES BUSINESS
+
+- Tiers inconnu → TOUJOURS RÉPONDRE courtoisement
+- Max 3 emails commerciaux/an par contact
+- Envoi démarchage: agence@immoconseil-gpe.com uniquement
+- Ne jamais donner % honoraires spécifiques
+- Un seul assistant Vapi pour tous numéros SFR
+- Estimations: ne pas préciser si gratuite (successions = payantes)
+- Scraping FB/LBC/PAP/Amivac: SUSPENDU DÉFINITIVEMENT — ne pas relancer
+
+---
+
+## REGLES IMMUABLES N8N
+
+1. IA Mail syndic@: UNPUBLISHED — NE PAS PUBLIER sans approbation Jeremy
+2. Scraping FB/LBC/PAP/Amivac: SUSPENDU DÉFINITIVEMENT
+3. Tiers inconnu: TOUJOURS RÉPONDRE courtoisement
+4. Supabase headers: service_role dans apikey ET Authorization (jamais anon key)
+5. n8n PUT API: settings = {executionOrder, saveManualExecutions, callerPolicy, timezone, saveDataSuccessExecution, saveDataErrorExecution, saveExecutionProgress} + staticData: null
+6. Code node HTTP: this.helpers.httpRequest() UNIQUEMENT
