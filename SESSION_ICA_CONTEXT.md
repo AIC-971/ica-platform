@@ -1,75 +1,107 @@
 # SESSION_ICA_CONTEXT.md — Immo Conseil Antilles
-*Dernière mise à jour : 09/06/2026 — P9 DVF+BODACC annulé + fix $json expressions Envoyer Email*
-
+*Dernière mise à jour : 10/06/2026 — P3 Alertes fin mandat + sync date_fin_mandat depuis Estale*
 
 ---
 
-
 ## PROTOCOL DÉBUT DE SESSION
-
 
 1. web_fetch https://raw.githubusercontent.com/AIC-971/ica-platform/main/SESSION_ICA_CONTEXT.md
 2. Consulter ia_memory Supabase (Dream Worker MAJ quotidienne à 3h)
 3. Reprendre sans demander à Jeremy de réexpliquer
 
-
-**PRIORITÉ PROCHAINE SESSION : P7 Vapi → re-enregistrement voix (min 60s) + clone ElevenLabs**
-
+**PRIORITÉ PROCHAINE SESSION : P7 Vapi → enregistrement Pauline (1 min) → clone ElevenLabs → brancher Vapi**
 
 ---
 
-
 ## STACK TECHNIQUE
 
-
-- **n8n Cloud Pro** : immo-conseil-antilles.app.n8n.cloud — API key "Claude-Fix-2026" (Never expires, créée 09/06)
+- **n8n Cloud Pro** : immo-conseil-antilles.app.n8n.cloud — API key "Claude-Session-10" (Never expires, fin: BLtLR9K9Tg)
 - **Supabase** : xdrlgyqxdbdvzrneujgz — RLS activé 13 tables
-- **Vercel** : ica-platform.vercel.app — commit: ec12257f
+- **Vercel** : ica-platform.vercel.app — commit courant ec12257f
 - **GitHub** : AIC-971/ica-platform — source: public/index_final.html
 - **Vapi** : assistant Léa ID d3997dfd-6122-477f-9f20-fbabfeaedf22
 - **ElevenLabs** : voix Bella Multilingual v2 (à remplacer par clone voix humaine)
 - **Google Workspace** : lea@immoconseil-gpe.com (envoi IA auto) — agence@immoconseil-gpe.com (humain UNIQUEMENT — JAMAIS automatique)
 
+---
+
+## WORKFLOWS N8N — ÉTAT AU 10/06/2026
+
+| ID | Nom | Statut | Notes |
+|---|---|---|---|
+| 9JmHqRKkjDx88qqw | SYNC Estale → Supabase owners (nightly) | ✅ PUBLIÉ | Cron 2h — 62 résidences, 1677 propriétaires |
+| k5vfKezkdSJEBrEe | SYNC Estale → date_fin_mandat coproprietes | ✅ PUBLIÉ | Cron 3h — 59 copros PATCHées depuis serviceBook.mandate.end |
+| rSe1NpkFmBepbdxz | Alertes — Fin de Mandat Syndic | ✅ PUBLIÉ | Cron 8h — seuils J-15/30/45/60 |
+| NXvKhsUcjOl5zN8R | Module Démarchage — Pipeline Supabase | ✅ PUBLIÉ | Logs OK, email_destinataire/canal NULL à corriger |
+| x6XxHa9GXJfcw40p | Léa Vapi — Webhooks & Mémoire Connectée | ✅ PUBLIÉ | 18 nœuds |
+| EB1xXO82jojuUxMv | Dream Worker — IA Memory | ✅ PUBLIÉ | Cron 3h |
+| 9WLzlCKNGEn5B97B | IA Mail - syndic@ | ⬜ UNPUBLISHED | Attente approbation Jeremy |
+| MMUAHW8vgEPd4UKo | IA Mail - service.juridique@ | ⬜ UNPUBLISHED | |
+| SaxB3VWFwbZvCHHY | IA Mail - service.technique@ | ⬜ UNPUBLISHED | |
+| kc6si9C7UTTnBYO9 | IA Mail - mf.berret@ | ⬜ UNPUBLISHED | |
 
 ---
 
+## ÉTAT FONCTIONNEL PLATEFORME ICA
 
-## ROADMAP
+- **Auth** : 3 rôles (admin/gestionnaire/commercial) ✅
+- **Module Alertes** : fin de mandat syndic J-15/30/45/60, données exactes Estale ✅
+- **Module Interventions** : 639 prestataires + dispatch n8n ✅
+- **Module 2B** : clôture prestataire formulaire mobile ✅ — PDF non activé
+- **Module 8 Commissions** : 6 catégories, TVA 8.5% ✅
+- **Module 9 Conformité** : RSAC/CCI/RC Pro, relances auto ✅
+- **Module 1 IA Mail** : NON fonctionnel (crédits épuisés)
+- **Compte Jeremy** : agence@immoconseil-gpe.com / Jeremyaic971! / rôle direction
 
+---
+
+## DONNÉES SUPABASE — ÉTAT AU 10/06/2026
+
+- **coproprietes** : 60 lignes propres, 59 avec date_fin_mandat depuis Estale (serviceBook.mandate.end)
+- **proprietaires** : 1677 owners depuis Estale
+- **contacts_demarchage** : 19 386 contacts (13 879 depuis hektor_archive)
+- **alertes** : Conformité RSAC (45) + fin mandat syndic (dynamique quotidien)
+- **ia_memory** : 16+ entrées
+
+---
+
+## CHAMP CLÉ ESTALE — date_fin_mandat
+
+**GraphQL** : `serviceBook { mandate { end } }` → `condo.serviceBook.mandate.end`
+**Exemple LES 2B** : "2026-06-29"
+**Sync** : workflow k5vfKezkdSJEBrEe — cron 3h du matin
+
+---
+
+## ROADMAP ICA
 
 | P | Item | Statut |
-|---|------|--------|
-| P1 | Dreaming | ✅ COMPLET |
-| P2 | Démarchage logs | ✅ COMPLET (fix auth 09/06) |
-| P3 | Alertes Estale gestionnaires | ⬜ |
-| P4 | IA Mail 4 boîtes | ✅ UNPUBLISHED volontaire |
-| P5 | Module 2B rapport PDF | ✅ configuré, non activé |
-| P6 | Platform Module 1 + RT | ⬜ |
-| P7 | Vapi voix Léa | 🔄 PRIORITÉ ACTIVE |
-| P8 | WhatsApp Twilio | ⬜ |
-| P9 | Prospection froide DVF+BODACC | ❌ ANNULÉ DÉFINITIVEMENT |
-| SYNC | Estale→Supabase | ✅ COMPLET 09/06 |
-
+|---|---|---|
+| P1 | Dreaming | ✅ |
+| P2 | Démarchage | ✅ (fix auth + $json) — logs NULL email_destinataire/canal à corriger |
+| P3 | Alertes Estale | ✅ fin mandat syndic J-15/30/45/60 |
+| P4 | IA Mail 4 boîtes | ✅ unpublished (publication en attente) |
+| P5 | Module 2B PDF | ✅ non activé |
+| P7 | Vapi voix Léa | 🔄 enregistrement Pauline demain (1 min min) |
+| P8 | WhatsApp Twilio | ⬜ 2337 contacts sans email |
+| P9 | DVF+BODACC | ❌ ANNULÉ DÉFINITIVEMENT |
 
 ---
 
+## PROCHAINES ÉTAPES (ordre priorité)
 
-## SYNC ESTALE → SUPABASE (9JmHqRKkjDx88qqw) — ✅ COMPLET 09/06
-
-
-- 60 lignes — 59/60 avec estale_id (manquant: LES ARAUCARIAS)
-- 2 doublons supprimés: LES JARDINS DE PRIMAVERA + VILLAGE VIVA
-- Contrainte UNIQUE: coproprietes_estale_id_key WHERE estale_id IS NOT NULL
-- avec_ag: 38+ (sera ~58 après cron 2h)
-- Formatter: runOnceForAllItems — GraphQL sans balance — this.helpers.httpRequest()
-- Cookie Estale: $('Extraire Cookie').item.json.cookie
-
+1. **P7 Vapi** : Pauline enregistre 1 min → upload ElevenLabs → clone → brancher → tests mobile → renvoi SFR
+2. **Logs Démarchage NULL** : ouvrir nœud "Log envoi" → corriger email_destinataire, canal, message_sujet
+3. **Lien copro↔lots** : estale_condo_id NULL sur table lots
+4. **WhatsApp Twilio** : compte + numéro +1590 Guadeloupe
+5. **Publier 4 workflows IA Mail** : 10 tests E2E + approbation Jeremy
 
 ---
 
+## RÈGLES CRITIQUES
 
-## VAPI / LÉA VOIX (P7 — PRIORITÉ ACTIVE)
-
-
-- Assistant ID: d3997dfd-6122-477f-9f20-fbabfeaedf22
-- Voix actuelle: ElevenLabs Bella Multilingual v2
+- agence@immoconseil-gpe.com = humain UNIQUEMENT — JAMAIS d'envoi auto
+- P9 DVF+BODACC = ANNULÉ DÉFINITIVEMENT
+- Scraping LBC/PAP/Amivac = ARRÊTÉ DÉFINITIVEMENT
+- n8n Code node : this.helpers.httpRequest() UNIQUEMENT (pas fetch)
+- IA Mail 4 boîtes : NE PAS PUBLIER sans approbation Jeremy
