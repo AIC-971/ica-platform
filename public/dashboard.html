@@ -526,13 +526,13 @@ async function loadGlobal() {
   document.getElementById('g-demar').textContent = demar.count;
   document.getElementById('g-alertes').textContent = alertes.count;
 
-  const { data: agList } = await q('coproprietes','?select=nom,commune,date_prochaine_ag&date_prochaine_ag=not.is.null&order=date_prochaine_ag.asc&limit=5');
+  const { data: agList } = await q('coproprietes','?select=nom,commune,prochaine_ag&prochaine_ag=not.is.null&order=prochaine_ag.asc&limit=5');
   document.getElementById('global-ag-list').innerHTML = agList.length ? agList.map(c => {
-    const d = daysUntil(c.date_prochaine_ag);
+    const d = daysUntil(c.prochaine_ag);
     const cls = d<=30?'ag-urgent':d<=90?'ag-soon':'ag-ok';
     return `<div class="row ${cls}" style="padding:8px 10px;border-radius:8px;margin-bottom:6px;border:none;">
       <div class="row-main"><div class="row-name">${c.nom}</div><div class="row-sub">${c.commune||'—'}</div></div>
-      ${agBadge(c.date_prochaine_ag)}
+      ${agBadge(c.prochaine_ag)}
     </div>`;
   }).join('') : '<div class="empty"><div class="empty-icon">📅</div>Aucune AG planifiée</div>';
 
@@ -598,29 +598,26 @@ async function loadMails() {
 
 // ===== COPROPRIÉTÉS =====
 async function loadCopros() {
-  const { data: coprosRaw, count } = await q('coproprietes','?select=nom,commune,date_prochaine_ag,date_derniere_ag,date_fin_mandat&order=date_prochaine_ag.asc.nullslast&limit=100');
-  const copros = Array.isArray(coprosRaw) ? coprosRaw : [];
+  const { data: copros, count } = await q('coproprietes','?select=nom,commune,prochaine_ag,date_derniere_ag,date_fin_mandat&order=prochaine_ag.asc.nullslast&limit=100');
   document.getElementById('c-total').textContent = count;
-  const avecAg = copros.filter(c => c.date_prochaine_ag && daysUntil(c.date_prochaine_ag) > 0);
-  const ag90 = avecAg.filter(c => daysUntil(c.date_prochaine_ag) <= 90);
+  const avecAg = copros.filter(c => c.prochaine_ag && daysUntil(c.prochaine_ag) > 0);
+  const ag90 = avecAg.filter(c => daysUntil(c.prochaine_ag) <= 90);
   const mandatsExp = copros.filter(c => c.date_fin_mandat && daysUntil(c.date_fin_mandat) <= 90);
   document.getElementById('c-ag-futur').textContent = ag90.length;
   document.getElementById('c-mandats-exp').textContent = mandatsExp.length;
   document.getElementById('c-avec-ag').textContent = avecAg.length;
   if (ag90.length > 0) { const b = document.getElementById('badge-ag'); b.textContent = ag90.length; b.style.display = 'inline'; }
-  const { data: lotsRaw } = await q('lots','?select=copropriete_id&copropriete_id=not.is.null&limit=2000');
-  const lots = Array.isArray(lotsRaw) ? lotsRaw : [];
+  const { data: lots } = await q('lots','?select=copropriete_id&copropriete_id=not.is.null&limit=2000');
   const lotsMap = {};
   lots.forEach(l => { lotsMap[l.copropriete_id] = (lotsMap[l.copropriete_id]||0)+1; });
-  const { data: coprosWithIdRaw } = await q('coproprietes','?select=id,nom,commune,date_prochaine_ag,date_derniere_ag,date_fin_mandat&order=date_prochaine_ag.asc.nullslast&limit=100');
-  const coprosWithId = Array.isArray(coprosWithIdRaw) ? coprosWithIdRaw : [];
+  const { data: coprosWithId } = await q('coproprietes','?select=id,nom,commune,prochaine_ag,date_derniere_ag,date_fin_mandat&order=prochaine_ag.asc.nullslast&limit=100');
   document.getElementById('copros-ag-tbody').innerHTML = coprosWithId.map(c => {
-    const d = daysUntil(c.date_prochaine_ag);
+    const d = daysUntil(c.prochaine_ag);
     const rowCls = d!==null && d<=30 ? 'style="background:var(--red-light)"' : d!==null && d<=90 ? 'style="background:var(--amber-light)"' : '';
     return `<tr ${rowCls}>
       <td style="font-weight:500">${c.nom||'—'}</td>
       <td style="color:var(--text-muted)">${c.commune||'—'}</td>
-      <td>${agBadge(c.date_prochaine_ag)}</td>
+      <td>${agBadge(c.prochaine_ag)}</td>
       <td style="color:var(--text-muted)">${fd(c.date_derniere_ag)}</td>
       <td>${mandatBadge(c.date_fin_mandat)}</td>
       <td><span class="badge badge-gray">${lotsMap[c.id]||0}</span></td>
@@ -684,8 +681,7 @@ async function loadProprios() {
   document.getElementById('p-lots').textContent = lotsLies.count + ' / 1683';
   document.getElementById('p-orphelins-sub').textContent = lotsNull.count + ' lots sans copropriété liée';
   document.getElementById('p-orphelins-badge').textContent = lotsNull.count;
-  const { data: byCoprRaw } = await q('proprietaires','?select=copropriete_id,coproprietes(nom)&limit=2000');
-  const byCopro = Array.isArray(byCoprRaw) ? byCoprRaw : [];
+  const { data: byCopro } = await q('proprietaires','?select=copropriete_id,coproprietes(nom)&limit=2000');
   const coproCount = {};
   byCopro.forEach(p => {
     const nom = p.coproprietes?.nom || p.copropriete_id || 'Inconnu';
