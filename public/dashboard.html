@@ -434,71 +434,68 @@ function mandatBadge(iso) {
 async function loadActivite() {
   const since7 = new Date(Date.now() - 7*86400000).toISOString();
   const sinceToday = new Date(); sinceToday.setHours(0,0,0,0);
-  const sinceStr = sinceToday.toISOString();
-  const [mailsRes, appelsRes, intervsRes, coprosRes] = await Promise.all([
-    q('mails_traites', '?created_at=gte.'+since7+'&select=id,sujet,created_at,copropriete_id,coproprietes(nom),expediteur,decision&order=created_at.desc&limit=200'),
-    q('appels_vocaux', '?created_at=gte.'+since7+'&select=id,caller_number,created_at,copropriete_id,coproprietes(nom),statut,duree_secondes&order=created_at.desc&limit=200'),
-    q('dossiers_interventions', '?created_at=gte.'+since7+'&select=id,titre,created_at,copropriete_id,coproprietes(nom),statut&order=created_at.desc&limit=200'),
+  const [mailsRes, intervsRes, coprosRes] = await Promise.all([
+    q('mails_traites', '?created_at=gte.'+since7+'&select=id,sujet,created_at,boite,expediteur_email,decision&order=created_at.desc&limit=200'),
+    q('dossiers_interventions', '?created_at=gte.'+since7+'&select=id,description,created_at,copropriete_id,coproprietes(nom),statut,type_intervention&order=created_at.desc&limit=200'),
     q('coproprietes', '?select=id,nom&order=nom.asc&limit=100')
   ]);
-  const mails = mailsRes.data || [], appels = appelsRes.data || [], intervs = intervsRes.data || [], copros = coprosRes.data || [];
+  const mails = Array.isArray(mailsRes.data) ? mailsRes.data : [];
+  const intervs = Array.isArray(intervsRes.data) ? intervsRes.data : [];
+  const copros = Array.isArray(coprosRes.data) ? coprosRes.data : [];
   const todayMails = mails.filter(m => new Date(m.created_at) >= sinceToday).length;
-  const todayAppels = appels.filter(a => new Date(a.created_at) >= sinceToday).length;
   const todayIntervs = intervs.filter(i => new Date(i.created_at) >= sinceToday).length;
-  document.getElementById('act-today').textContent = todayMails + todayAppels + todayIntervs;
+  document.getElementById('act-today').textContent = todayMails + todayIntervs;
   document.getElementById('act-mails7').textContent = mails.length;
-  document.getElementById('act-appels7').textContent = appels.length;
-  const activeIds = new Set([...mails.map(m=>m.copropriete_id),...appels.map(a=>a.copropriete_id),...intervs.map(i=>i.copropriete_id)].filter(Boolean));
-  document.getElementById('act-residences').textContent = activeIds.size;
+  document.getElementById('act-appels7').textContent = '—';
+  const activeIds = new Set(intervs.map(i=>i.copropriete_id).filter(Boolean));
+  document.getElementById('act-residences').textContent = activeIds.size || (mails.length > 0 ? mails.length+' boîtes' : '0');
   const badge = document.getElementById('badge-activite');
-  const todayTotal = todayMails + todayAppels + todayIntervs;
+  const todayTotal = todayMails + todayIntervs;
   if (todayTotal > 0) { badge.textContent = todayTotal; badge.style.display = 'inline-block'; }
   const filterCopro = document.getElementById('act-filter-copro');
   if (filterCopro && filterCopro.options.length === 1) {
     copros.forEach(c => { const opt = document.createElement('option'); opt.value = c.id; opt.textContent = c.nom; filterCopro.appendChild(opt); });
-    filterCopro.addEventListener('change', () => renderFlux(mails, appels, intervs));
-    document.getElementById('act-filter-type').addEventListener('change', () => renderFlux(mails, appels, intervs));
+    filterCopro.addEventListener('change', () => renderFlux(mails, [], intervs));
+    document.getElementById('act-filter-type').addEventListener('change', () => renderFlux(mails, [], intervs));
   }
-  renderFlux(mails, appels, intervs);
-  renderTopCopros(mails, appels, intervs);
+  renderFlux(mails, [], intervs);
+  renderTopCopros(mails, [], intervs);
   renderSilencieuses(copros, activeIds);
 }
 function renderFlux(mails, appels, intervs) {
   const filterCopro = document.getElementById('act-filter-copro').value;
   const filterType = document.getElementById('act-filter-type').value;
   let events = [];
-  if (!filterType || filterType==='mail') mails.forEach(m => events.push({type:'mail',date:m.created_at,copro:m.coproprietes?.nom||'—',copro_id:m.copropriete_id,label:m.sujet||'Mail sans sujet',sub:m.expediteur||'',extra:m.decision}));
-  if (!filterType || filterType==='appel') appels.forEach(a => events.push({type:'appel',date:a.created_at,copro:a.coproprietes?.nom||'—',copro_id:a.copropriete_id,label:a.caller_number||'Numéro inconnu',sub:(a.statut||'')+(a.duree_secondes?' · '+Math.round(a.duree_secondes/60)+'min':'')}));
-  if (!filterType || filterType==='intervention') intervs.forEach(i => events.push({type:'intervention',date:i.created_at,copro:i.coproprietes?.nom||'—',copro_id:i.copropriete_id,label:i.titre||'Intervention',sub:i.statut||''}));
+  if (!filterType || filterType==='mail') mails.forEach(m => events.push({type:'mail',date:m.created_at,copro:m.boite||'syndic@',copro_id:null,label:m.sujet||'Mail sans sujet',sub:m.expediteur_email||''}));
+  if (!filterType || filterType==='intervention') intervs.forEach(i => events.push({type:'intervention',date:i.created_at,copro:i.coproprietes?.nom||'—',copro_id:i.copropriete_id,label:i.type_intervention||i.description||'Intervention',sub:i.statut||''}));
   if (filterCopro) events = events.filter(e => e.copro_id === filterCopro);
   events.sort((a,b) => new Date(b.date)-new Date(a.date));
   const el = document.getElementById('activite-flux');
   if (!events.length) { el.innerHTML = '<div class="empty"><div class="empty-icon">🔕</div>Aucune activité sur ce filtre</div>'; return; }
   const icons = {mail:'📧',appel:'📞',intervention:'🔧'}, bColors = {mail:'badge-blue',appel:'badge-purple',intervention:'badge-amber'}, lbls = {mail:'Mail',appel:'Appel',intervention:'Intervention'};
-  el.innerHTML = '<div class="data-table-wrap"><table class="data-table"><thead><tr><th>Type</th><th>Résidence</th><th>Détail</th><th>Info</th><th>Quand</th></tr></thead><tbody>'+
+  el.innerHTML = '<div class="data-table-wrap"><table class="data-table"><thead><tr><th>Type</th><th>Source</th><th>Détail</th><th>Info</th><th>Quand</th></tr></thead><tbody>'+
     events.slice(0,50).map(e => '<tr><td><span class="badge '+bColors[e.type]+'">'+icons[e.type]+' '+lbls[e.type]+'</span></td><td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+e.copro+'</td><td style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+tr(e.label,45)+'</td><td style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-muted);font-size:12px">'+(e.sub||'—')+'</td><td class="row-time">'+fdt(e.date)+'</td></tr>').join('')+
     '</tbody></table></div>';
   if (events.length>50) el.innerHTML += '<div style="text-align:center;font-size:11px;color:var(--text-muted);padding:8px">+ '+(events.length-50)+' événements supplémentaires</div>';
 }
 function renderTopCopros(mails, appels, intervs) {
   const counts = {};
-  [...mails,...appels,...intervs].forEach(e => { const id=e.copropriete_id, nom=e.coproprietes?.nom||'—'; if(id){if(!counts[id])counts[id]={nom,total:0,mails:0,appels:0,intervs:0};counts[id].total++;} });
-  mails.forEach(m=>{if(m.copropriete_id&&counts[m.copropriete_id])counts[m.copropriete_id].mails++;});
-  appels.forEach(a=>{if(a.copropriete_id&&counts[a.copropriete_id])counts[a.copropriete_id].appels++;});
-  intervs.forEach(i=>{if(i.copropriete_id&&counts[i.copropriete_id])counts[i.copropriete_id].intervs++;});
+  mails.forEach(m => { const k=m.boite||'syndic@'; if(!counts[k])counts[k]={nom:k,total:0,mails:0,intervs:0}; counts[k].total++; counts[k].mails++; });
+  intervs.forEach(i => { const nom=i.coproprietes?.nom||'—', id=i.copropriete_id||nom; if(!counts[id])counts[id]={nom,total:0,mails:0,intervs:0}; counts[id].total++; counts[id].intervs++; });
   const sorted = Object.values(counts).sort((a,b)=>b.total-a.total).slice(0,8);
   const maxVal = sorted[0]?.total||1;
   const el = document.getElementById('activite-top-copros');
   if (!sorted.length){el.innerHTML='<div class="empty">Aucune activité sur 7 jours</div>';return;}
-  el.innerHTML = sorted.map(c=>'<div class="row"><div class="row-main"><div class="row-name">'+tr(c.nom,30)+'</div><div class="row-sub">'+(c.mails>0?'📧 '+c.mails+' mail':'')+' '+(c.appels>0?'📞 '+c.appels+' appel':'')+' '+(c.intervs>0?'🔧 '+c.intervs+' interv.':'')+'</div></div><div class="progress-wrap" style="max-width:80px"><div class="progress-track"><div class="progress-fill" style="width:'+Math.round(c.total/maxVal*100)+'%;background:var(--green)"></div></div></div><span style="font-size:12px;font-weight:600;color:var(--green);min-width:24px;text-align:right">'+c.total+'</span></div>').join('');
+  el.innerHTML = sorted.map(c=>'<div class="row"><div class="row-main"><div class="row-name">'+tr(c.nom,30)+'</div><div class="row-sub">'+(c.mails>0?'📧 '+c.mails+' mail':'')+' '+(c.intervs>0?'🔧 '+c.intervs+' interv.':'')+'</div></div><div class="progress-wrap" style="max-width:80px"><div class="progress-track"><div class="progress-fill" style="width:'+Math.round(c.total/maxVal*100)+'%;background:var(--green)"></div></div></div><span style="font-size:12px;font-weight:600;color:var(--green);min-width:24px;text-align:right">'+c.total+'</span></div>').join('');
 }
 function renderSilencieuses(copros, activeIds) {
   const silencieuses = copros.filter(c=>!activeIds.has(c.id));
   const el = document.getElementById('activite-silencieuses');
   if (!silencieuses.length){el.innerHTML='<div class="empty"><div class="empty-icon">✅</div>Toutes les résidences ont eu de l\'activité</div>';return;}
-  el.innerHTML = silencieuses.slice(0,10).map(c=>'<div class="row"><span class="dot dot-gray"></span><div class="row-main"><div class="row-name">'+c.nom+'</div><div class="row-sub">Aucune activité sur 7 jours</div></div><span class="badge badge-gray">Silencieuse</span></div>').join('');
+  el.innerHTML = silencieuses.slice(0,10).map(c=>'<div class="row"><span class="dot dot-gray"></span><div class="row-main"><div class="row-name">'+c.nom+'</div><div class="row-sub">Aucune intervention sur 7 jours</div></div><span class="badge badge-gray">Silencieuse</span></div>').join('');
   if (silencieuses.length>10) el.innerHTML+='<div style="text-align:center;font-size:11px;color:var(--text-muted);padding:8px">+ '+(silencieuses.length-10)+' autres</div>';
 }
+
 
 async function loadAll() {
   document.getElementById('lastUpdate').textContent = '↻ Actualisation...';
