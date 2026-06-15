@@ -598,7 +598,8 @@ async function loadMails() {
 
 // ===== COPROPRIÉTÉS =====
 async function loadCopros() {
-  const { data: copros, count } = await q('coproprietes','?select=nom,commune,date_prochaine_ag,date_derniere_ag,date_fin_mandat&order=date_prochaine_ag.asc.nullslast&limit=100');
+  const { data: coprosRaw, count } = await q('coproprietes','?select=nom,commune,date_prochaine_ag,date_derniere_ag,date_fin_mandat&order=date_prochaine_ag.asc.nullslast&limit=100');
+  const copros = Array.isArray(coprosRaw) ? coprosRaw : [];
   document.getElementById('c-total').textContent = count;
   const avecAg = copros.filter(c => c.date_prochaine_ag && daysUntil(c.date_prochaine_ag) > 0);
   const ag90 = avecAg.filter(c => daysUntil(c.date_prochaine_ag) <= 90);
@@ -607,10 +608,12 @@ async function loadCopros() {
   document.getElementById('c-mandats-exp').textContent = mandatsExp.length;
   document.getElementById('c-avec-ag').textContent = avecAg.length;
   if (ag90.length > 0) { const b = document.getElementById('badge-ag'); b.textContent = ag90.length; b.style.display = 'inline'; }
-  const { data: lots } = await q('lots','?select=copropriete_id&copropriete_id=not.is.null&limit=2000');
+  const { data: lotsRaw } = await q('lots','?select=copropriete_id&copropriete_id=not.is.null&limit=2000');
+  const lots = Array.isArray(lotsRaw) ? lotsRaw : [];
   const lotsMap = {};
   lots.forEach(l => { lotsMap[l.copropriete_id] = (lotsMap[l.copropriete_id]||0)+1; });
-  const { data: coprosWithId } = await q('coproprietes','?select=id,nom,commune,date_prochaine_ag,date_derniere_ag,date_fin_mandat&order=date_prochaine_ag.asc.nullslast&limit=100');
+  const { data: coprosWithIdRaw } = await q('coproprietes','?select=id,nom,commune,date_prochaine_ag,date_derniere_ag,date_fin_mandat&order=date_prochaine_ag.asc.nullslast&limit=100');
+  const coprosWithId = Array.isArray(coprosWithIdRaw) ? coprosWithIdRaw : [];
   document.getElementById('copros-ag-tbody').innerHTML = coprosWithId.map(c => {
     const d = daysUntil(c.date_prochaine_ag);
     const rowCls = d!==null && d<=30 ? 'style="background:var(--red-light)"' : d!==null && d<=90 ? 'style="background:var(--amber-light)"' : '';
@@ -681,7 +684,8 @@ async function loadProprios() {
   document.getElementById('p-lots').textContent = lotsLies.count + ' / 1683';
   document.getElementById('p-orphelins-sub').textContent = lotsNull.count + ' lots sans copropriété liée';
   document.getElementById('p-orphelins-badge').textContent = lotsNull.count;
-  const { data: byCopro } = await q('proprietaires','?select=copropriete_id,coproprietes(nom)&limit=2000');
+  const { data: byCoprRaw } = await q('proprietaires','?select=copropriete_id,coproprietes(nom)&limit=2000');
+  const byCopro = Array.isArray(byCoprRaw) ? byCoprRaw : [];
   const coproCount = {};
   byCopro.forEach(p => {
     const nom = p.coproprietes?.nom || p.copropriete_id || 'Inconnu';
