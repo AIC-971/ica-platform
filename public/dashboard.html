@@ -517,7 +517,7 @@ async function loadGlobal() {
     q('lots','?copropriete_id=not.is.null&select=count'),
     q('lots','?copropriete_id=is.null&select=count'),
     q('logs_demarchage','?select=count'),
-    q('alertes','?select=count')
+    Promise.resolve({data:[],count:0}) // alertes table not used
   ]);
   document.getElementById('g-mails').textContent = mails.count;
   document.getElementById('g-copros').textContent = copros.count;
@@ -526,7 +526,8 @@ async function loadGlobal() {
   document.getElementById('g-demar').textContent = demar.count;
   document.getElementById('g-alertes').textContent = alertes.count;
 
-  const { data: agList } = await q('coproprietes','?select=nom,commune,prochaine_ag&prochaine_ag=not.is.null&order=prochaine_ag.asc&limit=5');
+  const { data: agListRaw } = await q('coproprietes','?select=nom,commune,prochaine_ag&prochaine_ag=not.is.null&order=prochaine_ag.asc&limit=5');
+  const agList = Array.isArray(agListRaw) ? agListRaw : [];
   document.getElementById('global-ag-list').innerHTML = agList.length ? agList.map(c => {
     const d = daysUntil(c.prochaine_ag);
     const cls = d<=30?'ag-urgent':d<=90?'ag-soon':'ag-ok';
@@ -536,7 +537,8 @@ async function loadGlobal() {
     </div>`;
   }).join('') : '<div class="empty"><div class="empty-icon">📅</div>Aucune AG planifiée</div>';
 
-  const { data: mandats } = await q('coproprietes','?select=nom,commune,date_fin_mandat&date_fin_mandat=not.is.null&order=date_fin_mandat.asc&limit=5');
+  const { data: mandatsRaw } = await q('coproprietes','?select=nom,commune,date_fin_mandat&date_fin_mandat=not.is.null&order=date_fin_mandat.asc&limit=5');
+  const mandats = Array.isArray(mandatsRaw) ? mandatsRaw : [];
   const urgents = mandats.filter(c => { const d = daysUntil(c.date_fin_mandat); return d !== null && d <= 90; });
   document.getElementById('global-mandats-list').innerHTML = urgents.length ? urgents.map(c => `
     <div class="row">
