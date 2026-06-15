@@ -1,5 +1,5 @@
 # SESSION_ICA_CONTEXT.md — Immo Conseil Antilles
-*Dernière mise à jour : 12/06/2026*
+*Dernière mise à jour : 15/06/2026*
 
 ---
 
@@ -9,121 +9,147 @@
 2. Consulter ia_memory Supabase (Dream Worker MAJ quotidienne à 3h)
 3. Reprendre sans demander à Jeremy de réexpliquer
 
-**PRIORITÉ PROCHAINE SESSION : P7 Vapi — enregistrement Pauline (1 min) — clone ElevenLabs — numéro Vapi — tests mobile**
+**PRIORITÉ PROCHAINE SESSION : Vérifier logs_demarchage email_destinataire après cron nuit — puis WhatsApp Twilio 2 337 contacts**
 
 ---
 
 ## STACK TECHNIQUE
 
-- n8n Cloud Pro : immo-conseil-antilles.app.n8n.cloud — API key "Claude-Session-10" (Never expires, fin: BLtLR9K9Tg)
+- n8n Cloud Pro : immo-conseil-antilles.app.n8n.cloud — API key "Claude-Session-15" (Never expires)
 - Supabase : xdrlgyqxdbdvzrneujgz — RLS activé 13 tables
-- Vercel : ica-platform.vercel.app
-- GitHub : AIC-971/ica-platform — source: public/index_final.html
+- Vercel : ica-platform.vercel.app — commit actuel : ed157bd6
+- GitHub : AIC-971/ica-platform — source: public/dashboard.html + public/index_final.html
 - Vapi : assistant Léa ID d3997dfd-6122-477f-9f20-fbabfeaedf22
-- ElevenLabs : voix Bella Multilingual v2 (à remplacer par clone voix Pauline)
-- Google Workspace : lea@immoconseil-gpe.com (envoi IA auto) — agence@immoconseil-gpe.com (humain UNIQUEMENT)
+- ElevenLabs : voix Bella Multilingual v2 (à remplacer par clone voix Pauline — enregistrement 1 min en attente)
+- Google Workspace : lea@immoconseil-gpe.com — agence@immoconseil-gpe.com (humain)
+- GitHub token : ghp_***VOIR_N8N_CREDENTIAL*** (ICA-DreamWorker-2) (ICA-DreamWorker-2, pas d'expiration)
+- Anthropic API credential n8n : SsmgpFAZCENDy5q2 — modèle claude-sonnet-4-5/4-6
 
 ---
 
-## WORKFLOWS N8N — ÉTAT AU 12/06/2026
+## ROADMAP GLOBALE
 
-- 9JmHqRKkjDx88qqw — SYNC Estale owners nightly — PUBLIÉ
-  - Filtrer GL + Split par condo : CORRIGÉ 12/06 — exclut désormais 001GL (GL Propriétaires)
-  - 63 copros syndic traitées (vs 64 avant avec GL inclus)
-  - Formatter : PATCHe lots orphelins + UPSERTs proprietaires sans email
-  - Upsert coproprietes manquantes dans Supabase via on_conflict=estale_id
-- k5vfKezkdSJEBrEe — SYNC date_fin_mandat — PUBLIÉ
-- rSe1NpkFmBepbdxz — Alertes fin de mandat — PUBLIÉ
-- NXvKhsUcjOl5zN8R — Démarchage Pipeline — PUBLIÉ — Parser robuste 3 fallback OK
-- x6XxHa9GXJfcw40p — Léa Vapi Webhooks — PUBLIÉ
-- EB1xXO82jojuUxMv — Dream Worker ia_memory — PUBLIÉ
-- 9WLzlCKNGEn5B97B — IA Mail syndic@ — UNPUBLISHED — E2E validé
-- MMUAHW8vgEPd4UKo — IA Mail service.juridique@ — UNPUBLISHED
-- SaxB3VWFwbZvCHHY — IA Mail service.technique@ — UNPUBLISHED
-- kc6si9C7UTTnBYO9 — IA Mail mf.berret@ — UNPUBLISHED
-- dPSvQdYPfM60bfEd — ONE-SHOT Lier lots copros — NON PUBLIÉ — timeout 60s en UI, marche en prod
+P1 Dreaming ✅ | P2 Démarchage ✅ | P3 Alertes dashboard ✅ | P4 IA Mail vase clos ✅ | P5 Module2B PDF non activé | P6 Dashboard ✅ | P7 Vapi EN COURS | P8 WhatsApp Twilio ⬜ | P9 DVF+BODACC ANNULÉ | Scraping ARRÊTÉ
 
 ---
 
-## ÉTAT DONNÉES SUPABASE — 12/06/2026
+## WORKFLOWS N8N — ÉTAT AU 15/06/2026
 
-### lots (table)
-- Total : 1 683 lots, tous avec estale_id (tous viennent d'Estale)
-- Liés copropriete_id : 1 171 (69.6%)
-- Non liés : 512 — répartis en :
-  - ~302 lots de la copropriété "001GL — GL Propriétaires" (gestion locative) → JAMAIS traités, on ne touche pas à la GL
-  - ~210 lots de 4 copros syndic manquantes dans Supabase → seront liés au prochain sync nightly (2h du matin)
-- IMPORTANT : les lots GL resteront orphelins indéfiniment — c'est intentionnel
+### Démarchage (ID: NXvKhsUcjOl5zN8R) ✅ PUBLIÉ
+- 20 271 contacts dont 885 copropriétaires Estale (source=estale_proprietaire)
+- Parser Message CORRIGÉ le 15/06 : boucle for sur $input.all() et $('Claude Génère Message').all()[i] — plus de .first()
+- email_destinataire dans Log Demarchage = $json.email (champ réel confirmé)
+- **À VÉRIFIER au prochain cron** : email_destinataire non-NULL dans logs_demarchage
+- Prompt enrichi copropriétaires : avantages progressifs J0/J+90/J+180
 
-### coproprietes : 60 lignes Supabase vs 63 syndics dans Estale — 3-4 copros syndic à créer via upsert au prochain sync
+### SYNC Estale (ID: 9JmHqRKkjDx88qqw) ✅ PUBLIÉ, cron 2h
+- 63 copropriétés syndic (GL exclu)
+- 1171/1683 lots liés — 512 lots orphelins (~302 GL intentionnel)
 
-### proprietaires : 1 148 lignes (propriétaires avec lien copropriete_id)
+### IA Mail 4 boîtes — UNPUBLISHED VOLONTAIREMENT
+- syndic@ 9WLzlCKNGEn5B97B / service.juridique@ MMUAHW8vgEPd4UKo / service.technique@ SaxB3VWFwbZvCHHY / mf.berret@ kc6si9C7UTTnBYO9
+- Chaîne validée vase clos — NE PAS PUBLIER sans 10 tests E2E + validation Jeremy
 
-### contacts_demarchage : 19 386 contacts
+### Vapi (ID: x6XxHa9GXJfcw40p) ✅ PUBLIÉ, 19 nœuds
+- 3 tools : chercher_info ✅ testé, creer_dossier_intervention, transfert_humain
+- NE PAS brancher numéros SFR avant tests internes validés
 
----
-
-## LOTS — LOGIQUE COMPLÈTE
-
-Les 1 683 lots = uniquement lots de SYNDIC (copropriété). Pas de lots GL ici.
-La GL (001GL dans Estale) est exclue du SYNC owners depuis le 12/06/2026.
-Vapi peut identifier tout propriétaire de syndic par nom/tél — les 302 "GL Propriétaires" ne sont pas des copropriétaires de syndic, ce sont des bailleurs.
-
----
-
-## IA MAIL syndic@ — TEST E2E VALIDÉ 11/06/2026
-
-Chaîne complète fonctionnelle (unpublished) — fixes appliqués :
-- connexion Code Préparer -> Contexte Estale rétablie via API PUT
-- Always Output Data sur Chercher Copropriétaire + Historique Mails
-- Claude output : REPONDRE / ag / basse / réponse pro OK
-- Pour publier : attendre validation Jeremy sur vrais emails
+### Dreaming (ID: EB1xXO82jojuUxMv) ✅ PUBLIÉ, cron 3h
 
 ---
 
-## PARSER MESSAGE DÉMARCHAGE — CORRIGÉ 11/06/2026
+## PLATEFORME ICA — dashboard.html — ÉTAT 15/06/2026
 
-Fix : parser robuste 3 niveaux fallback (JSON.parse -> regex bloc JSON -> extraction champ par champ)
-Testé 50 prospects — aucune erreur OK
+Commit actuel : **ed157bd6**
 
----
+### Onglets et état
+- Vue globale : ✅ données live — Prochaines AG FIXÉ (Array.isArray guard)
+- Mails IA : ✅ 70 mails traités
+- Copropriétés : ✅ FIXÉ — 60 copros, 7 AG/90j, 21 mandats expirés (fix prochaine_ag + Array.isArray)
+- Démarchage : ✅
+- Interventions : ✅
+- Vapi/Appels : ✅ (0 appels — Vapi non branché)
+- Propriétaires : ✅ 1148 propriétaires
+- Activité Résidences : ✅ NOUVEAU 15/06 — flux mails/interventions/appels 7j par résidence
 
-## ROADMAP
-
-- P1-P4 : COMPLÉTÉS
-- P5 Module 2B PDF : déployé non activé
-- P7 Vapi Léa : webhooks OK — EN COURS — attente enregistrement Pauline 1min
-- P8 WhatsApp Twilio : à faire — 2337 contacts sans email
-- P9 DVF+BODACC : ANNULÉ DÉFINITIVEMENT
-
----
-
-## PATTERNS CRITIQUES
-
-- n8n Code : this.helpers.httpRequest() UNIQUEMENT
-- Merge node bloqué si 0 items -> Always Output Data
-- API PUT n8n settings : timezone/saveManualExecutions/callerPolicy/errorWorkflow/executionOrder seulement
-- Parser JSON Claude : toujours 3 niveaux fallback
-- Formatter SYNC owners : timeout 60s en test UI — marche en production (cron)
-- Session n8n expire 15-30min — recovery : naviguer signin, cliquer Sign In
+### Bugs résolus aujourd'hui (15/06)
+- `copros.filter is not a function` → Array.isArray guards sur coprosRaw/lotsRaw/agListRaw/mandatsRaw
+- `date_prochaine_ag` colonne inexistante → remplacé par `prochaine_ag` (14 occurrences)
+- `mails_traites.copropriete_id` inexistant → remplacé par `boite` dans loadActivite
+- index_final.html badge syndic@ corrigé "Vase clos"
 
 ---
 
-## VAPI / LÉA
+## SUPABASE — COLONNES RÉELLES CONFIRMÉES
 
-- Assistant Léa ID : d3997dfd-6122-477f-9f20-fbabfeaedf22
-- Webhook : https://immo-conseil-antilles.app.n8n.cloud/webhook/vapi-events
-- Tools : chercher_info (3555c59c), creer_dossier_intervention (80aebb2b), transfert_humain (7dd40782)
-- Voix : Bella Multilingual v2 ElevenLabs (temporaire)
-- Prochaine étape : enregistrement Pauline 1min -> clone ElevenLabs -> numéro Vapi -> tests mobile -> renvoi SFR
-- NE PAS brancher SFR avant tests internes validés
+### coproprietes
+id, estale_id, nom, adresse, commune, code_postal, territoire, nb_lots, gestionnaire_id, syndic_actuel, date_fin_mandat, actif, notes, created_at, updated_at, tantiemes_totaux, nb_lots_total, date_dernier_ag, budget_previsionnel, taux_impaye, estale_agency_id, date_derniere_ag, **prochaine_ag** (PAS date_prochaine_ag)
+
+### mails_traites
+id, gmail_message_id, boite, expediteur_email, expediteur_nom, sujet, corps_resume, categorie, urgence, decision, brouillon_genere, reponse_envoyee, date_reponse, gestionnaire_id, label_ia_en_traitement, annule_par_gestionnaire, created_at
+⚠️ PAS de copropriete_id — utiliser `boite` pour identifier la boîte
+
+### contacts_demarchage
+id, email (pas email_contact), telephone, nom, prenom, source, scenario, type_communication, ... (37 colonnes)
+
+### dossiers_interventions
+a copropriete_id ✅, type_intervention, statut, canal_entree, boite_receptrice...
+
+### appels_vocaux
+Table vide (0 enregistrements — Vapi non branché)
+
+### logs_demarchage
+email_destinataire, canal, message_sujet, message_corps, statut_envoi, sequence_etape, contact_id, type_contact, created_at
 
 ---
 
-## RÈGLES ABSOLUES
+## PROCHAINES ACTIONS PAR PRIORITÉ
 
-- agence@immoconseil-gpe.com = humain UNIQUEMENT, jamais automatique
-- P9 DVF+BODACC ANNULÉ DÉFINITIVEMENT — Scraping LBC/PAP ARRÊTÉ
-- IA Mail 4 boîtes : NE PAS PUBLIER sans approbation Jeremy
-- GL (gestion locative) : on n'y touche pas pour l'instant
-—é
+### 🔴 Immédiat (dès ce soir / demain matin)
+1. **Vérifier logs_demarchage** après cron nuit : `SELECT email_destinataire, canal, message_sujet FROM logs_demarchage ORDER BY created_at DESC LIMIT 5;` — doit être non-NULL
+
+### 🟡 Court terme
+2. **WhatsApp Business Twilio** — compte Twilio, numéro +1590 Guadeloupe, brancher branche WA dans NXvKhsUcjOl5zN8R pour 2 337 contacts sans email
+3. **Clone voix ElevenLabs Pauline** — enregistrement 1 min à récupérer → clone → brancher sur assistant Vapi
+4. **Séquence email copropriétaires Estale** — filtre source=eq.estale_proprietaire dans workflow démarchage
+
+### 🟠 Moyen terme
+5. **IA Mail publication progressive** — syndic@ en premier, mode brouillon, 10 tests E2E
+6. **Module 2B PDF activation** — workflow 6oJ6ST7mjyeZGeZn, après classification prestataires
+7. **Alertes Estale gestionnaires** (P3)
+
+---
+
+## DÉCISIONS PERMANENTES
+
+- Scraping FB/LBC/PAP/Amivac : ARRÊTÉ DÉFINITIVEMENT
+- DVF+BODACC : ANNULÉ DÉFINITIVEMENT
+- IA Mail 4 boîtes : NE PAS PUBLIER sans validation complète Jeremy
+- Tiers inconnu → TOUJOURS répondre courtoisement (Léa)
+- GL = gestion locative → hors scope syndic, filtrer tout ce qui commence par "GL"
+- Renvoi SFR = conditionnel (pas achat nouveaux numéros)
+- Dimanche et 21h-03h → messagerie SFR existante (pas Vapi)
+
+---
+
+## CLÉS ET CREDENTIALS ACTIFS
+
+| Service | Credential | Note |
+|---------|-----------|------|
+| n8n API | Claude-Session-15 | Never expires |
+| GitHub | ghp_***VOIR_N8N_CREDENTIAL*** (ICA-DreamWorker-2) | ICA-DreamWorker-2 |
+| Supabase SK | eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...1gvVPGSBotPXP_U4_-lLGQ0SfG2HdzLNWY9mRUiSd-A | service_role |
+| Anthropic | SsmgpFAZCENDy5q2 | n8n credential |
+| Vapi | assistant d3997dfd-6122-477f-9f20-fbabfeaedf22 | PAYG |
+
+---
+
+## APPRENTISSAGES TECHNIQUES CLÉS
+
+- `q()` Supabase retourne `{data: {code, message}, count: 0}` en cas d'erreur → toujours `Array.isArray(data) ? data : []`
+- Table `coproprietes` : colonne AG = `prochaine_ag` (pas `date_prochaine_ag`)
+- Table `mails_traites` : pas de `copropriete_id`, utiliser `boite` (syndic@, service.technique@...)
+- n8n `runOnceForAllItems` : toujours boucler `$input.all()[i]` + `$('NomNoeud').all()[i]`, jamais `.first()`
+- GitHub API PUT : encoder en base64 via FileReader+Blob (jamais btoa() direct)
+- Vercel redéploie ~60-90s après push GitHub main
+- Token Anthropic 503 Overloaded : ne pas enchaîner >3 exécutions manuelles consécutives (rate limit)
