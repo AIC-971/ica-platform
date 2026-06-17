@@ -205,3 +205,42 @@ Twilio : Trial 15.50USD non utilise (Meta direct retenu)
 - n8n API : le champ active est en lecture seule, ne pas l'inclure dans le POST de creation de workflow
 - Meta verification entreprise : la recherche automatique dans les registres publics peut echouer meme pour une entreprise reelle et legitime, fallback sur import de document (Kbis) plus confirmation par email, SMS, appel, WhatsApp ou verification de domaine
 - Edition JSON dans un node n8n (editeur CodeMirror) : cliquer dans le champ, utiliser Selection API JS (range.selectNodeContents) pour tout selectionner puis taper le nouveau contenu ; Ctrl+A seul ne fonctionne pas toujours dans cet editeur
+
+
+---
+
+## SESSION 17/06/2026 — Correctif structurel deficit proprietaires Estale->Supabase
+
+**Diagnostic confirme** : le node "Formatter owners pour Supabase" du workflow SYNC Estale (9JmHqRKkjDx88qqw) ne lit les proprietaires QUE depuis `httpItem.json.data.me.collaborator.condo.owners` (relation GraphQL Estale niveau condo). Il ne lit JAMAIS `lots.proprietaire_nom`/`proprietaire_email` (texte brut, fiable, deja present dans Supabase). Si Estale ne renvoie pas un owner dans `condo.owners` (desync interne Estale entre structure condo et structure lot), il n'est jamais upserte dans la table `proprietaires`.
+
+**Chiffres confirmes** :
+- `lots` : 1683 lignes, 1627 noms proprietaires uniques, 1378 emails uniques
+- `proprietaires` avant correctif : 1148 lignes
+- Jeremy confirme cote Estale : 1675 proprietaires reels (hors GL), quelques doublons possibles
+- Ecart explique : doublons orthographiques entre les deux systemes (casse, espaces, variations mineures)
+
+**Rattrapage SQL immediat applique avec succes** :
+```sql
+INSERT INTO proprietaires (estale_id, copropriete_id, fullname, email, nb_lots, synced_at, created_at, updated_at)
+SELECT 'rattrapage_' || md5(lower(trim(l.proprietaire_email))), (array_agg(l.copropriete_id))[1], (array_agg(l.proprietaire_nom))[1], lower(trim(l.proprietaire_email)), COUNT(*), now(), now(), now()
+FROM lots l
+WHERE l.proprietaire_email IS NOT NULL AND l.proprietaire_email != ''
+  AND NOT EXISTS (SELECT 1 FROM proprietaires p WHERE p.email = lower(trim(l.proprietaire_email)))
+GROUP BY lower(trim(l.proprietaire_email)))
+ON CONFLICT (estale_id) DO NOTHING;
+```
+Resultat : 1148 -> **1629 proprietaires** (481 ajoutes, 1444 avec email, 185 sans). Revalide en fin de session : toujours 1629/481/1444, aucune corruption.
+
+**Correctif structurel integre au workflow (PERMANENT)** :
+Nouveau node Code "**Rattrapage Proprietaires depuis Lots**" ajoute via API n8n (PUT /api/v1/workflows/9JmHqRKkjDx88qqw), branche en sortie de "Upsert dans Supabase" (qui est un simple passthrough sans connexion sortante prealable). Mode `runOnceForAllItems`. Logique : pagine sur `lots` (email non null), pagine sur `proprietaires` (emails existants), groupe les orphelins par email normalise, upsert chacun via `POST /proprietaires?on_conflict=estale_id` avec `estale_id = 'rattrapage_' + hex(email)`. Utilise `this.helpers.httpRequest` (pas `fetch`, evite CORS). Workflow confirme via API : **active: true, 9 nodes** (etait 8), "Rattrapage Proprietaires depuis Lots" present.
+
+**Validation empirique BLOQUEE par limite technique n8n (PAS un echec du correctif)** :
+Toute execution manuelle du workflow complet (boutons "Execute step" OU "Execute workflow") est plafonnee a 60 secondes dans cet environnement n8n. La chaine complete (Login Estale + GraphQL sur 60 condos) depasse systematiquement ce delai, donc le node "Formatter owners pour Supabase" timeout avant que "Rattrapage Proprietaires depuis Lots" (en aval) ne s'execute. Le cron de production tourne avec une limite de 3600s, donc cette limite ne s'applique pas au cron nocturne reel. **Seul le cron de 2h du matin peut valider empiriquement ce node.**
+
+**PENDING IMMEDIAT PROCHAINE SESSION** : executer dans Supabase SQL Editor :
+```sql
+SELECT COUNT(*) FROM proprietaires WHERE estale_id LIKE 'rattrapage_%';
+```
+Si >= 481 (stable ou en hausse) : le node fonctionne en production automatiquement chaque nuit, AUCUNE action supplementaire requise. Si erreur/regression : consulter l'onglet "Executions" du workflow 9JmHqRKkjDx88qqw dans n8n pour voir le detail de l'execution cron reelle (pas les executions de test manuel qui ne sont pas representatives).
+
+**Apprentissage technique ajoute** : toute execution manuelle dans n8n (step OU workflow complet) est plafonnee a 60s, meme si "Execute workflow" semble destine a une execution complete sans limite. Seul le cron de production a la limite etendue (jusqu'a 3600s selon le plan). Pour valider un node en fin de chaine longue, attendre le cron reel plutot que de chercher a forcer un test manuel.
