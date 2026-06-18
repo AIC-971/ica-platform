@@ -1,4 +1,63 @@
 # SESSION_ICA_CONTEXT.md — Immo Conseil Antilles
+
+---
+
+# 🎯 SYNTHESE GLOBALE — ETAT DU PROJET AU 18/06/2026 (a lire en priorite absolue en debut de session)
+
+## 1. URGENCE DU MOMENT — SYNC Estale/Supabase proprietaires
+
+**Etat** : correctif de parallelisation applique et teste avec succes (22s vs 60s+ en echec depuis 6 nuits). **Pas encore confirme par un vrai cron de production.**
+
+**A faire en tout premier a la prochaine session** :
+1. Verifier l'onglet Executions du workflow `9JmHqRKkjDx88qqw` ("SYNC Estale → Supabase owners (nightly)") — le cron de 2h du matin a-t-il enfin reussi cette nuit (apres 6 echecs consecutifs depuis le 13/06) ?
+2. Verifier dans Supabase : `SELECT COUNT(*) FILTER (WHERE estale_id LIKE 'rattrapage_%'), MAX(synced_at) FROM proprietaires;` — doit etre >= 481 avec une date de sync recente.
+3. Si succes confirme : ce dossier est CLOS, plus aucune action requise (le SYNC + le rattrapage tourneront automatiquement chaque nuit).
+4. Si echec encore : reprendre le diagnostic (voir section technique detaillee plus bas, session du 18/06).
+
+---
+
+## 2. VUE D'ENSEMBLE — TOUS LES MODULES DU PROJET
+
+### ✅ Modules valides et actifs en production
+| Module | Detail |
+|---|---|
+| **Dreaming / ia_memory** | Actif, cron 3h du matin, upsert quotidien dans Supabase |
+| **SYNC Estale → Supabase (copros)** | Actif, cron 2h, 63 copros syndic. Meme workflow que le SYNC proprietaires — partage la meme urgence ci-dessus |
+| **Demarchage (contacts + workflow)** | 20 271 contacts en base. Workflow publie mais BUG CONNU : champs email/canal/sujet NULL dans le log d'envoi — fix non prioritaire, voir section 3 |
+| **ICA Platform dashboard** | Deploye sur ica-platform.vercel.app/dashboard.html, 7 onglets fonctionnels, auto-refresh 60s |
+| **FB Marketplace scraping** | Operationnel, prospects inseres dans Supabase. Manque : workflow n8n de routing automatique par canal |
+| **Module 2B rapport PDF** | Configure et deploye sur Vercel, mais PAS active (en attente de validation finale) |
+
+### 🟡 Modules en cours / a terminer
+| Module | Etat detaille | Prochaine etape concrete |
+|---|---|---|
+| **Vapi / Lea (assistant voix)** | Assistant configure (ID d3997dfd-6122-477f-9f20-fbabfeaedf22), webhooks n8n connectes et publies, 3 tools attaches (chercher_info teste OK, creer_dossier_intervention, transfert_humain). Voix : ElevenLabs Bella Multilingual v2 utilisee en attendant le clone de la voix de Pauline (enregistrement a recuperer). | 1) Cloner la voix de Pauline sur ElevenLabs 2) Tests internes mobiles 3) Connexion numeros SFR (Jeremy gere le cote SFR, redirection conditionnelle) — **NE PAS connecter les numeros SFR avant tests internes valides** |
+| **WhatsApp Business via Twilio** | Pas encore demarre concretement : compte a creer, numero +1590 Guadeloupe a obtenir, webhook vers n8n a construire. Objectif : recontacter les 2337 contacts sans email | Creer le compte Twilio + demande numero, PUIS construire le webhook n8n |
+| **IA Mail — 4 boites (syndic@, juridique@, technique@, mf.berret@)** | Chaine complete validee en vase clos (Gmail → Supabase → Claude API → reponse auto/brouillon/escalade/ignore). **VOLONTAIREMENT NON PUBLIEE.** | A faire avant publication : module prestataires + labels Gmail + 10 tests E2E + validation explicite de Jeremy. Ne pas publier sans ces 4 prerequis |
+| **Alertes Estale pour gestionnaires (P3)** | Pas commence | A definir avec Jeremy : quelles alertes, quelle frequence, quel canal |
+| **Module locatif (gestion locative)** | En pause | Bloque jusqu'a evolution de l'API Estale, prevue septembre 2026 — ne pas relancer avant |
+
+### ❌ Definitivement abandonnes (ne jamais relancer, meme si redemande)
+- Scraping LeBonCoin / PAP / Amivac
+- DVF + BODACC (pas de coordonnees legalement exploitables)
+
+---
+
+## 3. BUGS CONNUS NON URGENTS (a traiter quand le temps le permet)
+
+1. **Workflow Demarchage** : les champs `email_destinataire`, `canal`, `sujet` restent NULL dans la table de log apres envoi. Cause probable : mauvais mapping entre le node "Parser Message" et le node de log. Pas bloquant pour l'envoi lui-meme, juste pour le suivi/reporting.
+2. **index_final.html** : badge affiche "Actif" pour le module IA Mail alors qu'il est en realite "Vase clos" (non publie) — correction cosmetique simple, juste pas encore faite.
+
+---
+
+## 4. PRINCIPES DE TRAVAIL A NE JAMAIS OUBLIER
+
+- **Toujours lire ce fichier en entier en debut de session** (via web_fetch sur l'URL raw GitHub) avant de demander a Jeremy de recontextualiser quoi que ce soit.
+- **Jeremy delegue l'execution technique completement** : ne pas proposer de listes d'options, agir et rendre compte.
+- **Toute modification de workflow n8n** : privilegier l'API (PUT /api/v1/workflows/...) plutot que l'editeur UI, qui est instable (sessions qui expirent, badge Publish/Published trompeur, risque de frappe accidentelle dans l'editeur de code). Toujours filtrer le champ `settings` aux 5 clefs autorisees avant un PUT.
+- **Tout test manuel n8n (step ou workflow complet) est plafonne a 60 secondes** — y compris en production sur les cron si le node lui-meme depasse ce temps reel de traitement. Ce n'est PAS reserve aux tests, c'est une vraie limite a respecter dans la conception des nodes.
+- **Ne jamais manipuler ou afficher en clair le contenu d'un node contenant SK_SUPA ou toute autre cle secrete** — utiliser des index/bookings/booleens pour verifier la structure du code sans l'exposer.
+
 *Dernière mise à jour : 17/06/2026*
 
 ---
