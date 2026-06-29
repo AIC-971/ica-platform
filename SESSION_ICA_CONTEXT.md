@@ -1,5 +1,5 @@
 # SESSION_ICA_CONTEXT.md — ICA Platform
-Derniere mise a jour : 25 juin 2026
+Derniere mise a jour : 29 juin 2026
 
 ---
 
@@ -10,77 +10,84 @@ Derniere mise a jour : 25 juin 2026
 - Phone Number ID : 1241064202413162 — WABA : 1340658904686436
 - Vapi Assistant : d3997dfd-6122-477f-9f20-fbabfeaedf22
 - Cle API n8n active : Claude-Session-10 (never expires, ends K9Tg)
+- Cle anon Supabase : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhkcmxneXF4ZGJkdnpybmV1amd6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQwMzA5NTMsImV4cCI6MjA1OTYwNjk1M30.lOzF44GIm6sH8PyIMdRAYtZB4HgTzTNqLgTzFVzYuRw
 
 ---
 
 ## MODULES OPERATIONNELS
 
 **Lea WhatsApp** srE5JWjDsf0yDWN7 — PUBLIE
-- Architecture : Webhook WA Messages (POST, onReceived) > Parser WA > Agreger Contexte (Code node, runOnceForAllItems) > Generer Reponse Lea > Extraire Reponse > Envoyer Message WA > Log Supabase WA
-- Agreger Contexte : interroge Supabase via cle anon — historique cross-canal + identification proprietaire
-- Log Supabase WA : expressions corrigees 24/06
-- Prompt multi-metiers : syndic, vente, achat, location, gestion
-- PATTERN CRITIQUE n8n 2.25.7 : runOnceForAllItems = return [{json:{}}] OK / runOnceForEachItem = ERREUR json-is-not-object
-- this.getCredentials() NON dispo Code nodes — utiliser cle anon directement
-- Cle anon : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhkcmxneXF4ZGJkdnpybmV1amd6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQwMzA5NTMsImV4cCI6MjA1OTYwNjk1M30.lOzF44GIm6sH8PyIMdRAYtZB4HgTzTNqLgTzFVzYuRw
-- get_historique_contact : GRANT TO service_role + anon (24/06)
+- Architecture : Webhook WA Messages (POST) > Parser WA > Agreger Contexte (Code) > Generer Reponse Lea > Extraire Reponse > Envoyer Message WA > Log Supabase WA (Code)
+- Agreger Contexte : lit historique_contacts (tous canaux) + session recente + identifie proprietaire + lots Supabase
+- Log Supabase WA (Code node) : ecrit dans conversations_whatsapp ET historique_contacts
+- Prompt : texte brut, jamais markdown, jamais se presenter comme IA, jamais repeter Immo Conseil Antilles
+- BUG NON RESOLU : log WA ne write pas en base (conversations_whatsapp = 0 row) — probleme de references croisees entre noeuds a investiguer
+- PATTERN CRITIQUE : runOnceForAllItems + return [{json:{}}] OK
+- this.helpers.httpRequest() pour tous les appels HTTP dans Code nodes
+- Cle anon utilisable directement dans Code nodes (this.getCredentials() non dispo)
 
 **SYNC Estale** 9JmHqRKkjDx88qqw — PUBLIE cron 2h — tourne depuis 19/06
 
 **Dream Worker** EB1xXO82jojuUxMv — PUBLIE cron 3h — 16 entrees ia_memory
 
 **Demarchage** NXvKhsUcjOl5zN8R — PUBLIE
-- Fix 24/06 : email_destinataire -> dollar-sign(Prospects A Demarcher).first().json.email
-- 20271 contacts — 2337 sans email (WA Twilio pending)
-- FB Marketplace ANNULE — 11 prospects supprimes 24/06
+- 20271 contacts — 2337 sans email
+- Fix 29/06 : email_destinataire -> dollar-sign(Prospects A Demarcher).first().json.email
 
-**Dashboard** ica-platform.vercel.app — commit 88961df (25/06)
-- 6 onglets deployes — auth 3 roles
-- Module 8 commissions OK — Module 9 conformite RSAC/CCI OK
-- Badge IA Mail : Vase clos (corrige 25/06)
+**Dashboard** ica-platform.vercel.app — commit 88961df
+- 6 onglets, auth 3 roles, Module 8 + 9 OK, badge Vase clos OK (25/06)
 
-**Vapi Lea** — Assistant configure, workflow x6XxHa9GXJfcw40p PUBLIE
-- ElevenLabs non configure — numeros SFR non connectes
+**Vapi Lea** — Assistant d3997dfd configure, workflow x6XxHa9GXJfcw40p PUBLIE
+- ElevenLabs non configure — SFR non connectes — Pauline doit enregistrer 2 min de voix
 
 **Module 2B PDF** 6oJ6ST7mjyeZGeZn — NON ACTIVE (attend IA Mail)
 
 ---
 
-## RESTE A FAIRE (liste complete, ordre de priorite)
+## NOUVELLES TABLES SUPABASE (29/06)
+- historique_contacts : table UNIFIEE tous canaux (WA + Mail + Vapi). Colonnes : identifiant, canal, direction, message_entrant, message_sortant, sujet, statut, proprietaire_id, copropriete_id, metadata, date_echange
+- Fonction get_contexte_contact(TEXT) : retourne 20 derniers echanges tous canaux pour un identifiant. GRANT TO anon + service_role.
+- Index : idx_historique_identifiant sur (identifiant, date_echange DESC)
+
+---
+
+## RESTE A FAIRE (ordre de priorite)
 
 **PRIORITE HAUTE**
-1. Lea WA — Memoire session en cours : log chaque echange -> relecture au message suivant
-2. Lea WA — Multi-contacts meme nom (2 Pasquier) : ajouter confirmation identite (lot, copropriete)
+1. Lea WA log — BUG references croisees : conversations_whatsapp vide. Investiguer : passer toutes les donnees via payload Envoyer Message WA plutot que references $() entre noeuds
+2. Lea WA memoire session : depend du fix #1
+3. Lea WA multi-contacts meme nom : LIMIT 1 sans confirmation identite
 
 **MODULES INCOMPLETS**
-3. IA Mail locatif@immoconseil-gpe.com : OUBLIE CDC — dupliquer workflow syndic@, adapter prompt
-4. IA Mail 4 boites (syndic/juridique/technique/mf.berret) : UNPUBLISHED — prerequis : labels Gmail + 10 tests E2E + validation Jeremy
-5. Module 2B PDF : s active en meme temps que IA Mail
-6. Vapi voix francaise : Pauline enregistrement 1 min -> ElevenLabs -> Vapi
-7. Numeros SFR -> Vapi : apres tests internes complets
-8. WhatsApp Twilio P8 : compte + numero +590 — WA sortant gestionnaires (alertes niveau 1) + communications regulieres (cyclone/AG/taxes/loyers) vers 2337 contacts sans email
+4. IA Mail 4 boites syndic/juridique/technique/mf.berret : UNPUBLISHED — prerequis labels Gmail + 10 tests E2E + validation Jeremy
+5. gestion.locative@immoconseil-gpe.com : EN ATTENTE mise a jour Estale gestion locative (septembre 2026)
+6. Module 2B PDF : s active avec IA Mail
+7. Vapi voix : Pauline enregistrement 2 min -> ElevenLabs -> Vapi -> tester avant SFR
+8. WA sortant Meta : templates Meta approuves (cyclone/AG/taxes/loyers) + workflow n8n avec credentials Meta existants (pas de Twilio)
 
 **LONG TERME**
-9. Rapport Lea par copropriete pour AG (calls + emails + interventions)
-10. Depot rapport PDF dans Drive Estale (API GraphQL write)
-11. Module 5 locatif : import Hektor Excel -> Supabase demarrable maintenant / reste attend API Estale sep 2026
+9. Rapport Lea par copropriete pour AG
+10. Depot rapport PDF Drive Estale (API GraphQL write)
+11. Module 5 locatif : import Hektor Excel possible maintenant / reste attend Estale sep 2026
+12. Enrichissement Estale GraphQL temps reel dans Agreger Contexte (charges, incidents actifs)
 
 ---
 
-## ANNULE DEFINITIF (ne plus jamais mentionner ni coder)
+## ANNULE DEFINITIF
 - DVF + BODACC — scraping LBC/PAP/Amivac/Facebook — FB Marketplace
-- Module 6 Recrutement agents (supprime definitivement le 25/06)
+- Module 6 Recrutement agents — Twilio (numero Meta existant suffit)
 
 ---
 
-## SUPABASE
-- RLS actif 47 tables — prospects nettoyee (FB Marketplace 24/06)
-- get_historique_contact GRANT TO service_role + anon
+## BOITES MAIL ICA
+- syndic@ : workflow 9WLzlCKNGEn5B97B (UNPUBLISHED)
+- service.juridique@ : MMUAHW8vgEPd4UKo (UNPUBLISHED)
+- service.technique@ : SaxB3VWFwbZvCHHY (UNPUBLISHED)
+- mf.berret@ : kc6si9C7UTTnBYO9 (UNPUBLISHED)
+- gestion.locative@ : A CREER — attend Estale sep 2026
 
 ---
 
 ## PROCHAINE SESSION : commencer par
-1. Vapi : Pauline enregistrement + ElevenLabs + voix
-2. Twilio : creer compte + numero +590
-3. Lea WA memoire session en cours
-4. IA Mail locatif@ (oublie CDC)
+- Investiguer bug log WA (passer donnees via Set node entre Extraire Reponse et Envoyer Message WA)
+- Ou passer a Vapi ElevenLabs si Pauline a enregistre
